@@ -298,6 +298,24 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion: reduce){.bsvg{transition:none}}
 
 
+
+/* live check */
+#live-view{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:14px}
+.live-prog{width:min(320px,80%);height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.live-prog>i{display:block;height:100%;width:0;background:var(--kY);transition:width .2s}
+.live-ear{display:grid;gap:6px;justify-items:center;width:min(320px,100%)}
+.meter{width:100%;height:8px;border-radius:4px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.meter>i{display:block;height:100%;width:0;background:var(--accent)}
+.heard{margin:0;min-height:1.5em;font-weight:700}
+.heard .ok{color:var(--kY)}.heard .bad{color:var(--warn)}
+.live-note{margin:0;max-width:44ch;font-size:var(--fs-s);color:var(--muted)}
+.live-note.bad{color:var(--warn)}
+.live-note a{color:var(--accent)}
+#live-view .strip .tile.done{opacity:.35}
+.game-top .viewsw{grid-template-columns:repeat(3,auto)}
+@media (max-width:560px){.game-top .vbtn{padding:6px 8px}}
+@media (prefers-reduced-motion: reduce){.live-prog>i{transition:none}}
+
 /* loop toggle */
 .game-top-r{display:flex;gap:8px}
 .loop[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -499,6 +517,7 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
     <div class="actions">
       <button class="btn" type="button" id="learn-open" data-i18n="s.learnOpen">Apprendre le morceau</button>
       <button class="btn ghost" type="button" id="game-open" data-i18n="s.fullscreen">Plein écran</button>
+      <button class="btn ghost" type="button" id="live-open" data-i18n="s.liveOpen">Vérifier au micro</button>
       <button class="btn ghost" type="button" id="play" data-i18n="playAll">▶ Tout écouter</button>
       <button class="btn ghost loop" type="button" id="loop-btn" aria-pressed="false" data-i18n="loop">↻ En boucle</button>
     </div>
@@ -576,6 +595,7 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
     <div class="viewsw" role="group" data-i18n-aria="s.modeAria" aria-label="Mode">
       <button type="button" class="vbtn" id="mode-play" aria-pressed="true" data-i18n="s.modePlay">Jouer</button>
       <button type="button" class="vbtn" id="mode-learn" aria-pressed="false" data-i18n="s.modeLearn">Apprendre</button>
+      <button type="button" class="vbtn" id="mode-live" aria-pressed="false" data-i18n="s.modeLive">Vérifier</button>
     </div>
     <div class="game-top-r">
       <button class="game-close loop" type="button" id="loop-btn2" aria-pressed="false" data-i18n-aria="loopAria" aria-label="Lecture en boucle">↻</button>
@@ -606,6 +626,21 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
     </div>
     <div class="lv-body" id="lv-body" aria-live="polite"></div>
     <div class="lv-bar" id="lv-bar"></div>
+  </div>
+  <div id="live-view" hidden>
+    <div class="lv-head">
+      <div class="live-prog" aria-hidden="true"><i id="lv2-prog"></i></div>
+      <div class="lv-title" id="lv2-pos"></div>
+      <div class="tempo" role="group" data-i18n-aria="live.sensAria" aria-label="Sensibilité du micro">
+        <span data-i18n="live.sens">Sensibilité :</span>
+        <button type="button" class="vbtn" data-sens="0" aria-pressed="false" data-i18n="live.low">Basse</button>
+        <button type="button" class="vbtn" data-sens="1" aria-pressed="true" data-i18n="live.mid">Moyenne</button>
+        <button type="button" class="vbtn" data-sens="2" aria-pressed="false" data-i18n="live.high">Haute</button>
+        <button type="button" class="linkbtn" id="lv2-restart" data-i18n="live.restart">Recommencer</button>
+      </div>
+    </div>
+    <div class="lv-body" id="lv2-body" aria-live="polite"></div>
+    <div class="lv-bar" id="lv2-bar"></div>
   </div>
 </div>
 
@@ -1014,6 +1049,16 @@ fr:{
   modShort:{'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'},
   instr:(parts,btn)=>(parts.length?parts.join(' et ')+', puis appuie sur '+btn:'appuie sur '+btn),
   loop:'↻ En boucle',loopAria:'Lecture en boucle',
+  's.modeLive':'Vérifier','s.liveOpen':'Vérifier au micro',
+  'live.sens':'Sensibilité :','live.sensAria':'Sensibilité du micro','live.low':'Basse','live.mid':'Moyenne','live.high':'Haute','live.restart':'Recommencer',
+  'live.start':'● Écouter le jeu','live.stop':"■ Arrêter l'écoute",'live.skip':'Passer ▶','live.again':'Rejouer le morceau',
+  'live.tip':"Pose le téléphone près de la télé ou de la Switch, sors l'ocarina dans le jeu, puis appuie sur « Écouter le jeu ». Joue la note affichée : la page passe à la suivante dès qu'elle l'entend.",
+  'live.listening':'Le micro écoute. Joue la note affichée.','live.off':'Micro coupé.','live.waiting':"J'écoute…",
+  'live.wrong':'{x}, attendu : {y}','live.phraseDone':'Phrase {n} réussie !','live.doneTitle':'Morceau terminé','live.done':'Bravo, tu as joué tout le morceau !',
+  'live.stats':(d,e)=>'Joué en '+d+(e?' avec '+e+' fausse'+(e>1?'s':'')+' note'+(e>1?'s':'')+'.':', sans une seule fausse note.'),
+  'live.inClaude':"Dans Claude, les pages n'ont pas accès au micro. Ce mode marche sur la version en ligne :",
+  'live.noMic':'Ce navigateur ne donne pas accès au micro sur cette page.',
+  'live.denied':"L'accès au micro a été refusé. Autorise-le dans les réglages du navigateur (sur iPhone : bouton aA, puis Réglages du site web, puis Micro), puis réessaie.",
   dateLocale:'fr-FR'
 },
 en:{
@@ -1105,6 +1150,16 @@ en:{
   modShort:{'↑':'stick up','↓':'stick down','▲':'D-pad up','▼':'D-pad down'},
   instr:(parts,btn)=>(parts.length?parts.join(' and ')+', then press '+btn:'press '+btn),
   loop:'↻ Loop',loopAria:'Loop playback',
+  's.modeLive':'Check','s.liveOpen':'Check with the mic',
+  'live.sens':'Sensitivity:','live.sensAria':'Microphone sensitivity','live.low':'Low','live.mid':'Medium','live.high':'High','live.restart':'Start over',
+  'live.start':'● Listen to the game','live.stop':'■ Stop listening','live.skip':'Skip ▶','live.again':'Play the song again',
+  'live.tip':'Put the phone near the TV or the Switch, take out the ocarina in the game, then press "Listen to the game". Play the note shown: the page moves on as soon as it hears it.',
+  'live.listening':'The microphone is listening. Play the note shown.','live.off':'Microphone off.','live.waiting':'Listening…',
+  'live.wrong':'{x}, expected: {y}','live.phraseDone':'Phrase {n} done!','live.doneTitle':'Song finished','live.done':'Well done, you played the whole song!',
+  'live.stats':(d,e)=>'Played in '+d+(e?' with '+e+' wrong note'+(e>1?'s':'')+'.':', without a single wrong note.'),
+  'live.inClaude':"Inside Claude, pages can't use the microphone. This mode works on the online version:",
+  'live.noMic':"This browser doesn't allow microphone access on this page.",
+  'live.denied':'Microphone access was denied. Allow it in your browser settings (on iPhone: the aA button, then Website Settings, then Microphone), then try again.',
   dateLocale:'en-US'
 }};
 let LANG=(()=>{let v=null;try{v=localStorage.getItem('ocarina-lang');}catch(e){}if(v==='fr'||v==='en')return v;return (navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en';})();
@@ -1322,9 +1377,9 @@ function render(fresh){
     box.innerHTML='<p class="empty">'+esc(st.tab==='video'?(st.audioRes?t('empty.videoNone'):t('empty.videoWait')):t('empty.notes'))+'</p>';
     if(unknown.length)addFact(t('unknown',{x:unknown.slice(0,6).join(', ')}),true);
     $('#textout').textContent='';['#play','#copy','#game-open'].forEach(s=>$(s).disabled=true);
-    st.seq=[];st.res=null;st.sel=null;$('#edit-hint').hidden=true;$('#learn-open').disabled=true;syncEditor();if(game.open)closeGame();return;
+    st.seq=[];st.res=null;st.sel=null;$('#edit-hint').hidden=true;$('#learn-open').disabled=true;$('#live-open').disabled=true;syncEditor();if(game.open)closeGame();return;
   }
-  ['#play','#copy','#game-open','#learn-open'].forEach(s=>$(s).disabled=false);$('#edit-hint').hidden=false;
+  ['#play','#copy','#game-open','#learn-open','#live-open'].forEach(s=>$(s).disabled=false);$('#edit-hint').hidden=false;
   let res;
   if(fresh||st.shift==null){res=mapMelody(flat.map(n=>n.midi),keepSame());st.shift=res.t;}
   else res=mapWithShift(flat.map(n=>n.midi),st.shift);
@@ -1507,15 +1562,17 @@ function openGame(li,mode){
   stopPlay();game.open=true;game.mode=mode||'play';game.ph=li||0;
   $('#game').hidden=false;document.body.classList.add('gaming');
   if(game.mode==='learn')startLearn();
+  if(game.mode==='live')enterLive();
   renderOverlay();requestWake();$('#game-close').focus();
 }
-function closeGame(){game.open=false;$('#game').hidden=true;document.body.classList.remove('gaming');stopPlay();releaseWake();}
-function setMode(m){stopPlay();game.mode=m;if(m==='learn')startLearn();renderOverlay();}
+function closeGame(){liveStop(true);game.open=false;$('#game').hidden=true;document.body.classList.remove('gaming');stopPlay();releaseWake();}
+function setMode(m){stopPlay();if(game.mode==='live'&&m!=='live')liveStop(true);game.mode=m;if(m==='learn')startLearn();if(m==='live')enterLive();renderOverlay();}
 function renderOverlay(){
   $('#mode-play').setAttribute('aria-pressed',game.mode==='play');
   $('#mode-learn').setAttribute('aria-pressed',game.mode==='learn');
-  $('#play-view').hidden=game.mode!=='play';$('#learn-view').hidden=game.mode!=='learn';
-  if(game.mode==='play')renderGame();else renderLearn();
+  $('#mode-live').setAttribute('aria-pressed',game.mode==='live');
+  $('#play-view').hidden=game.mode!=='play';$('#learn-view').hidden=game.mode!=='learn';$('#live-view').hidden=game.mode!=='live';
+  if(game.mode==='play')renderGame();else if(game.mode==='live')renderLive();else renderLearn();
 }
 function renderGame(){
   const lines=activeLines();if(!lines.length||!st.res){closeGame();return;}
@@ -1536,6 +1593,8 @@ $('#game-open').addEventListener('click',()=>openGame(st.sel!=null?phraseOf(st.s
 $('#learn-open').addEventListener('click',()=>openGame(0,'learn'));
 $('#mode-play').addEventListener('click',()=>setMode('play'));
 $('#mode-learn').addEventListener('click',()=>setMode('learn'));
+$('#mode-live').addEventListener('click',()=>setMode('live'));
+$('#live-open').addEventListener('click',()=>openGame(st.sel!=null?phraseOf(st.sel):0,'live'));
 $('#game-close').addEventListener('click',()=>{deselect();closeGame();});
 $('#game-prev').addEventListener('click',()=>gameGo(-1));
 $('#game-nextbtn').addEventListener('click',()=>gameGo(1));
@@ -1665,6 +1724,149 @@ function learnAction(act,el){
 $('#lv-bar').addEventListener('click',e=>{const b=e.target.closest('[data-lv]');if(b&&!b.disabled)learnAction(b.dataset.lv,b);});
 $('#lv-body').addEventListener('click',e=>{const b=e.target.closest('[data-lv]');if(b)learnAction(b.dataset.lv,b);});
 document.querySelectorAll('[data-tempo]').forEach(b=>b.addEventListener('click',()=>{learn.tempo=+b.dataset.tempo;if(learn.prog&&learn.prog.phrases[learn.ph])learn.prog.phrases[learn.ph].tempo=learn.tempo;renderLearn();}));
+
+
+/* ---------- live check: the microphone listens to the game ----------
+   The game's ocarina is an almost pure tone, so the same spectral peak + purity test as the video analysis
+   finds it. A note counts once it has been stable for ~100 ms; it can count again only after a short silence,
+   a change of pitch, or a clear dip and rise in volume (the same button pressed twice).
+   The game may sound an octave away from the page's reference, so the octave is learned from the first right note. */
+const LIVE_SENS=[{pur:0.55,db:20},{pur:0.45,db:14},{pur:0.35,db:9}];
+const live={on:false,idx:0,offset:null,errors:0,done:false,stream:null,src:null,an:null,sink:null,timer:null,
+  N:4096,buf:null,fft:null,win:null,re:null,im:null,P:null,noise:-80,cur:null,curCount:0,silent:9,fired:false,peak:-200,dip:200,dipped:false,
+  muteUntil:0,heard:null,msg:'',msgBad:false,sens:1,startT:0,endT:0,phraseMsg:''};
+{const v=storeGet('ocarina-live-sens');if(v==='0'||v==='1'||v==='2')live.sens=+v;}
+function liveInClaude(){return !!(window.claude&&typeof window.claude.use==='function');}
+function liveResetSong(from){live.idx=from||0;live.offset=null;live.errors=0;live.done=false;live.heard=null;live.startT=0;live.endT=0;live.phraseMsg='';}
+function enterLive(){liveResetSong(st.flat.length?phraseRange(Math.min(game.ph,activeLines().length-1))[0]:0);live.msg=liveInClaude()?'inClaude':'';}
+async function liveStart(){
+  if(live.on)return;
+  if(liveInClaude()){live.msg='inClaude';renderLive();return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){live.msg='noMic';live.msgBad=true;renderLive();return;}
+  const c=ctx();if(c.resume)c.resume();stopPlay();
+  try{live.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});}
+  catch(e){live.msg=(e&&(e.name==='NotAllowedError'||e.name==='SecurityError'))?'denied':'noMic';live.msgBad=true;renderLive();return;}
+  const N=live.N;
+  live.src=c.createMediaStreamSource(live.stream);live.an=c.createAnalyser();live.an.fftSize=N;live.an.smoothingTimeConstant=0;
+  live.sink=c.createGain();live.sink.gain.value=0;live.src.connect(live.an);live.an.connect(live.sink);live.sink.connect(c.destination);
+  live.buf=new Float32Array(N);live.fft=makeFFT(N);live.win=new Float64Array(N);for(let i=0;i<N;i++)live.win[i]=0.5-0.5*Math.cos(2*Math.PI*i/(N-1));
+  live.re=new Float64Array(N);live.im=new Float64Array(N);live.P=new Float64Array(N/2);
+  live.noise=-80;live.cur=null;live.curCount=0;live.silent=9;live.fired=false;live.on=true;live.msg='listening';live.msgBad=false;
+  if(!live.startT)live.startT=performance.now();
+  live.timer=setInterval(liveTick,35);renderLive();
+}
+function liveStop(quiet){
+  if(live.timer){clearInterval(live.timer);live.timer=null;}
+  if(live.stream){live.stream.getTracks().forEach(tr=>tr.stop());live.stream=null;}
+  try{if(live.src)live.src.disconnect();if(live.an)live.an.disconnect();if(live.sink)live.sink.disconnect();}catch(e){}
+  live.src=live.an=live.sink=null;
+  const was=live.on;live.on=false;
+  if(was&&!quiet){live.msg='off';live.msgBad=false;if(game.open&&game.mode==='live')renderLive();}
+}
+function liveTick(){
+  if(!live.on||!live.an)return;
+  const N=live.N,b=live.buf,re=live.re,im=live.im,P=live.P,sr=ctx().sampleRate;
+  live.an.getFloatTimeDomainData(b);
+  if(performance.now()<live.muteUntil){live.cur=null;live.curCount=0;live.silent=9;live.fired=false;liveMeter(-200,null);return;}
+  let e=0;for(let i=0;i<N;i++){const v=b[i];e+=v*v;re[i]=v*live.win[i];im[i]=0;}
+  const db=10*Math.log10(e/N+1e-12);
+  if(db<live.noise)live.noise=db;else live.noise=Math.min(db,live.noise+0.03);
+  live.fft(re,im);
+  const kLo=Math.max(1,Math.floor(100*N/sr)),kHi=Math.min(N/2-3,Math.ceil(8000*N/sr)),kmin=Math.max(kLo+2,Math.floor(250*N/sr)),kmax=Math.min(kHi-2,Math.ceil(3000*N/sr));
+  let tot=0;for(let k=kLo;k<=kHi;k++){const v=re[k]*re[k]+im[k]*im[k];P[k]=v;tot+=v;}
+  let pk=kmin,pv=-1;for(let k=kmin;k<=kmax;k++)if(P[k]>pv){pv=P[k];pk=k;}
+  let pe=0;for(let k=pk-2;k<=pk+2;k++)pe+=P[k];
+  const purity=tot>0?pe/tot:0,S=LIVE_SENS[live.sens];
+  const voiced=purity>=S.pur&&db>=Math.max(live.noise+S.db,-75);
+  if(!voiced){live.silent++;if(live.silent>=2){live.cur=null;live.curCount=0;live.fired=false;}liveMeter(db,null);return;}
+  const a=Math.log(P[pk-1]+1e-30),bb=Math.log(P[pk]+1e-30),cc=Math.log(P[pk+1]+1e-30),den=a-2*bb+cc;
+  let dl=den!==0?0.5*(a-cc)/den:0;dl=Math.max(-0.5,Math.min(0.5,dl));
+  const mf=69+12*Math.log2(((pk+dl)*sr/N)/440),n=Math.round(mf);
+  live.silent=0;
+  if(Math.abs(mf-n)>0.42){liveMeter(db,null);return;}
+  if(live.cur!==n){live.cur=n;live.curCount=1;live.fired=false;live.peak=db;live.dip=db;live.dipped=false;}
+  else{
+    live.curCount++;
+    if(live.fired){
+      if(db>live.peak&&!live.dipped)live.peak=db;
+      if(db<live.peak-10){live.dipped=true;live.dip=Math.min(live.dip,db);}
+      if(live.dipped&&db>live.dip+6){live.fired=false;live.curCount=1;live.peak=db;live.dip=db;live.dipped=false;}
+    }
+  }
+  liveMeter(db,n);
+  if(!live.fired&&live.curCount>=3){live.fired=true;live.peak=db;live.dip=db;live.dipped=false;liveNote(n);}
+}
+function liveMeter(db,n){
+  const m=$('#lv2-meter');if(m)m.style.width=Math.max(0,Math.min(100,(db+70)*1.6))+'%';
+}
+function liveKeyName(p){const k=KEYMAP[p];return k?keyText(k):'';}
+function liveNote(n){
+  if(live.done||!st.res||!st.flat.length)return;
+  const exp=st.res.notes[live.idx].p;let ok=false;
+  if(live.offset!=null)ok=n===exp+live.offset;
+  else if((((n-exp)%12)+12)%12===0){ok=true;live.offset=Math.round((n-exp)/12)*12;}
+  const heardP=live.offset!=null?n-live.offset:null;
+  live.heard={ok,name:noteName(n-(live.offset||0)-st.res.t),key:heardP!=null?liveKeyName(heardP):'',expName:noteName(st.flat[live.idx].midi),expKey:keyText(st.res.notes[live.idx])};
+  live.phraseMsg='';
+  if(ok){
+    const before=phraseOf(live.idx);live.idx++;
+    if(live.idx>=st.flat.length){live.done=true;live.endT=performance.now();liveStop(true);live.msg='';}
+    else if(phraseOf(live.idx)!==before)live.phraseMsg=t('live.phraseDone',{n:before+1});
+  }else live.errors++;
+  renderLive();
+}
+function fmtDur(ms){const s=Math.max(0,Math.round(ms/1000));return Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s';}
+function renderLive(){
+  const lines=activeLines();if(!lines.length||!st.res){closeGame();return;}
+  if(live.idx>=st.flat.length&&!live.done)live.idx=st.flat.length-1;
+  const total=st.flat.length,ph=phraseOf(Math.min(live.idx,total-1)),[a]=phraseRange(ph),line=lines[ph];
+  $('#lv2-pos').textContent=live.done?t('live.doneTitle'):t('noteOf',{i:live.idx+1,n:total})+' · '+t('phraseOf',{i:ph+1,n:lines.length});
+  $('#lv2-prog').style.width=Math.round((live.done?1:live.idx/total)*100)+'%';
+  document.querySelectorAll('[data-sens]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.sens===live.sens));
+  let body='';
+  if(live.done){
+    body='<div class="lv-done"><p class="lv-big">'+esc(t('live.done'))+'</p><p class="lv-text">'+esc(t('live.stats')(fmtDur(live.endT-live.startT),live.errors))+'</p></div>';
+  }else{
+    const n=st.flat[live.idx],m=st.res.notes[live.idx];
+    const h=live.heard;
+    const heard=h?(h.ok?'<span class="ok">✓ '+esc(h.name)+'</span>':'<span class="bad">✗ '+esc(t('live.wrong',{x:h.name+(h.key?' ('+h.key+')':''),y:h.expName+' ('+h.expKey+')'}))+'</span>'):'';
+    body=(live.phraseMsg?'<p class="lv-msg">'+esc(live.phraseMsg)+'</p>':'')
+      +'<div class="bignote k-'+m.key+'"><div class="bn-pic">'+picHTML(m.mod)+'</div><div class="bn-btn">'+btnSVG(m.key)+'</div>'
+      +'<p class="bn-instr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p><p class="bn-nm">'+esc(noteName(n.midi))+'</p></div>'
+      +'<div class="mini-tiles strip">'+line.map((x,j)=>tileHTML(x,st.res.notes[a+j],a+j,'div',false).replace('class="tile','class="tile'+(a+j===live.idx?' cur':a+j<live.idx?' done':''))).join('')+'</div>'
+      +'<div class="live-ear"><div class="meter"><i id="lv2-meter"></i></div><p class="heard">'+(heard||esc(live.on?t('live.waiting'):''))+'</p></div>';
+  }
+  const msgKey=live.msg;let msg='';
+  if(msgKey==='inClaude')msg='<p class="live-note bad">'+esc(t('live.inClaude'))+' <a href="https://darkintels.github.io/traducteur-ocarina/" target="_blank" rel="noopener">darkintels.github.io/traducteur-ocarina</a></p>';
+  else if(msgKey)msg='<p class="live-note'+(live.msgBad?' bad':'')+'">'+esc(t('live.'+msgKey))+'</p>';
+  else if(!live.on&&!live.done)msg='<p class="live-note">'+esc(t('live.tip'))+'</p>';
+  const lvb=$('#lv2-body');lvb.innerHTML=body+msg;
+  if(!live.done){const cur=lvb.querySelector('.strip .tile.cur');if(cur&&cur.parentElement.scrollWidth>cur.parentElement.clientWidth)cur.parentElement.scrollLeft=cur.offsetLeft-cur.parentElement.clientWidth/2+cur.offsetWidth/2;}
+  const bar=$('#lv2-bar');
+  bar.innerHTML=live.done
+    ?'<button type="button" data-lv2="again" class="primary">'+esc(t('live.again'))+'</button>'
+    :'<button type="button" data-lv2="back" class="ghost"'+(live.idx===0?' disabled':'')+' aria-label="'+esc(t('s.prevNote'))+'">◀</button>'
+     +'<button type="button" data-lv2="model" class="ghost">'+esc(t('model'))+'</button>'
+     +'<button type="button" data-lv2="mic" class="primary">'+esc(live.on?t('live.stop'):t('live.start'))+'</button>'
+     +'<button type="button" data-lv2="skip" class="ghost">'+esc(t('live.skip'))+'</button>';
+  bar.dataset.n=bar.children.length;
+}
+$('#lv2-bar').addEventListener('click',e=>{
+  const b=e.target.closest('[data-lv2]');if(!b||b.disabled)return;const act=b.dataset.lv2;
+  if(act==='mic'){if(live.on)liveStop();else liveStart();return;}
+  if(act==='back'){if(live.idx>0){live.idx--;live.heard=null;live.phraseMsg='';renderLive();}return;}
+  if(act==='skip'){if(live.idx<st.flat.length-1){live.idx++;live.heard=null;live.phraseMsg='';renderLive();}else{live.done=true;live.endT=performance.now();liveStop(true);renderLive();}return;}
+  if(act==='model'){
+    const ph=phraseOf(live.idx),[,end]=phraseRange(ph),items=st.seq.slice(live.idx,end+1);
+    const dur=items.reduce((s,x)=>s+x.dur,0);live.muteUntil=performance.now()+dur*1000+500;playSynth(items,'model');return;
+  }
+  if(act==='again'){liveResetSong(0);live.msg='';renderLive();liveStart();return;}
+});
+$('#lv2-body').addEventListener('click',e=>{const tl=e.target.closest('.strip [data-i]');if(tl&&!live.done){live.idx=+tl.dataset.i;live.heard=null;live.phraseMsg='';renderLive();}});
+document.querySelectorAll('[data-sens]').forEach(b=>b.addEventListener('click',()=>{live.sens=+b.dataset.sens;storeSet('ocarina-live-sens',String(live.sens));renderLive();}));
+$('#lv2-restart').addEventListener('click',()=>{liveResetSong(0);renderLive();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&live.on)liveStop();});
+
 
 /* ---------- tabs & text input ---------- */
 function setTab(tab){

@@ -7,9 +7,10 @@
 - **Corriger** chaque note en l'écoutant, **jouer en plein écran** phrase par phrase, et **apprendre** le morceau pas à pas.
 - **Catalogue** de 18 morceaux libres de droits (classique, comptines, fêtes), avec niveau de difficulté.
 - **Lecture en boucle**, pour s'entraîner sur un passage.
+- **Vérifier au micro** : la page écoute la Switch pendant que tu joues, valide chaque note et avance dans le morceau (le navigateur demande l'accès au micro ; rien n'est enregistré ni envoyé).
 - **Enregistrer, exporter et importer** ses compositions. Page en français et en anglais.
 
-**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, play full screen phrase by phrase, learn the song step by step, pick from a catalogue of 18 public-domain songs, loop any passage, and save, export or import your compositions. Available in French and English.
+**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, play full screen phrase by phrase, learn the song step by step, pick from a catalogue of 18 public-domain songs, loop any passage, let the page listen to the Switch through the microphone to check each note as you play (nothing is recorded or sent), and save, export or import your compositions. Available in French and English.
 
 ## Utilisation · Use
 
