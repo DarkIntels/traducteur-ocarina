@@ -297,6 +297,35 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (prefers-reduced-motion: reduce){.bsvg{transition:none}}
 
+
+/* loop toggle */
+.game-top-r{display:flex;gap:8px}
+.loop[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.game-close.loop{font-weight:700}
+
+/* song catalogue */
+.catalog{border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.catalog>summary{list-style:none;cursor:pointer;display:grid;gap:2px;padding:12px 14px;border-radius:14px}
+.catalog>summary::-webkit-details-marker{display:none}
+.cat-sum-title{font-weight:700;display:flex;align-items:center;gap:8px}
+.cat-sum-title::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+.catalog[open] .cat-sum-title::after{transform:rotate(-135deg)}
+.cat-sum-sub{font-size:var(--fs-s);color:var(--muted)}
+.cat-body{display:grid;gap:10px;padding:0 12px 12px}
+.cat-filters{display:flex;flex-wrap:wrap;gap:6px}
+.cat-filters .vbtn{border:1px solid var(--line)}
+.cat-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cat-item{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:12px}
+.cat-play{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.cat-info{flex:1 1 150px;min-width:0;display:grid}
+.cat-info strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-info span{font-size:12px;color:var(--muted)}
+.lvl{flex:none;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.lvl-easy{color:var(--kY)}.lvl-medium{color:var(--gold)}.lvl-hard{color:var(--warn)}
+.cat-acts{display:flex;gap:6px;margin-left:auto}
+.mini.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+#cat-status:empty{display:none}
+@media (prefers-reduced-motion: reduce){.cat-sum-title::after{transition:none}}
 /* language switch, export / import */
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .lang .vbtn{padding:4px 11px}
@@ -395,12 +424,20 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
       <textarea id="notes-input" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
     </label>
     <p class="help" data-i18n-html="s.notesHelp">Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.</p>
-    <div class="sample"><span data-i18n="s.examples">Exemples :</span>
-      <button class="chipbtn" type="button" data-sample="joie" data-i18n="s.sJoie">Hymne à la joie</button>
-      <button class="chipbtn" type="button" data-sample="lune" data-i18n="s.sLune">Au clair de la lune</button>
-      <button class="chipbtn" type="button" data-sample="elise" data-i18n="s.sElise">Lettre à Élise</button>
-      <button class="chipbtn" type="button" data-sample="vide" data-i18n="s.sClear">Effacer</button>
-    </div>
+    <div class="sample"><button class="chipbtn" type="button" data-sample="vide" data-i18n="cat.clear">Effacer</button></div>
+    <details class="catalog" id="catalog">
+      <summary><span class="cat-sum-title" data-i18n="cat.title">Catalogue de morceaux</span><span class="cat-sum-sub" id="cat-count"></span></summary>
+      <div class="cat-body">
+        <div class="cat-filters" role="group" data-i18n-aria="cat.title" aria-label="Catalogue de morceaux">
+          <button type="button" class="vbtn" data-cat="all" aria-pressed="true" data-i18n="cat.all">Tous</button>
+          <button type="button" class="vbtn" data-cat="classic" aria-pressed="false" data-i18n="cat.classic">Classique</button>
+          <button type="button" class="vbtn" data-cat="kids" aria-pressed="false" data-i18n="cat.kids">Comptines</button>
+          <button type="button" class="vbtn" data-cat="xmas" aria-pressed="false" data-i18n="cat.xmas">Fêtes</button>
+        </div>
+        <ul class="cat-list" id="cat-list"></ul>
+      </div>
+    </details>
+    <p class="status" id="cat-status" role="status"></p>
   </section>
 
   <section class="panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" hidden>
@@ -463,6 +500,7 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
       <button class="btn" type="button" id="learn-open" data-i18n="s.learnOpen">Apprendre le morceau</button>
       <button class="btn ghost" type="button" id="game-open" data-i18n="s.fullscreen">Plein écran</button>
       <button class="btn ghost" type="button" id="play" data-i18n="playAll">▶ Tout écouter</button>
+      <button class="btn ghost loop" type="button" id="loop-btn" aria-pressed="false" data-i18n="loop">↻ En boucle</button>
     </div>
     <p class="hint" id="edit-hint" data-i18n="s.editHint">Touche une note pour l'écouter et la corriger.</p>
     <div id="results"></div>
@@ -539,7 +577,10 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
       <button type="button" class="vbtn" id="mode-play" aria-pressed="true" data-i18n="s.modePlay">Jouer</button>
       <button type="button" class="vbtn" id="mode-learn" aria-pressed="false" data-i18n="s.modeLearn">Apprendre</button>
     </div>
-    <button class="game-close" type="button" id="game-close" data-i18n-aria="s.closeFull" aria-label="Quitter le plein écran">✕</button>
+    <div class="game-top-r">
+      <button class="game-close loop" type="button" id="loop-btn2" aria-pressed="false" data-i18n-aria="loopAria" aria-label="Lecture en boucle">↻</button>
+      <button class="game-close" type="button" id="game-close" data-i18n-aria="s.closeFull" aria-label="Quitter le plein écran">✕</button>
+    </div>
   </div>
   <div id="play-view">
     <span id="game-pos">Phrase 1</span>
@@ -972,6 +1013,7 @@ fr:{
   mod:{'↑':'pousse le joystick vers le haut','↓':'pousse le joystick vers le bas','▲':'appuie sur la croix en haut','▼':'appuie sur la croix en bas'},
   modShort:{'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'},
   instr:(parts,btn)=>(parts.length?parts.join(' et ')+', puis appuie sur '+btn:'appuie sur '+btn),
+  loop:'↻ En boucle',loopAria:'Lecture en boucle',
   dateLocale:'fr-FR'
 },
 en:{
@@ -1062,6 +1104,7 @@ en:{
   mod:{'↑':'push the stick up','↓':'push the stick down','▲':'press up on the D-pad','▼':'press down on the D-pad'},
   modShort:{'↑':'stick up','↓':'stick down','▲':'D-pad up','▼':'D-pad down'},
   instr:(parts,btn)=>(parts.length?parts.join(' and ')+', then press '+btn:'press '+btn),
+  loop:'↻ Loop',loopAria:'Loop playback',
   dateLocale:'en-US'
 }};
 let LANG=(()=>{let v=null;try{v=localStorage.getItem('ocarina-lang');}catch(e){}if(v==='fr'||v==='en')return v;return (navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en';})();
@@ -1081,6 +1124,122 @@ function applyStatic(){
   document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));
 }
 
+/* ---------- song catalogue: public-domain and traditional melodies only ----------
+   Notes in letters with octave numbers (C4 = middle C), "-" holds a note, one line per phrase. */
+const CATALOG=[
+ {id:'joie',cat:'classic',fr:'Hymne à la joie',en:'Ode to Joy',by:'Beethoven',notes:
+ `E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4- D4 D4-
+  E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4- C4 C4-
+  D4 D4 E4 C4 D4 E4 F4 E4 C4 D4 E4 F4 E4 D4 C4 D4 G3-
+  E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4- C4 C4-`},
+ {id:'elise',cat:'classic',fr:'Lettre à Élise',en:'Für Elise',by:'Beethoven',notes:
+ `E5 D#5 E5 D#5 E5 B4 D5 C5 A4-
+  C4 E4 A4 B4-
+  E4 G#4 B4 C5-
+  E4 E5 D#5 E5 D#5 E5 B4 D5 C5 A4-
+  C4 E4 A4 B4-
+  E4 C5 B4 A4-`},
+ {id:'canon',cat:'classic',fr:'Canon de Pachelbel',en:"Pachelbel's Canon",by:'Pachelbel',notes:
+ `C5- G4- A4- E4- F4- C4- F4- G4-
+  E5- D5- C5- B4- A4- G4- A4- B4-
+  C5- B4- A4- G4- F4- E4- F4- D4-`},
+ {id:'brahms',cat:'classic',fr:'Berceuse de Brahms',en:"Brahms' Lullaby",by:'Brahms',notes:
+ `E4 E4 G4- E4 E4 G4-
+  E4 G4 C5 B4 A4- A4 G4-
+  D4 E4 F4- D4 D4 E4 F4-
+  D4 F4 B4 A4 G4 B4 C5-
+  C4 C4 C5- A4 F4 G4- E4 C4 F4 G4 A4 G4-
+  C4 C4 C5- A4 F4 G4- E4 C4 F4 E4 D4 C4-`},
+ {id:'mozart',cat:'classic',fr:'Une petite musique de nuit',en:'Eine kleine Nachtmusik',by:'Mozart',notes:
+ `G4- D4 G4- D4 G4 D4 G4 B4 D5-
+  C5- A4 C5- A4 C5 A4 F#4 A4 D4-`},
+ {id:'menuet',cat:'classic',fr:'Menuet en sol',en:'Minuet in G',by:'Petzold',notes:
+ `D5 G4 A4 B4 C5 D5 G4 G4
+  E5 C5 D5 E5 F#5 G5 G4 G4
+  C5 D5 C5 B4 A4 B4 C5 B4 A4 G4
+  F#4 G4 A4 B4 G4 A4--
+  D5 G4 A4 B4 C5 D5 G4 G4
+  E5 C5 D5 E5 F#5 G5 G4 G4
+  C5 D5 C5 B4 A4 B4 C5 B4 A4 G4
+  A4 B4 A4 G4 F#4 G4--`},
+ {id:'lune',cat:'kids',fr:'Au clair de la lune',en:'Au Clair de la Lune',by:'trad',notes:
+ `C4 C4 C4 D4 E4- D4- C4 E4 D4 D4 C4-
+  C4 C4 C4 D4 E4- D4- C4 E4 D4 D4 C4-
+  D4 D4 D4 D4 A3- A3- D4 C4 B3 A3 G3-
+  C4 C4 C4 D4 E4- D4- C4 E4 D4 D4 C4-`},
+ {id:'jacques',cat:'kids',fr:'Frère Jacques',en:'Frère Jacques',by:'trad',notes:
+ `G4 A4 B4 G4 G4 A4 B4 G4
+  B4 C5 D5- B4 C5 D5-
+  D5 E5 D5 C5 B4 G4 D5 E5 D5 C5 B4 G4
+  G4 D4 G4- G4 D4 G4-`},
+ {id:'maman',cat:'kids',fr:'Ah ! vous dirai-je maman',en:'Twinkle, Twinkle, Little Star',by:'trad',notes:
+ `C4 C4 G4 G4 A4 A4 G4- F4 F4 E4 E4 D4 D4 C4-
+  G4 G4 F4 F4 E4 E4 D4- G4 G4 F4 F4 E4 E4 D4-
+  C4 C4 G4 G4 A4 A4 G4- F4 F4 E4 E4 D4 D4 C4-`},
+ {id:'agneau',cat:'kids',fr:'Marie avait un petit agneau',en:'Mary Had a Little Lamb',by:'trad',notes:
+ `E4 D4 C4 D4 E4 E4 E4- D4 D4 D4- E4 G4 G4-
+  E4 D4 C4 D4 E4 E4 E4 E4 D4 D4 E4 D4 C4-`},
+ {id:'barque',cat:'kids',fr:'Rame, rame, rameurs',en:'Row, Row, Row Your Boat',by:'trad',notes:
+ `C4- C4- C4 D4 E4- E4 D4 E4 F4 G4--
+  C5 C5 C5 G4 G4 G4 E4 E4 E4 C4 C4 C4 G4 F4 E4 D4 C4--`},
+ {id:'ferme',cat:'kids',fr:'La ferme du vieux MacDonald',en:'Old MacDonald Had a Farm',by:'trad',notes:
+ `G4 G4 G4 D4 E4 E4 D4- B4 B4 A4 A4 G4-
+  D4 G4 G4 G4 D4 E4 E4 D4- B4 B4 A4 A4 G4-`},
+ {id:'londres',cat:'kids',fr:'Le pont de Londres',en:'London Bridge Is Falling Down',by:'trad',notes:
+ `G4 A4 G4 F4 E4 F4 G4- D4 E4 F4- E4 F4 G4-
+  G4 A4 G4 F4 E4 F4 G4- D4- G4- E4 C4-`},
+ {id:'tetris',cat:'kids',fr:'Korobeiniki (l’air de Tetris)',en:'Korobeiniki (the Tetris tune)',by:'trad-ru',notes:
+ `E5 B4 C5 D5 C5 B4 A4 A4 C5 E5 D5 C5
+  B4- C5 D5 E5 C5 A4 A4-
+  D5 F5 A5 G5 F5 E5- C5 E5 D5 C5
+  B4 B4 C5 D5 E5 C5 A4 A4-`},
+ {id:'vent',cat:'xmas',fr:'Vive le vent',en:'Jingle Bells',by:'Pierpont',notes:
+ `E4 E4 E4- E4 E4 E4- E4 G4 C4 D4 E4--
+  F4 F4 F4 F4 F4 E4 E4 E4 E4 E4 D4 D4 E4 D4- G4-
+  E4 E4 E4- E4 E4 E4- E4 G4 C4 D4 E4--
+  F4 F4 F4 F4 F4 E4 E4 E4 E4 G4 G4 F4 D4 C4--`},
+ {id:'nuit',cat:'xmas',fr:'Douce nuit',en:'Silent Night',by:'Gruber',notes:
+ `G4- A4 G4 E4-- G4- A4 G4 E4--
+  D5- D5 B4-- C5- C5 G4--
+  A4- A4 C5- B4 A4 G4- A4 G4 E4--
+  A4- A4 C5- B4 A4 G4- A4 G4 E4--
+  D5- D5 F5- D5 B4 C5-- E5--
+  C5- G4 E4 G4- F4 D4 C4---`},
+ {id:'wish',cat:'xmas',fr:'We Wish You a Merry Christmas',en:'We Wish You a Merry Christmas',by:'trad-en',notes:
+ `G4 C5 C5 D5 C5 B4 A4 A4
+  A4 D5 D5 E5 D5 C5 B4 G4
+  G4 E5 E5 F5 E5 D5 C5 A4
+  G4 G4 A4 D5 B4 C5-`},
+ {id:'anniv',cat:'xmas',fr:'Joyeux anniversaire',en:'Happy Birthday',by:'Hill',notes:
+ `D4 D4 E4 D4 G4 F#4-
+  D4 D4 E4 D4 A4 G4-
+  D4 D4 D5 B4 G4 F#4 E4-
+  C5 C5 B4 G4 A4 G4-`}
+];
+const CAT_I18N={
+ fr:{'cat.title':'Catalogue de morceaux','cat.count':'{n} morceaux libres de droits, prêts à jouer','cat.all':'Tous','cat.classic':'Classique','cat.kids':'Comptines','cat.xmas':'Fêtes',
+  'cat.easy':'Facile','cat.medium':'Moyen','cat.hard':'Difficile','cat.open':'Ouvrir','cat.learn':'Apprendre','cat.preview':'Écouter le début de {x}','cat.opened':'« {x} » est ouvert. Les touches sont juste en dessous.',
+  'cat.notes':'{n} notes','cat.clear':'Effacer',
+  'by.trad':'Traditionnel','by.trad-ru':'Chanson russe traditionnelle','by.trad-en':'Chant anglais traditionnel','by.Hill':'Mildred et Patty Hill','by.Pierpont':'James Pierpont','by.Gruber':'Franz Gruber','by.Petzold':'Christian Petzold'},
+ en:{'cat.title':'Song catalogue','cat.count':'{n} public-domain songs, ready to play','cat.all':'All','cat.classic':'Classical','cat.kids':'Nursery & folk','cat.xmas':'Holidays',
+  'cat.easy':'Easy','cat.medium':'Medium','cat.hard':'Hard','cat.open':'Open','cat.learn':'Learn','cat.preview':'Play the start of {x}','cat.opened':'"{x}" is open. The buttons are just below.',
+  'cat.notes':'{n} notes','cat.clear':'Clear',
+  'by.trad':'Traditional','by.trad-ru':'Traditional Russian song','by.trad-en':'Traditional English carol','by.Hill':'Mildred & Patty Hill','by.Pierpont':'James Pierpont','by.Gruber':'Franz Gruber','by.Petzold':'Christian Petzold'}
+};
+Object.assign(I18N.fr,CAT_I18N.fr);Object.assign(I18N.en,CAT_I18N.en);
+const catLinesCache={};
+function catLines(id){
+  if(!catLinesCache[id]){const c=CATALOG.find(x=>x.id===id);const {items}=parseNotes(c.notes);inferPitches(items);catLinesCache[id]=itemsToLines(items);}
+  return JSON.parse(JSON.stringify(catLinesCache[id]));
+}
+function catText(id){return serializeLines(catLines(id),LANG);}
+function catLevel(id){
+  const flat=catLines(id).flat(),res=mapMelody(flat.map(n=>n.midi),false);
+  let joy=0,arr=0;for(const n of res.notes){for(const g of n.mod){if(g==='↑'||g==='↓')joy++;else arr++;}}
+  const score=(joy+2*arr+4*res.folded)/flat.length+flat.length/250;
+  return score<0.5?'easy':score<0.75?'medium':'hard';
+}
+
 const SAMPLES_EN={
   joie:"E E F G G F E D C C D E E — D D —\nE E F G G F E D C C D E D — C C —\nD D E C D E F E C D E F E D C D G low —\nE E F G G F E D C C D E D — C C —",
   lune:"C C C D E — D — C E D D C —\nC C C D E — D — C E D D C —\nD D D D A low — A — D C B A G —\nC C C D E — D — C E D D C —",
@@ -1096,7 +1255,7 @@ const SAMPLES={
 
 const $=s=>document.querySelector(s);
 const st={tab:'notes',view:'big',textLines:[],unknown:[],audioLines:null,audioRes:null,audioSrc:null,
-  shift:null,res:null,flat:[],seq:[],sel:null,undo:{notes:[],video:[]},openId:null};
+  shift:null,res:null,flat:[],seq:[],sel:null,undo:{notes:[],video:[]},openId:null,loop:false};
 let actx=null;
 function ctx(){if(!actx){const C=window.AudioContext||window.webkitAudioContext;actx=new C();}return actx;}
 function storeGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -1214,32 +1373,49 @@ function phraseOf(i){const lines=activeLines();let s=0;for(let k=0;k<lines.lengt
 /* ---------- playback ---------- */
 let playState=null;
 function markPlaying(i){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));if(i!=null)document.querySelectorAll('[data-i="'+i+'"]').forEach(e=>e.classList.add('playing'));}
-function stopPlay(){
-  if(playState){playState.nodes.forEach(o=>{try{o.stop();}catch(e){}});playState.timers.forEach(clearTimeout);}
-  playState=null;markPlaying(null);
+/* Every listen button toggles play / stop. With "loop" on, playback starts again after a short pause until stopped. */
+const loopable=l=>!!l&&(l==='all'||l==='game'||l==='learn'||l==='passage'||l==='orig'||l.startsWith('phrase-')||l.startsWith('cat-'));
+function resetPlayLabels(){
+  document.querySelectorAll('.cat-play').forEach(b=>{b.textContent='▶';});
+  document.querySelectorAll('[data-play-ph]').forEach(b=>{b.textContent=t('listen');});
   $('#play').textContent=t('playAll');$('#game-play').textContent=t('listen');
+  $('#ed-passage').textContent=t('s.edPassage');$('#ed-orig').textContent=t('s.edOrig');
   const lb=$('#lv-listen');if(lb)lb.textContent=lb.dataset.label||t('listen');
 }
+function showPlayingLabel(label){
+  const stopTxt=t('stop');
+  if(label==='all')$('#play').textContent=stopTxt;
+  else if(label==='game')$('#game-play').textContent=stopTxt;
+  else if(label==='learn'){const b=$('#lv-listen');if(b)b.textContent=stopTxt;}
+  else if(label==='passage')$('#ed-passage').textContent=stopTxt;
+  else if(label==='orig')$('#ed-orig').textContent=stopTxt;
+  else if(label.startsWith('phrase-')){const b=document.querySelector('[data-play-ph="'+label.slice(7)+'"]');if(b)b.textContent=stopTxt;}
+  else if(label.startsWith('cat-')){const b=document.querySelector('[data-cat-play="'+label.slice(4)+'"]');if(b)b.textContent='■';}
+}
+function stopPlay(){
+  if(playState){playState.nodes.forEach(o=>{try{o.stop();}catch(e){}});playState.timers.forEach(clearTimeout);}
+  playState=null;markPlaying(null);resetPlayLabels();
+}
 function playSynth(items,label,tempo){
-  stopPlay();if(!items.length)return;tempo=tempo||1;if(tempo!==1)items=items.map(x=>Object.assign({},x,{dur:x.dur/tempo}));
+  stopPlay();if(!items.length)return;
+  const src=items;tempo=tempo||1;if(tempo!==1)items=items.map(x=>Object.assign({},x,{dur:x.dur/tempo}));
   const c=ctx();if(c.resume)c.resume();
   const ps={nodes:[],timers:[],label};playState=ps;
   const master=c.createGain();master.gain.value=0.22;master.connect(c.destination);
-  let t=c.currentTime+0.06;
+  let when=c.currentTime+0.06;
   for(const n of items){
     const f=440*Math.pow(2,(n.p+12-69)/12),o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),g2=c.createGain();
     o.type='sine';o.frequency.value=f;o2.type='sine';o2.frequency.value=f*2;g2.gain.value=0.06;
     const d=Math.max(0.12,n.dur*0.94);
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+0.03);g.gain.setValueAtTime(1,t+d-0.05);g.gain.linearRampToValueAtTime(0,t+d);
+    g.gain.setValueAtTime(0,when);g.gain.linearRampToValueAtTime(1,when+0.03);g.gain.setValueAtTime(1,when+d-0.05);g.gain.linearRampToValueAtTime(0,when+d);
     o.connect(g);o2.connect(g2);g2.connect(g);g.connect(master);
-    o.start(t);o2.start(t);o.stop(t+d+0.02);o2.stop(t+d+0.02);ps.nodes.push(o,o2);
-    const at=(t-c.currentTime)*1000,idx=n.i;ps.timers.push(setTimeout(()=>markPlaying(idx),Math.max(0,at)));
-    t+=n.dur;
+    o.start(when);o2.start(when);o.stop(when+d+0.02);o2.stop(when+d+0.02);ps.nodes.push(o,o2);
+    const at=(when-c.currentTime)*1000,idx=n.i;ps.timers.push(setTimeout(()=>markPlaying(idx),Math.max(0,at)));
+    when+=n.dur;
   }
-  ps.timers.push(setTimeout(()=>{if(playState===ps)stopPlay();},(t-c.currentTime)*1000+80));
-  if(label==='all')$('#play').textContent=t('stop');
-  if(label==='game')$('#game-play').textContent=t('stop');
-  if(label==='learn'){const b=$('#lv-listen');if(b)b.textContent=t('stop');}
+  const again=st.loop&&loopable(label);
+  ps.timers.push(setTimeout(()=>{if(playState!==ps)return;if(st.loop&&loopable(label))playSynth(src,label,tempo);else stopPlay();},(when-c.currentTime)*1000+(again?600:80)));
+  showPlayingLabel(label);
 }
 function playRange(a,b,label){a=Math.max(0,a);b=Math.min(st.seq.length-1,b);playSynth(st.seq.slice(a,b+1),label);}
 function playNote(i){const s=st.seq[i];if(s)playSynth([{p:s.p,dur:Math.min(1.1,Math.max(0.4,s.dur)),i}],'note');}
@@ -1254,8 +1430,13 @@ function playOriginal(a,b){
   const node=c.createBufferSource(),g=c.createGain();node.buffer=buf;g.gain.value=0.9;node.connect(g);g.connect(c.destination);
   const ps={nodes:[node],timers:[],label:'orig'};playState=ps;node.start(c.currentTime+0.05);
   ns.forEach(o=>ps.timers.push(setTimeout(()=>markPlaying(o.i),(o.n.t0-start+0.05)*1000)));
-  ps.timers.push(setTimeout(()=>{if(playState===ps)stopPlay();},(end-start+0.15)*1000));
+  ps.timers.push(setTimeout(()=>{if(playState!==ps)return;if(st.loop)playOriginal(a,b);else stopPlay();},(end-start+(st.loop?0.6:0.15))*1000));
+  showPlayingLabel('orig');
 }
+st.loop=storeGet('ocarina-loop')==='1';
+function syncLoop(){['#loop-btn','#loop-btn2'].forEach(x=>$(x).setAttribute('aria-pressed',st.loop));}
+function toggleLoop(){st.loop=!st.loop;storeSet('ocarina-loop',st.loop?'1':'0');syncLoop();}
+$('#loop-btn').addEventListener('click',toggleLoop);$('#loop-btn2').addEventListener('click',toggleLoop);syncLoop();
 $('#play').addEventListener('click',()=>{if(playState&&playState.label==='all'){stopPlay();return;}playSynth(st.seq,'all');});
 
 /* ---------- selection & editing ---------- */
@@ -1307,13 +1488,13 @@ $('#ed-prev').addEventListener('click',()=>{if(st.sel>0)select(st.sel-1,true);})
 $('#ed-next').addEventListener('click',()=>{if(st.sel<st.flat.length-1)select(st.sel+1,true);});
 $('#ed-close').addEventListener('click',()=>{stopPlay();deselect();});
 $('#ed-note').addEventListener('click',()=>{if(st.sel!=null)playNote(st.sel);});
-$('#ed-passage').addEventListener('click',()=>{if(st.sel!=null)playRange(st.sel-2,st.sel+2,'passage');});
-$('#ed-orig').addEventListener('click',()=>{if(st.sel!=null)playOriginal(st.sel-2,st.sel+2);});
+$('#ed-passage').addEventListener('click',()=>{if(playState&&playState.label==='passage'){stopPlay();return;}if(st.sel!=null)playRange(st.sel-2,st.sel+2,'passage');});
+$('#ed-orig').addEventListener('click',()=>{if(playState&&playState.label==='orig'){stopPlay();return;}if(st.sel!=null)playOriginal(st.sel-2,st.sel+2);});
 
 $('#results').addEventListener('click',e=>{
-  const pp=e.target.closest('[data-play-ph]');if(pp){const [a,b]=phraseRange(+pp.dataset.playPh);playRange(a,b,'phrase');return;}
+  const pp=e.target.closest('[data-play-ph]');if(pp){const li=+pp.dataset.playPh;if(playState&&playState.label==='phrase-'+li){stopPlay();return;}const [a,b]=phraseRange(li);playRange(a,b,'phrase-'+li);return;}
   const gp=e.target.closest('[data-game-ph]');if(gp){openGame(+gp.dataset.gamePh);return;}
-  const t=e.target.closest('[data-i]');if(t)select(+t.dataset.i,false);
+  const tile=e.target.closest('[data-i]');if(tile)select(+tile.dataset.i,false);
 });
 function setView(v){st.view=v;storeSet('ocarina-view',v);$('#view-big').setAttribute('aria-pressed',v==='big');$('#view-staff').setAttribute('aria-pressed',v==='staff');render(false);}
 $('#view-big').addEventListener('click',()=>setView('big'));
@@ -1497,10 +1678,55 @@ function setTab(tab){
 $('#tab-notes').addEventListener('click',()=>setTab('notes'));
 $('#tab-video').addEventListener('click',()=>setTab('video'));
 const ta=$('#notes-input');
-ta.value=storeGet('ocarina-notes')??(LANG==='en'?SAMPLES_EN:SAMPLES).joie;
+{const saved=storeGet('ocarina-notes');if(saved==null){ta.value=catText('joie');st.catId='joie';st.catText=ta.value;}else ta.value=saved;}
 ta.addEventListener('input',()=>{storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();render(true);});
 document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{st.openId=null;syncSaveRow();ta.value=(LANG==='en'?SAMPLES_EN:SAMPLES)[b.dataset.sample];storeSet('ocarina-notes',ta.value);st.undo.notes=[];st.sel=null;syncFromText();render(true);if(!ta.value)ta.focus();}));
 document.querySelectorAll('input[name=keep]').forEach(r=>r.addEventListener('change',()=>{stopPlay();render(true);}));
+
+
+/* ---------- catalogue UI ---------- */
+let catFilter='all';const catLevelCache={};
+function renderCatalog(){
+  $('#cat-count').textContent=t('cat.count',{n:CATALOG.length});
+  document.querySelectorAll('[data-cat]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cat===catFilter));
+  const ul=$('#cat-list');ul.innerHTML='';
+  for(const c of CATALOG){
+    if(catFilter!=='all'&&c.cat!==catFilter)continue;
+    const lvl=catLevelCache[c.id]||(catLevelCache[c.id]=catLevel(c.id)),title=c[LANG]||c.fr;
+    const li=document.createElement('li');li.className='cat-item';
+    const pb=document.createElement('button');pb.type='button';pb.className='cat-play';pb.dataset.catPlay=c.id;pb.textContent='▶';pb.setAttribute('aria-label',t('cat.preview',{x:title}));
+    const info=document.createElement('div');info.className='cat-info';
+    const nm=document.createElement('strong');nm.textContent=title;
+    const by=document.createElement('span');by.textContent=(c.by.startsWith('trad')||I18N.fr['by.'+c.by]?t('by.'+c.by):c.by)+' · '+t('cat.notes',{n:catLines(c.id).flat().length});
+    info.append(nm,by);
+    const lv=document.createElement('span');lv.className='lvl lvl-'+lvl;lv.textContent=t('cat.'+lvl);
+    const acts=document.createElement('div');acts.className='cat-acts';
+    const op=document.createElement('button');op.type='button';op.className='mini';op.textContent=t('cat.open');op.addEventListener('click',()=>openCatalog(c.id,false));
+    const le=document.createElement('button');le.type='button';le.className='mini primary';le.textContent=t('cat.learn');le.addEventListener('click',()=>openCatalog(c.id,true));
+    acts.append(op,le);li.append(pb,info,lv,acts);ul.appendChild(li);
+  }
+}
+function openCatalog(id,learnIt){
+  const c=CATALOG.find(x=>x.id===id);if(!c)return;
+  stopPlay();st.openId=null;st.sel=null;
+  ta.value=catText(id);st.catId=id;st.catText=ta.value;storeSet('ocarina-notes',ta.value);st.undo.notes=[];
+  if(st.tab!=='notes')setTab('notes');
+  syncFromText();render(true);
+  $('#compo-name').value=c[LANG]||c.fr;syncSaveRow();renderCompos();
+  $('#cat-status').textContent=t('cat.opened',{x:c[LANG]||c.fr});
+  if(learnIt){openGame(0,'learn');return;}
+  $('#result-title').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+}
+function previewCatalog(id,btn){
+  if(playState&&playState.label==='cat-'+id){stopPlay();return;}
+  const lines=catLines(id),res=mapMelody(lines.flat().map(n=>n.midi),keepSame());
+  const items=lines[0].map((n,j)=>({p:res.notes[j].p,dur:0.42+0.5*n.hold,i:-1}));
+  playSynth(items,'cat-'+id);
+}
+$('#cat-list').addEventListener('click',e=>{const b=e.target.closest('[data-cat-play]');if(b)previewCatalog(b.dataset.catPlay,b);});
+document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{catFilter=b.dataset.cat;renderCatalog();}));
+{const cat=$('#catalog');if(storeGet('ocarina-cat-open')==='1')cat.open=true;cat.addEventListener('toggle',()=>storeSet('ocarina-cat-open',cat.open?'1':'0'));}
+renderCatalog();
 
 
 /* audio */
@@ -1848,7 +2074,8 @@ function setLang(l){
   const old=LANG;LANG=l;NOTE_LANG=l;storeSet('ocarina-lang',l);stopPlay();
   const from=old==='en'?SAMPLES_EN:SAMPLES,to=l==='en'?SAMPLES_EN:SAMPLES;
   for(const k of Object.keys(from)){if(from[k]&&ta.value===from[k]){ta.value=to[k];storeSet('ocarina-notes',ta.value);syncFromText();break;}}
-  applyStatic();syncSource();
+  if(st.catId&&ta.value===st.catText){ta.value=catText(st.catId);st.catText=ta.value;storeSet('ocarina-notes',ta.value);syncFromText();}
+  applyStatic();syncSource();renderCatalog();$('#cat-status').textContent='';
   if(!st.audioRes&&!capture&&!busy)setStatus(fileObj?t('fileReady',{x:fileObj.name}):t('chooseFile'));
   if(!busy)$('#analyze').textContent=capture?t('stopAnalyze'):t('analyze');
   if(st.audioRes&&st.audioLines&&st.audioRes.notes.length)$('#found').textContent=t('foundList')+st.audioLines.map(x=>x.map(n=>noteName(n.midi)+(n.hold?'—':'')).join(' ')).join(' / ');

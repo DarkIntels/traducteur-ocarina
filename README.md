@@ -5,9 +5,11 @@
 - **Écrire des notes** en « do ré mi » (ou en lettres : C D E…) et obtenir les touches à presser.
 - **Analyser une vidéo ou un son** : un ocarina, un sifflement, une flûte, ou une mélodie chantée seule.
 - **Corriger** chaque note en l'écoutant, **jouer en plein écran** phrase par phrase, et **apprendre** le morceau pas à pas.
+- **Catalogue** de 18 morceaux libres de droits (classique, comptines, fêtes), avec niveau de difficulté.
+- **Lecture en boucle**, pour s'entraîner sur un passage.
 - **Enregistrer, exporter et importer** ses compositions. Page en français et en anglais.
 
-**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, play full screen phrase by phrase, learn the song step by step, and save, export or import your compositions. Available in French and English.
+**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, play full screen phrase by phrase, learn the song step by step, pick from a catalogue of 18 public-domain songs, loop any passage, and save, export or import your compositions. Available in French and English.
 
 ## Utilisation · Use
 
