@@ -514,6 +514,16 @@ h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
 .pagefoot p{margin:0;font-size:12px;color:var(--muted);max-width:62ch}
 .editor{border-top-color:var(--frame)}
 @media (prefers-reduced-motion: reduce){.howto>summary::after{transition:none}}
+.ed-phr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.ed-phr button{appearance:none;font:inherit;font-size:13px;font-weight:700;padding:10px 4px;border-radius:10px;border:1px dashed var(--frame);background:var(--surface);color:var(--ink);cursor:pointer;min-width:0}
+.tg-phrases{padding-top:10px;border-top:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:12px;
+  width:max-content;max-width:calc(100% - 32px);padding:9px 10px 9px 16px;border-radius:12px;background:var(--surface);color:var(--ink);
+  border:1px solid var(--frame);box-shadow:0 14px 34px -12px rgba(0,0,0,.55);font-size:var(--fs-s);font-weight:700}
+body.editing .toast{bottom:calc(var(--ed-h,240px) + 12px)}
+body.editing .wrap{padding-bottom:calc(var(--ed-h,260px) + 24px)}
+body.editing .game{padding-bottom:calc(var(--ed-h,280px) + 10px)}
+.tile,button.col{scroll-margin-bottom:calc(var(--ed-h,260px) + 16px)}
 
 /* wide screens: the two cards side by side, the melody picker stays in view */
 @media (min-width:1080px){
@@ -532,6 +542,8 @@ h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
   .tg-label{flex:none}
   .tg-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .tg-practice #learn-open{grid-column:1/-1}
+  .tg-phrases .tg-btns{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ed-phr button{font-size:12px;padding:9px 2px}
   .tg-btns .btn{padding:11px 8px}
   .toolbar{padding:12px}
   .appbar-row{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"eb eb lang" "em ti ti";row-gap:6px}
@@ -704,6 +716,14 @@ h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
             <button class="btn ghost loop" type="button" id="loop-btn" aria-pressed="false" data-i18n="loop">↻ En boucle</button>
           </div>
         </div>
+        <div class="tgroup tg-phrases" role="group" aria-labelledby="tg-phrases">
+          <span class="tg-label" id="tg-phrases" data-i18n="s.cutLabel">Découpage</span>
+          <div class="tg-btns">
+            <button class="btn ghost" type="button" data-cut="short" data-i18n="s.cutShort" data-i18n-aria="s.cutShortAria">Courtes</button>
+            <button class="btn ghost" type="button" data-cut="medium" data-i18n="s.cutMedium" data-i18n-aria="s.cutMediumAria">Moyennes</button>
+            <button class="btn ghost" type="button" data-cut="long" data-i18n="s.cutLong" data-i18n-aria="s.cutLongAria">Longues</button>
+          </div>
+        </div>
       </div>
       <details class="howto" id="howto">
         <summary><span data-i18n="s.howto">Comment lire les touches</span></summary>
@@ -778,6 +798,10 @@ h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
       <button type="button" data-ed="dup" data-i18n="s.edDup">Doubler</button>
       <button type="button" data-ed="del" data-i18n="delete">Supprimer</button>
     </div>
+    <div class="ed-phr">
+      <button type="button" data-ed="split" data-i18n="s.edSplit" data-i18n-aria="s.edSplitAria">✂ Couper ici</button>
+      <button type="button" data-ed="join" data-i18n="s.edJoin" data-i18n-aria="s.edJoinAria">Joindre à la précédente</button>
+    </div>
     <div class="ed-listen">
       <button type="button" id="ed-note" data-i18n="s.edNote">▶ La note</button>
       <button type="button" id="ed-passage" data-i18n="s.edPassage">▶ Le passage</button>
@@ -786,6 +810,8 @@ h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast" hidden><span id="toast-text" role="status"></span><button type="button" class="mini" id="toast-undo" data-i18n="s.edUndo">↶ Annuler</button></div>
 
 <div class="game" id="game" hidden role="dialog" aria-modal="true" data-i18n-aria="s.fullscreen" aria-label="Plein écran">
   <div class="game-top">
@@ -1126,14 +1152,44 @@ async function analyzeVoice(x0,sr0,opts,onProgress){
 function audioToLines(notes){
   if(!notes.length)return [];
   const durs=notes.map(n=>n.t1-n.t0).sort((a,b)=>a-b),med=durs[Math.floor(durs.length/2)];
-  const lines=[[]];
-  notes.forEach((n,i)=>{
-    const d=n.t1-n.t0,hold=d>=med*3.2?2:d>=med*1.7?1:0;
-    let line=lines[lines.length-1];
-    if(line.length&&(n.t0-notes[i-1].t1>=0.3||line.length>=12)){line=[];lines.push(line);}
-    line.push({midi:n.midi,hold,dur:d,t0:n.t0,t1:n.t1});
+  const flat=notes.map(n=>{const d=n.t1-n.t0;return {midi:n.midi,hold:d>=med*3.2?2:d>=med*1.7?1:0,dur:d,t0:n.t0,t1:n.t1};});
+  return autoCut(flat,8);
+}
+
+/* Phrase cutting: splits a melody into phrases of about L notes. Cuts are preferred at the clearest
+   silences (audio, judged against the longest silences of the same recording), after held notes, after notes
+   longer than usual, and where the opening notes come back; a small dynamic program picks the cut points. */
+function cutScores(flat,L){
+  const n=flat.length,ds=flat.filter(x=>x.dur!=null).map(x=>x.dur).sort((a,b)=>a-b),md=ds.length?ds[Math.floor(ds.length/2)]:0;
+  const gaps=flat.map((x,i)=>i<n-1&&x.t1!=null&&flat[i+1].t0!=null?Math.max(0,flat[i+1].t0-x.t1):null);
+  const gs=gaps.filter(g=>g!=null).sort((a,b)=>b-a),k=Math.max(1,Math.round(n/L)-1);
+  const top=gs.slice(0,k),ref=top.length?Math.max(0.12,top[Math.floor((top.length-1)/2)]):1;
+  const m=flat.map(x=>x.midi);
+  return flat.map((x,i)=>{
+    if(i===n-1)return 0;
+    let s=gaps[i]!=null?Math.min(4,2.5*gaps[i]/ref):0;
+    s+=0.8*Math.min(3,x.hold||0);
+    // a phrase that starts like the opening of the melody is a likely new phrase
+    let o=0;while(o<6&&i+1+o<n&&m[i+1+o]===m[o])o++;if(o>=4)s+=0.6;
+    if(md&&x.dur!=null&&!x.hold)s+=Math.min(1,Math.max(0,x.dur/md-1.3));
+    return s;
   });
-  return lines;
+}
+function autoCut(flat,L){
+  const n=flat.length;if(!n)return [];
+  L=Math.max(2,L||8);
+  const lo=Math.max(2,Math.round(L*0.3)),hi=Math.max(lo+1,Math.round(L*1.65));
+  const sc=cutScores(flat,L),best=new Array(n+1).fill(-Infinity),from=new Array(n+1).fill(0);best[0]=0;
+  for(let j=1;j<=n;j++){
+    for(let len=1;len<=Math.min(hi,j);len++){
+      const i=j-len;if(best[i]===-Infinity)continue;
+      const short=len<lo?(j===n?0.5:1.2)*(lo-len):0;
+      const v=best[i]+(j<n?sc[j-1]:0)-1-(len<L?2:3)*Math.pow((len-L)/L,2)-short;
+      if(v>best[j]){best[j]=v;from[j]=i;}
+    }
+  }
+  const starts=[];for(let j=n;j>0;j=from[j])starts.unshift(from[j]);
+  return starts.map((a,k)=>flat.slice(a,k+1<starts.length?starts[k+1]:n));
 }
 
 function itemsToLines(items){
@@ -1496,7 +1552,14 @@ Object.assign(I18N.fr,{
   link:'Lien',linkAria:'Partager le lien de {x}',linkCopied:'Lien copié. Envoie-le à qui tu veux.',linkCopiedFor:'Lien de « {x} » copié.',
   shared:'Lien partagé.',nothingToShare:"Il n'y a pas encore de notes à partager.",shareText:'« {x} » à jouer à l’ocarina',close:'Fermer',
   linkOpened:"Mélodie reçue par lien : « {x} ». Pour la garder, enregistre-la en bas de cette carte.",
-  linkBad:"Ce lien de mélodie est abîmé ou incomplet. Demande à la personne de te le renvoyer."
+  linkBad:"Ce lien de mélodie est abîmé ou incomplet. Demande à la personne de te le renvoyer.",
+  's.edSplit':'✂ Couper ici','s.edSplitAria':'Couper ici : une nouvelle phrase commence à cette note',
+  's.edJoin':'Joindre à la précédente','s.edJoinAria':'Joindre cette phrase à la précédente',
+  's.cutLabel':'Découpage','s.cutShort':'Courtes','s.cutMedium':'Moyennes','s.cutLong':'Longues',
+  's.cutShortAria':'Redécouper en phrases courtes','s.cutMediumAria':'Redécouper en phrases moyennes','s.cutLongAria':'Redécouper en phrases longues',
+  's.editHint':"Touche une note pour l'écouter, la corriger, ou couper la phrase à cet endroit.",
+  join:'Joindre',joinAria:'Joindre la phrase {n} à la précédente',joined:'Phrases {a} et {b} réunies.',
+  recut:n=>n>1?'Redécoupé en '+n+' phrases.':'Tout tient en une seule phrase.'
 });
 Object.assign(I18N.en,{
   's.lead':"Pick a song from the catalogue, type a melody, or give the page an ocarina video or a recording of your voice. It turns the melody into controller buttons, shifted if needed so it fits the game's ocarina.",
@@ -1510,7 +1573,14 @@ Object.assign(I18N.en,{
   link:'Link',linkAria:'Share the link to {x}',linkCopied:'Link copied. Send it to anyone.',linkCopiedFor:'Link to "{x}" copied.',
   shared:'Link shared.',nothingToShare:'There are no notes to share yet.',shareText:'"{x}" to play on the ocarina',close:'Close',
   linkOpened:'Melody received by link: "{x}". To keep it, save it at the bottom of this card.',
-  linkBad:'This melody link is damaged or incomplete. Ask the sender for it again.'
+  linkBad:'This melody link is damaged or incomplete. Ask the sender for it again.',
+  's.edSplit':'✂ Split here','s.edSplitAria':'Split here: a new phrase starts at this note',
+  's.edJoin':'Join to previous','s.edJoinAria':'Join this phrase to the previous one',
+  's.cutLabel':'Phrases','s.cutShort':'Short','s.cutMedium':'Medium','s.cutLong':'Long',
+  's.cutShortAria':'Re-split into short phrases','s.cutMediumAria':'Re-split into medium phrases','s.cutLongAria':'Re-split into long phrases',
+  's.editHint':'Tap a note to hear it, fix it, or split the phrase there.',
+  join:'Join',joinAria:'Join phrase {n} to the previous one',joined:'Phrases {a} and {b} joined.',
+  recut:n=>n>1?'Re-split into '+n+' phrases.':'It all fits in one phrase.'
 });
 const catLinesCache={};
 function catLines(id){
@@ -1606,10 +1676,10 @@ function render(fresh){
   if(!flat.length){
     box.innerHTML='<p class="empty">'+esc(st.tab==='video'?(st.audioRes?t('empty.videoNone'):t('empty.videoWait')):t('empty.notes'))+'</p>';
     if(unknown.length)addFact(t('unknown',{x:unknown.slice(0,6).join(', ')}),true);
-    $('#textout').textContent='';['#play','#copy','#game-open'].forEach(s=>$(s).disabled=true);
+    $('#textout').textContent='';['#play','#copy','#game-open'].forEach(s=>$(s).disabled=true);document.querySelectorAll('[data-cut]').forEach(b=>b.disabled=true);
     st.seq=[];st.res=null;st.sel=null;$('#edit-hint').hidden=true;$('#learn-open').disabled=true;$('#live-open').disabled=true;syncEditor();if(game.open)closeGame();return;
   }
-  ['#play','#copy','#game-open','#learn-open','#live-open'].forEach(s=>$(s).disabled=false);$('#edit-hint').hidden=false;
+  ['#play','#copy','#game-open','#learn-open','#live-open'].forEach(s=>$(s).disabled=false);document.querySelectorAll('[data-cut]').forEach(b=>b.disabled=false);$('#edit-hint').hidden=false;
   let res;
   if(fresh||st.shift==null){res=mapMelody(flat.map(n=>n.midi),keepSame());st.shift=res.t;}
   else res=mapWithShift(flat.map(n=>n.midi),st.shift);
@@ -1636,7 +1706,8 @@ function bigHTML(lines,res){
     const tiles=line.map(n=>{const k=i++;return tileHTML(n,res.notes[k],k,'button',true);}).join('');
     return '<section class="phr"><div class="phr-head"><h3 class="phr-num">'+t('phrase',{n:li+1})+'</h3><div class="phr-acts">'
       +'<button class="mini" type="button" data-play-ph="'+li+'">'+t('listen')+'</button>'
-      +'<button class="mini" type="button" data-game-ph="'+li+'">'+t('enlarge')+'</button></div></div>'
+      +'<button class="mini" type="button" data-game-ph="'+li+'">'+t('enlarge')+'</button>'
+      +(li?'<button class="mini" type="button" data-join-ph="'+li+'" aria-label="'+esc(t('joinAria',{n:li+1}))+'">'+esc(t('join'))+'</button>':'')+'</div></div>'
       +'<div class="bigkeys">'+tiles+'</div></section>';
   }).join('');
 }
@@ -1763,7 +1834,29 @@ function syncEditor(){
   $('#ed-orig').hidden=!(st.tab==='video'&&st.audioSrc&&n.t0!=null);
   $('#ed-undo').disabled=!st.undo[st.tab].length;
   $('#ed-prev').disabled=st.sel===0;$('#ed-next').disabled=st.sel>=st.flat.length-1;
+  const loc=locate(activeLines(),st.sel);
+  $('[data-ed="split"]').disabled=!loc||loc.ni===0;$('[data-ed="join"]').disabled=!loc||loc.li===0;
+  document.body.style.setProperty('--ed-h',ed.offsetHeight+'px');
 }
+/* Phrase cutting from the result card: join two phrases, or re-split the whole melody. Both can be undone. */
+const CUT_SIZES={short:5,medium:8,long:12};
+function toast(msg,undoable){
+  $('#toast-text').textContent=msg;$('#toast-undo').hidden=!undoable;toast.tab=st.tab;
+  const el=$('#toast');el.hidden=false;clearTimeout(toast.tm);toast.tm=setTimeout(()=>{el.hidden=true;},8000);
+}
+$('#toast-undo').addEventListener('click',()=>{$('#toast').hidden=true;if(toast.tab===st.tab)undo();});
+function joinPhrase(li){
+  const lines=activeLines();if(li<1||li>=lines.length)return;
+  stopPlay();pushUndo();lines[li-1].push(...lines.splice(li,1)[0]);afterEdit(false);
+  toast(t('joined',{a:li,b:li+1}),true);
+}
+function recut(size){
+  const flat=activeLines().flat();if(!flat.length)return;
+  stopPlay();pushUndo();st.sel=null;
+  const nl=autoCut(flat,CUT_SIZES[size]||8);setActiveLines(nl);afterEdit(false);
+  toast(t('recut')(nl.length),true);
+}
+document.querySelectorAll('[data-cut]').forEach(b=>b.addEventListener('click',()=>recut(b.dataset.cut)));
 function locate(lines,idx){let s=0;for(let li=0;li<lines.length;li++){if(idx<s+lines[li].length)return {li,ni:idx-s};s+=lines[li].length;}return null;}
 function pushUndo(){const u=st.undo[st.tab];u.push({lines:JSON.stringify(activeLines()),sel:st.sel});if(u.length>60)u.shift();}
 function afterEdit(playIt){
@@ -1774,7 +1867,14 @@ function afterEdit(playIt){
 function edit(kind){
   const lines=activeLines();if(st.sel==null)return;
   const loc=locate(lines,st.sel);if(!loc)return;
+  if((kind==='split'&&loc.ni===0)||(kind==='join'&&loc.li===0))return;
   pushUndo();
+  if(kind==='split'||kind==='join'){
+    if(kind==='split')lines.splice(loc.li+1,0,lines[loc.li].splice(loc.ni));
+    else lines[loc.li-1].push(...lines.splice(loc.li,1)[0]);
+    if(game.open)game.ph=phraseOf(st.sel);
+    afterEdit(false);return;
+  }
   const n=lines[loc.li][loc.ni];
   if(['-1','+1','-12','+12'].includes(kind))n.midi+=+kind;
   else if(kind==='long'||kind==='short'){
@@ -1801,6 +1901,7 @@ $('#ed-orig').addEventListener('click',()=>{if(playState&&playState.label==='ori
 $('#results').addEventListener('click',e=>{
   const pp=e.target.closest('[data-play-ph]');if(pp){const li=+pp.dataset.playPh;if(playState&&playState.label==='phrase-'+li){stopPlay();return;}const [a,b]=phraseRange(li);playRange(a,b,'phrase-'+li);return;}
   const gp=e.target.closest('[data-game-ph]');if(gp){openGame(+gp.dataset.gamePh);return;}
+  const jp=e.target.closest('[data-join-ph]');if(jp){joinPhrase(+jp.dataset.joinPh);return;}
   const tile=e.target.closest('[data-i]');if(tile)select(+tile.dataset.i,false);
 });
 function setView(v){st.view=v;storeSet('ocarina-view',v);$('#view-big').setAttribute('aria-pressed',v==='big');$('#view-staff').setAttribute('aria-pressed',v==='staff');render(false);}
@@ -2125,7 +2226,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 /* st.tab is where the notes come from (typed text or the audio analysis); the four panels only change what the
    left card shows. Opening a catalogue song or a saved melody switches the source to text. */
 function setTab(tab){
-  st.tab=tab;st.sel=null;
+  st.tab=tab;st.sel=null;$('#toast').hidden=true;
   stopPlay();render(true);syncSaveRow();
 }
 const PANELS=['catalog','notes','video','compos'];
@@ -2167,7 +2268,7 @@ function updateResultName(){
 }
 const ta=$('#notes-input');
 {const saved=storeGet('ocarina-notes');if(saved==null){ta.value=catText('joie');st.catId='joie';st.catText=ta.value;}else{ta.value=saved;const m=CATALOG.find(c=>catText(c.id)===saved);if(m){st.catId=m.id;st.catText=saved;}}}
-ta.addEventListener('input',()=>{storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();render(true);});
+ta.addEventListener('input',()=>{storeSet('ocarina-notes',ta.value);st.undo.notes=[];$('#toast').hidden=true;syncFromText();render(true);});
 document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{st.openId=null;syncSaveRow();ta.value=(LANG==='en'?SAMPLES_EN:SAMPLES)[b.dataset.sample];storeSet('ocarina-notes',ta.value);st.undo.notes=[];st.sel=null;syncFromText();render(true);if(!ta.value)ta.focus();}));
 document.querySelectorAll('input[name=keep]').forEach(r=>r.addEventListener('change',()=>{stopPlay();render(true);}));
 

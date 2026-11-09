@@ -4,7 +4,7 @@
 
 - **Écrire des notes** en « do ré mi » (ou en lettres : C D E…) et obtenir les touches à presser.
 - **Analyser une vidéo ou un son** : un ocarina, un sifflement, une flûte, ou une mélodie chantée seule.
-- **Corriger** chaque note en l'écoutant, **jouer en plein écran** phrase par phrase, et **apprendre** le morceau pas à pas.
+- **Corriger** chaque note en l'écoutant, **couper ou joindre les phrases** (ou les redécouper en phrases courtes, moyennes ou longues), **jouer en plein écran** phrase par phrase, et **apprendre** le morceau pas à pas.
 - **Catalogue** de 18 morceaux libres de droits (classique, comptines, fêtes), avec niveau de difficulté.
 - **Lecture en boucle**, pour s'entraîner sur un passage.
 - **Vérifier au micro** : la page écoute la Switch pendant que tu joues, valide chaque note et avance dans le morceau (le navigateur demande l'accès au micro ; rien n'est enregistré ni envoyé).
@@ -12,7 +12,7 @@
 - **Partager par lien** : le lien ouvre directement la mélodie chez la personne qui le reçoit, sans compte et sans rien coller.
 - Page en français et en anglais, en thème clair (parchemin) ou sombre (nuit étoilée) selon le réglage de l'appareil.
 
-**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, play full screen phrase by phrase, learn the song step by step, pick from a catalogue of 18 public-domain songs, loop any passage, let the page listen to the Switch through the microphone to check each note as you play (nothing is recorded or sent), save, export or import your compositions or swap them as a short `OC1-…` code, and share a melody as a link that opens it straight away. Available in French and English, with a parchment light theme and a starry-night dark theme.
+**EN —** A web page that turns a melody into Switch 2 controller buttons for playing the ocarina in *The Legend of Zelda: Ocarina of Time*: type notes, analyze a video or a sung melody, fix notes by ear, split or join phrases (or re-split them into short, medium or long ones), play full screen phrase by phrase, learn the song step by step, pick from a catalogue of 18 public-domain songs, loop any passage, let the page listen to the Switch through the microphone to check each note as you play (nothing is recorded or sent), save, export or import your compositions or swap them as a short `OC1-…` code, and share a melody as a link that opens it straight away. Available in French and English, with a parchment light theme and a starry-night dark theme.
 
 ## Utilisation · Use
 
