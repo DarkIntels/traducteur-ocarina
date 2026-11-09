@@ -296,76 +296,140 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 .compo-empty{font-size:var(--fs-s);color:var(--muted)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (prefers-reduced-motion: reduce){.bsvg{transition:none}}
+
+/* language switch, export / import */
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lang .vbtn{padding:4px 11px}
+.io-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.save-row .btn,.io-row .btn{flex:1 1 auto;justify-content:center;text-align:center}
+.filebtn{display:inline-flex;align-items:center}
+.io-row:focus-within .filebtn{outline:2px solid var(--accent);outline-offset:2px}
+.io-paste summary{cursor:pointer;font-size:var(--fs-s);font-weight:700;color:var(--muted)}
+.io-paste[open]{display:grid;gap:8px}
+.io-paste textarea{min-height:90px;font-size:13px;font-family:ui-monospace,Menlo,Consolas,monospace}
+/* fullscreen: fixed header and bottom bar, the middle scrolls */
+.game{bottom:auto;height:100vh;height:100dvh;overflow:hidden}
+#play-view,#learn-view{flex:1 1 auto;min-height:0}
+.lv-head,.lv-bar,.game-bar,.game-next,.game-tip,#game-pos{flex:none}
+.game-keys{flex:1 1 auto;min-height:0;overflow-y:auto;align-content:flex-start;padding-block:4px}
+@media (min-width:700px) and (min-height:760px){.game-keys{align-content:center}}
+.lv-body{flex:1 1 auto;min-height:0;overflow-y:auto;justify-content:flex-start;padding-block:4px}
+.lv-body>:first-child{margin-top:auto}.lv-body>:last-child{margin-bottom:auto}
+.lv-bar{grid-template-columns:repeat(3,minmax(0,1fr))}
+.lv-bar[data-n="1"]{grid-template-columns:minmax(0,1fr)}
+.lv-bar[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lv-bar[data-n="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.strip{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;max-width:100%;padding:4px 2px;scrollbar-width:thin}
+.strip .tile{flex:none}
+.game .bn-btn .bsvg{width:min(170px,42vw,26vh);height:min(170px,42vw,26vh)}
+.game .bn-btn .bsvg.sh{width:min(200px,50vw,30vh);height:calc(min(200px,50vw,30vh) * .594)}
+.lv-chain{flex-direction:column;align-items:center;gap:4px}
+.lv-chain+.lv-chain{border-top:1px solid var(--line);padding-top:8px}
+.lv-chain-n{width:auto;font-size:var(--fs-s);font-family:var(--font-body);font-weight:700}
+.bn-pic{min-height:0}
+.bn-pic svg{width:min(64px,8vh);height:min(64px,8vh)}
+.bn-instr{font-size:clamp(17px,4.6vw,22px)}
+@media (max-width:560px){
+  .game{gap:10px;padding-block:calc(10px + env(safe-area-inset-top,0px)) calc(10px + env(safe-area-inset-bottom,0px))}
+  .game .tile{width:76px;grid-template-rows:30px 66px 18px}
+  .game .tile.h1{width:104px}.game .tile.h2{width:132px}.game .tile.h3{width:160px}
+  .game .bsvg{width:62px;height:62px}
+  .game .bsvg.sh{width:74px;height:44px}
+  .game .tile .pic svg{width:26px;height:26px}
+  .game .qmark{width:58px;height:58px;font-size:24px;border-radius:14px}
+  .game-keys{gap:10px 4px}
+  .lv-keys{gap:8px 4px}
+  .game .lv-keys.chainkeys .tile{width:46px;grid-template-rows:22px 36px 0}
+  .game .lv-keys.chainkeys .tile.h1{width:60px}.game .lv-keys.chainkeys .tile.h2{width:74px}.game .lv-keys.chainkeys .tile.h3{width:88px}
+  .game .lv-keys.chainkeys .bsvg{width:34px;height:34px}
+  .game .lv-keys.chainkeys .bsvg.sh{width:40px;height:24px}
+  .game .lv-keys.chainkeys .pic svg{width:18px;height:18px}
+  .game .lv-keys.chainkeys .qmark{width:34px;height:34px;font-size:15px;border-radius:9px}
+  .lv-chain{gap:6px}
+  .lv-bar[data-n="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lv-bar button,.game-bar button{padding:12px 4px;font-size:var(--fs-s)}
+  .tempo .vbtn{padding:5px 8px}
+  .lv-text{font-size:var(--fs-m)}
+  .lv-title{font-size:var(--fs-m)}
+  .lv-big{font-size:28px}
+  .ed-grid button,.ed-listen button{font-size:12px;padding:9px 2px}
+}
 </style>
 
 <div class="wrap">
   <header>
-    <p class="eyebrow">Ocarina of Time · Switch 2</p>
-    <h1>Traducteur d'ocarina</h1>
-    <p class="lead">Écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.</p>
+    <div class="top-row">
+      <p class="eyebrow">Ocarina of Time · Switch 2</p>
+      <div class="viewsw lang" role="group" aria-label="Langue / Language">
+        <button type="button" class="vbtn" data-lang="fr" aria-pressed="true" lang="fr">FR</button>
+        <button type="button" class="vbtn" data-lang="en" aria-pressed="false" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 data-i18n="s.title">Traducteur d'ocarina</h1>
+    <p class="lead" data-i18n="s.lead">Écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.</p>
   </header>
 
-  <section class="legend" aria-label="Les touches de l'ocarina">
+  <section class="legend" data-i18n-aria="s.legendAria" aria-label="Les touches de l'ocarina">
     <div class="legend-keys">
-      <span class="lk"><span data-btn="L"></span>ré</span>
-      <span class="lk"><span data-btn="R"></span>fa</span>
-      <span class="lk"><span data-btn="A"></span>la</span>
-      <span class="lk"><span data-btn="Y"></span>si</span>
-      <span class="lk"><span data-btn="X"></span>ré aigu</span>
+      <span class="lk"><span data-btn="L"></span><span data-note="62"></span></span>
+      <span class="lk"><span data-btn="R"></span><span data-note="65"></span></span>
+      <span class="lk"><span data-btn="A"></span><span data-note="69"></span></span>
+      <span class="lk"><span data-btn="Y"></span><span data-note="71"></span></span>
+      <span class="lk"><span data-btn="X"></span><span data-note="74"></span>&nbsp;<span data-i18n="s.high">aigu</span></span>
     </div>
     <div class="legend-mods">
-      <span><span class="pic" data-pic="joy-up"></span><span class="pic" data-pic="joy-down"></span> joystick : un ton plus haut ou plus bas</span>
-      <span><span class="pic" data-pic="pad-up"></span><span class="pic" data-pic="pad-down"></span> croix : un demi-ton plus haut ou plus bas</span>
-      <span>barre après la touche : note tenue</span>
+      <span><span class="pic" data-pic="joy-up"></span><span class="pic" data-pic="joy-down"></span> <span data-i18n="s.legStick">joystick : un ton plus haut ou plus bas</span></span>
+      <span><span class="pic" data-pic="pad-up"></span><span class="pic" data-pic="pad-down"></span> <span data-i18n="s.legPad">croix : un demi-ton plus haut ou plus bas</span></span>
+      <span data-i18n="s.legHold">barre après la touche : note tenue</span>
     </div>
-    <p class="legend-how">Le losange montre les 4 boutons de droite de la manette, celui à presser est allumé (B ne sert pas). L et R sont les gâchettes du haut. Garde le joystick ou la croix enfoncé, puis appuie sur le bouton.</p>
+    <p class="legend-how" data-i18n="s.legHow">Le losange montre les 4 boutons de droite de la manette, celui à presser est allumé (B ne sert pas). L et R sont les gâchettes du haut. Garde le joystick ou la croix enfoncé, puis appuie sur le bouton.</p>
   </section>
 
-  <div class="tabs" role="tablist" aria-label="Mode">
-    <button class="tab" role="tab" id="tab-notes" aria-selected="true" aria-controls="panel-notes">Écrire des notes</button>
-    <button class="tab" role="tab" id="tab-video" aria-selected="false" aria-controls="panel-video">Vidéo ou son</button>
+  <div class="tabs" role="tablist" data-i18n-aria="s.modeAria" aria-label="Mode">
+    <button class="tab" role="tab" id="tab-notes" aria-selected="true" aria-controls="panel-notes" data-i18n="s.tabNotes">Écrire des notes</button>
+    <button class="tab" role="tab" id="tab-video" aria-selected="false" aria-controls="panel-video" data-i18n="s.tabVideo">Vidéo ou son</button>
   </div>
 
   <section class="panel" id="panel-notes" role="tabpanel" aria-labelledby="tab-notes">
-    <label class="field" for="notes-input">Ta mélodie
+    <label class="field" for="notes-input"><span data-i18n="s.melody">Ta mélodie</span>
       <textarea id="notes-input" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
     </label>
-    <p class="help">Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.</p>
-    <div class="sample"><span>Exemples :</span>
-      <button class="chipbtn" type="button" data-sample="joie">Hymne à la joie</button>
-      <button class="chipbtn" type="button" data-sample="lune">Au clair de la lune</button>
-      <button class="chipbtn" type="button" data-sample="elise">Lettre à Élise</button>
-      <button class="chipbtn" type="button" data-sample="vide">Effacer</button>
+    <p class="help" data-i18n-html="s.notesHelp">Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.</p>
+    <div class="sample"><span data-i18n="s.examples">Exemples :</span>
+      <button class="chipbtn" type="button" data-sample="joie" data-i18n="s.sJoie">Hymne à la joie</button>
+      <button class="chipbtn" type="button" data-sample="lune" data-i18n="s.sLune">Au clair de la lune</button>
+      <button class="chipbtn" type="button" data-sample="elise" data-i18n="s.sElise">Lettre à Élise</button>
+      <button class="chipbtn" type="button" data-sample="vide" data-i18n="s.sClear">Effacer</button>
     </div>
   </section>
 
   <section class="panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" hidden>
     <label class="setting" for="source-sel">
-      <span>Ce qui joue la mélodie</span>
+      <span data-i18n="s.source">Ce qui joue la mélodie</span>
       <select id="source-sel">
-        <option value="ocarina">Ocarina, sifflement ou flûte</option>
-        <option value="voice">Voix seule, chantée ou fredonnée</option>
+        <option value="ocarina" data-i18n="s.srcOcarina">Ocarina, sifflement ou flûte</option>
+        <option value="voice" data-i18n="s.srcVoice">Voix seule, chantée ou fredonnée</option>
       </select>
     </label>
     <div class="file">
-      <label class="field" for="file-input">Vidéo ou fichier audio</label>
+      <label class="field" for="file-input" data-i18n="s.fileLabel">Vidéo ou fichier audio</label>
       <input type="file" id="file-input" accept="video/*,audio/*,.mov,.mp4,.m4a,.mp3,.wav,.aac">
-      <p class="help">Rien n'est envoyé : l'analyse se fait directement sur ton appareil. Pour une vidéo, la page l'écoute en la lisant (sans le son), donc ça dure le temps de la vidéo. Tu peux arrêter avant la fin. <span id="ocarina-tip">Le mieux, c'est un passage où l'ocarina joue seul ou par-dessus un accompagnement discret.</span></p>
+      <p class="help"><span data-i18n="s.fileHelp">Rien n'est envoyé : l'analyse se fait directement sur ton appareil. Pour une vidéo, la page l'écoute en la lisant (sans le son), donc ça dure le temps de la vidéo. Tu peux arrêter avant la fin.</span> <span id="ocarina-tip" data-i18n="s.ocarinaTip">Le mieux, c'est un passage où l'ocarina joue seul ou par-dessus un accompagnement discret.</span></p>
     </div>
-    <p class="help" id="voice-hint" hidden>Chante seul, sans musique derrière. Sur des syllabes nettes comme « la la la » ou « ta ta ta », les notes répétées sont bien séparées, ce qui n'est pas le cas bouche fermée. Tu peux t'enregistrer avec le dictaphone ou l'appareil photo de ton téléphone, puis choisir le fichier ici.</p>
+    <p class="help" id="voice-hint" hidden data-i18n="s.voiceHint">Chante seul, sans musique derrière. Sur des syllabes nettes comme « la la la » ou « ta ta ta », les notes répétées sont bien séparées, ce qui n'est pas le cas bouche fermée. Tu peux t'enregistrer avec le dictaphone ou l'appareil photo de ton téléphone, puis choisir le fichier ici.</p>
     <div class="grid2" id="ocarina-settings">
       <label class="setting" for="purity">
-        <span>Filtre anti-piano</span>
+        <span data-i18n="s.purity">Filtre anti-piano</span>
         <input type="range" id="purity" min="0.25" max="0.85" step="0.05" value="0.5">
-        <span class="ends"><span>Garde plus de notes</span><span>Ignore plus le piano</span></span>
+        <span class="ends"><span data-i18n="s.purityLo">Garde plus de notes</span><span data-i18n="s.purityHi">Ignore plus le piano</span></span>
       </label>
       <label class="setting" for="range-sel">
-        <span>Type d'ocarina dans la vidéo</span>
+        <span data-i18n="s.ocType">Type d'ocarina dans la vidéo</span>
         <select id="range-sel">
-          <option value="250-3000">Je ne sais pas (tout)</option>
-          <option value="400-1800">Alto, le plus courant</option>
-          <option value="750-3500">Soprano, petit et très aigu</option>
-          <option value="150-900">Ténor ou basse, gros et grave</option>
+          <option value="250-3000" data-i18n="s.ocAny">Je ne sais pas (tout)</option>
+          <option value="400-1800" data-i18n="s.ocAlto">Alto, le plus courant</option>
+          <option value="750-3500" data-i18n="s.ocSoprano">Soprano, petit et très aigu</option>
+          <option value="150-900" data-i18n="s.ocBass">Ténor ou basse, gros et grave</option>
         </select>
       </label>
     </div>
@@ -374,116 +438,129 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
     <div id="media-slot" hidden></div>
     <p class="status" id="status" role="status">Choisis un fichier pour commencer.</p>
     <div id="roll-wrap" hidden>
-      <div class="roll-box"><canvas id="roll" aria-label="Graphique des notes trouvées dans le temps"></canvas></div>
+      <div class="roll-box"><canvas id="roll" data-i18n-aria="s.rollAria" aria-label="Graphique des notes trouvées dans le temps"></canvas></div>
       <p class="found" id="found"></p>
-      <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" id="to-text">Modifier sous forme de texte</button></div>
+      <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" id="to-text" data-i18n="s.toText">Modifier sous forme de texte</button></div>
     </div>
   </section>
 
-  <div class="opts" role="radiogroup" aria-label="Hauteur">
-    <span class="opts-title">Hauteur :</span>
-    <label class="radio"><input type="radio" name="keep" id="keep-auto" value="auto" checked> La plus facile à jouer</label>
-    <label class="radio"><input type="radio" name="keep" id="keep-same" value="same"> Garder les mêmes notes</label>
+  <div class="opts" role="radiogroup" data-i18n-aria="s.pitchAria" aria-label="Hauteur">
+    <span class="opts-title" data-i18n="s.pitch">Hauteur :</span>
+    <label class="radio"><input type="radio" name="keep" id="keep-auto" value="auto" checked> <span data-i18n="s.easiest">La plus facile à jouer</span></label>
+    <label class="radio"><input type="radio" name="keep" id="keep-same" value="same"> <span data-i18n="s.sameNotes">Garder les mêmes notes</span></label>
   </div>
 
   <section class="result" aria-labelledby="result-title">
     <div class="result-head">
-      <h2 id="result-title">Les touches</h2>
-      <div class="viewsw" role="group" aria-label="Affichage">
-        <button type="button" class="vbtn" id="view-big" aria-pressed="true">Grandes touches</button>
-        <button type="button" class="vbtn" id="view-staff" aria-pressed="false">Portée</button>
+      <h2 id="result-title" data-i18n="s.buttons">Les touches</h2>
+      <div class="viewsw" role="group" data-i18n-aria="s.viewAria" aria-label="Affichage">
+        <button type="button" class="vbtn" id="view-big" aria-pressed="true" data-i18n="s.viewBig">Grandes touches</button>
+        <button type="button" class="vbtn" id="view-staff" aria-pressed="false" data-i18n="s.viewStaff">Portée</button>
       </div>
     </div>
     <div class="facts" id="facts"></div>
     <div class="actions">
-      <button class="btn" type="button" id="learn-open">Apprendre le morceau</button>
-      <button class="btn ghost" type="button" id="game-open">Plein écran</button>
-      <button class="btn ghost" type="button" id="play">▶ Tout écouter</button>
+      <button class="btn" type="button" id="learn-open" data-i18n="s.learnOpen">Apprendre le morceau</button>
+      <button class="btn ghost" type="button" id="game-open" data-i18n="s.fullscreen">Plein écran</button>
+      <button class="btn ghost" type="button" id="play" data-i18n="playAll">▶ Tout écouter</button>
     </div>
-    <p class="hint" id="edit-hint">Touche une note pour l'écouter et la corriger.</p>
+    <p class="hint" id="edit-hint" data-i18n="s.editHint">Touche une note pour l'écouter et la corriger.</p>
     <div id="results"></div>
-    <details class="textbox"><summary>Version texte</summary><pre class="textout" id="textout"></pre></details>
+    <details class="textbox"><summary data-i18n="s.textVersion">Version texte</summary><pre class="textout" id="textout"></pre></details>
     <div class="actions">
-      <button class="btn ghost" type="button" id="copy">Copier le texte</button>
+      <button class="btn ghost" type="button" id="copy" data-i18n="s.copyText">Copier le texte</button>
       <span class="status" id="copy-status"></span>
     </div>
   </section>
 
   <section class="compos" aria-labelledby="compos-title">
     <div class="compos-head">
-      <h2 id="compos-title">Mes compositions</h2>
-      <span class="fact" id="compos-where">Sur cet appareil</span>
+      <h2 id="compos-title" data-i18n="s.myCompos">Mes compositions</h2>
+      <span class="fact" id="compos-where"></span>
     </div>
     <div class="save-row">
-      <label class="sr" for="compo-name">Nom de la mélodie</label>
-      <input id="compo-name" type="text" maxlength="60" placeholder="Nom de la mélodie" autocomplete="off">
-      <button class="btn" type="button" id="compo-save">Enregistrer</button>
-      <button class="btn ghost" type="button" id="compo-saveas" hidden>Enregistrer comme nouvelle</button>
-      <button class="btn ghost" type="button" id="compo-new">Nouvelle</button>
+      <label class="sr" for="compo-name" data-i18n="s.nameLabel">Nom de la mélodie</label>
+      <input id="compo-name" type="text" maxlength="60" placeholder="Nom de la mélodie" data-i18n-ph="s.nameLabel" autocomplete="off">
+      <button class="btn" type="button" id="compo-save" data-i18n="save">Enregistrer</button>
+      <button class="btn ghost" type="button" id="compo-saveas" hidden data-i18n="s.saveAs">Enregistrer comme nouvelle</button>
+      <button class="btn ghost" type="button" id="compo-new" data-i18n="s.newCompo">Nouvelle</button>
     </div>
     <p class="open-name" id="compo-open-name"></p>
     <p class="status" id="compo-status" role="status"></p>
     <ul class="compo-list" id="compo-list"></ul>
+    <div class="io-row">
+      <button class="btn ghost" type="button" id="io-export-all" data-i18n="s.exportAll">Tout exporter</button>
+      <label class="btn ghost filebtn" for="io-file" data-i18n="s.importFile">Importer un fichier</label>
+      <input type="file" id="io-file" class="sr" accept=".json,application/json,text/plain">
+    </div>
+    <details class="io-paste" id="io-paste">
+      <summary data-i18n="s.pasteSummary">Pas de fichier ? Copier ou coller un code</summary>
+      <textarea id="io-text" rows="4" spellcheck="false" autocomplete="off" data-i18n-ph="s.pastePh" placeholder="Colle ici un code de composition"></textarea>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="io-import-text" data-i18n="s.importCode">Importer ce code</button>
+        <button class="btn ghost" type="button" id="io-copy" data-i18n="s.copyCode">Copier le code</button>
+      </div>
+    </details>
   </section>
 
-  <p class="foot">Le joystick et la flèche bas ont été vérifiés dans le jeu. La flèche haut est supposée monter d'un demi-ton comme sur 3DS : si une note avec ▲ sonne faux, remplace-la par la touche juste au-dessus avec ▼. Les notes entourées en pointillé ont été décalées d'une octave parce que la mélodie dépasse la plage de l'ocarina.</p>
+  <p class="foot" data-i18n="s.foot">Le joystick et la croix vers le bas ont été vérifiés dans le jeu. La croix vers le haut est supposée monter d'un demi-ton comme sur 3DS : si une note avec ▲ sonne faux, remplace-la par la touche juste au-dessus avec ▼. Les notes entourées en pointillé ont été décalées d'une octave parce que la mélodie dépasse la plage de l'ocarina.</p>
 </div>
 
-<div class="editor" id="editor" hidden role="region" aria-label="Correction de la note">
+<div class="editor" id="editor" hidden role="region" data-i18n-aria="s.editorAria" aria-label="Correction de la note">
   <div class="ed-inner">
     <div class="ed-head">
-      <button class="ed-nav" type="button" id="ed-prev" aria-label="Note précédente">◀</button>
+      <button class="ed-nav" type="button" id="ed-prev" data-i18n-aria="s.prevNote" aria-label="Note précédente">◀</button>
       <div class="ed-info" id="ed-info"></div>
-      <button class="ed-nav" type="button" id="ed-next" aria-label="Note suivante">▶</button>
-      <button class="ed-nav" type="button" id="ed-close" aria-label="Fermer la correction">✕</button>
+      <button class="ed-nav" type="button" id="ed-next" data-i18n-aria="s.nextNote" aria-label="Note suivante">▶</button>
+      <button class="ed-nav" type="button" id="ed-close" data-i18n-aria="s.closeEdit" aria-label="Fermer la correction">✕</button>
     </div>
     <div class="ed-grid">
-      <button type="button" data-ed="-1">½ ton −</button>
-      <button type="button" data-ed="+1">½ ton +</button>
-      <button type="button" data-ed="-12">Octave −</button>
-      <button type="button" data-ed="+12">Octave +</button>
-      <button type="button" data-ed="short">Plus court</button>
-      <button type="button" data-ed="long">Plus long</button>
-      <button type="button" data-ed="dup">Doubler</button>
-      <button type="button" data-ed="del">Supprimer</button>
+      <button type="button" data-ed="-1" data-i18n="s.edSemiDown">½ ton −</button>
+      <button type="button" data-ed="+1" data-i18n="s.edSemiUp">½ ton +</button>
+      <button type="button" data-ed="-12" data-i18n="s.edOctDown">Octave −</button>
+      <button type="button" data-ed="+12" data-i18n="s.edOctUp">Octave +</button>
+      <button type="button" data-ed="short" data-i18n="s.edShort">Plus court</button>
+      <button type="button" data-ed="long" data-i18n="s.edLong">Plus long</button>
+      <button type="button" data-ed="dup" data-i18n="s.edDup">Doubler</button>
+      <button type="button" data-ed="del" data-i18n="delete">Supprimer</button>
     </div>
     <div class="ed-listen">
-      <button type="button" id="ed-note">▶ La note</button>
-      <button type="button" id="ed-passage">▶ Le passage</button>
-      <button type="button" id="ed-orig">▶ L'original</button>
-      <button type="button" id="ed-undo">↶ Annuler</button>
+      <button type="button" id="ed-note" data-i18n="s.edNote">▶ La note</button>
+      <button type="button" id="ed-passage" data-i18n="s.edPassage">▶ Le passage</button>
+      <button type="button" id="ed-orig" data-i18n="s.edOrig">▶ L'original</button>
+      <button type="button" id="ed-undo" data-i18n="s.edUndo">↶ Annuler</button>
     </div>
   </div>
 </div>
 
-<div class="game" id="game" hidden role="dialog" aria-modal="true" aria-label="Plein écran">
+<div class="game" id="game" hidden role="dialog" aria-modal="true" data-i18n-aria="s.fullscreen" aria-label="Plein écran">
   <div class="game-top">
-    <div class="viewsw" role="group" aria-label="Mode">
-      <button type="button" class="vbtn" id="mode-play" aria-pressed="true">Jouer</button>
-      <button type="button" class="vbtn" id="mode-learn" aria-pressed="false">Apprendre</button>
+    <div class="viewsw" role="group" data-i18n-aria="s.modeAria" aria-label="Mode">
+      <button type="button" class="vbtn" id="mode-play" aria-pressed="true" data-i18n="s.modePlay">Jouer</button>
+      <button type="button" class="vbtn" id="mode-learn" aria-pressed="false" data-i18n="s.modeLearn">Apprendre</button>
     </div>
-    <button class="game-close" type="button" id="game-close" aria-label="Quitter le plein écran">✕</button>
+    <button class="game-close" type="button" id="game-close" data-i18n-aria="s.closeFull" aria-label="Quitter le plein écran">✕</button>
   </div>
   <div id="play-view">
     <span id="game-pos">Phrase 1</span>
     <div class="game-keys" id="game-keys"></div>
     <div class="game-next" id="game-next"></div>
-    <p class="game-tip">Glisse vers la gauche ou la droite pour changer de phrase. Touche une note pour la corriger.</p>
+    <p class="game-tip" data-i18n="s.gameTip">Glisse vers la gauche ou la droite pour changer de phrase. Touche une note pour la corriger.</p>
     <div class="game-bar">
-      <button type="button" id="game-prev">◀ Avant</button>
-      <button type="button" id="game-play">▶ Écouter</button>
-      <button type="button" id="game-nextbtn">Après ▶</button>
+      <button type="button" id="game-prev" data-i18n="s.prev">◀ Avant</button>
+      <button type="button" id="game-play" data-i18n="listen">▶ Écouter</button>
+      <button type="button" id="game-nextbtn" data-i18n="s.next">Après ▶</button>
     </div>
   </div>
   <div id="learn-view" hidden>
     <div class="lv-head">
       <div class="dots" id="lv-dots"></div>
       <div class="lv-title"><span id="lv-pos"></span> · <span id="lv-step"></span></div>
-      <div class="tempo" role="group" aria-label="Vitesse d'écoute">
-        <span>Vitesse d'écoute :</span>
-        <button type="button" class="vbtn" data-tempo="0.6" aria-pressed="false">Lente</button>
-        <button type="button" class="vbtn" data-tempo="0.8" aria-pressed="false">Moyenne</button>
-        <button type="button" class="vbtn" data-tempo="1" aria-pressed="true">Normale</button>
+      <div class="tempo" role="group" data-i18n-aria="s.tempoAria" aria-label="Vitesse d'écoute">
+        <span data-i18n="s.tempo">Vitesse d'écoute :</span>
+        <button type="button" class="vbtn" data-tempo="0.6" aria-pressed="false" data-i18n="s.slow">Lente</button>
+        <button type="button" class="vbtn" data-tempo="0.8" aria-pressed="false" data-i18n="s.medium">Moyenne</button>
+        <button type="button" class="vbtn" data-tempo="1" aria-pressed="true" data-i18n="s.normal">Normale</button>
       </div>
     </div>
     <div class="lv-body" id="lv-body" aria-live="polite"></div>
@@ -496,7 +573,9 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 const FR_NAMES=['do','do♯','ré','mi♭','mi','fa','fa♯','sol','la♭','la','si♭','si'];
 const SOLF={do:0,ut:0,re:2,mi:4,fa:5,sol:7,la:9,si:11};
 const LET={c:0,d:2,e:4,f:5,g:7,a:9,b:11};
-function noteName(m){return FR_NAMES[((m%12)+12)%12];}
+const EN_NAMES=['C','C♯','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
+let NOTE_LANG='fr';
+function noteName(m){return (NOTE_LANG==='en'?EN_NAMES:FR_NAMES)[((m%12)+12)%12];}
 function accVal(s){if(!s)return 0;return s[0]==='#'?s.length:-s.length;}
 
 function tokenize(text){
@@ -511,10 +590,10 @@ function parseNotes(text){
     if(raw==='\n'){if(items.length&&items[items.length-1].type!=='br')items.push({type:'br'});continue;}
     if(/^[—–\-_]$/.test(raw)){const n=lastNote();if(n)n.hold++;continue;}
     const t=raw.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-    if(t==='aigu'||t==='aigue'||t==='haut'){const n=lastNote();if(n)n.dir++;continue;}
-    if(t==='grave'||t==='bas'){const n=lastNote();if(n)n.dir--;continue;}
-    if(t==='diese'){const n=lastNote();if(n)n.acc++;continue;}
-    if(t==='bemol'){const n=lastNote();if(n)n.acc--;continue;}
+    if(t==='aigu'||t==='aigue'||t==='haut'||t==='high'||t==='up'){const n=lastNote();if(n)n.dir++;continue;}
+    if(t==='grave'||t==='bas'||t==='low'||t==='down'){const n=lastNote();if(n)n.dir--;continue;}
+    if(t==='diese'||t==='sharp'){const n=lastNote();if(n)n.acc++;continue;}
+    if(t==='bemol'||t==='flat'){const n=lastNote();if(n)n.acc--;continue;}
     let m=t.match(/^(do|ut|re|mi|fa|sol|la|si)(#{1,2}|b{1,2})?(\d)?('+|\++)?$/),it=null;
     if(m)it={pc:SOLF[m[1]],sys:'fr',acc:accVal(m[2]),oct:m[3]!=null?+m[3]:null,dir:m[4]?m[4].length:0};
     else{m=t.match(/^([a-g])(#{1,2}|b{1,2})?(\d)?('+|\++)?$/);
@@ -551,18 +630,20 @@ function inferPitches(items){
 /* Writes lines back as text that parses to exactly the same pitches: plain names where the parser
    would guess right, "aigu"/"grave" where a jump is needed, an octave number as a last resort. */
 const ASCII_NAMES=['do','do#','ré','mib','mi','fa','fa#','sol','lab','la','sib','si'];
+const ASCII_EN=['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
 const NAME_PARTS=[[0,0],[0,1],[2,0],[4,-1],[4,0],[5,0],[5,1],[7,0],[9,-1],[9,0],[11,-1],[11,0]];
-function serializeLines(lines){
+function serializeLines(lines,lang){
+  const en=lang==='en',NAMES=en?ASCII_EN:ASCII_NAMES,UP=en?' high':' aigu',DOWN=en?' low':' grave';
   const state={last:null,sum:0,cnt:0,afterBreak:false};
   return lines.map((line,li)=>{
     if(li>0)state.afterBreak=true;
     return line.map(n=>{
-      const pc=((n.midi%12)+12)%12,bpc=NAME_PARTS[pc][0],acc=NAME_PARTS[pc][1],name=ASCII_NAMES[pc];
+      const pc=((n.midi%12)+12)%12,bpc=NAME_PARTS[pc][0],acc=NAME_PARTS[pc][1],name=NAMES[pc];
       let tok=null;
       for(const dir of [0,1,-1,2,-2]){
-        if(inferOne({pc:bpc,acc,oct:null,sys:'fr',dir},state)===n.midi){tok=name+(dir>0?' aigu'.repeat(dir):' grave'.repeat(-dir));break;}
+        if(inferOne({pc:bpc,acc,oct:null,sys:en?'en':'fr',dir},state)===n.midi){tok=name+(dir>0?UP.repeat(dir):DOWN.repeat(-dir));break;}
       }
-      if(tok==null)tok=name+(Math.floor(n.midi/12)-2);
+      if(tok==null)tok=name+(Math.floor(n.midi/12)-(en?1:2));
       commitNote(state,n.midi);
       return tok+(n.hold?' '+'—'.repeat(n.hold):'');
     }).join(' ');
@@ -800,6 +881,212 @@ function linesToNoteText(lines){
 }
 /* CORE END */
 
+/* ---------- language: French / English ---------- */
+const pl=(n,one,many)=>LANG==='fr'?(n>1?many:one):(n===1?one:many);
+const I18N={
+fr:{
+  'doc.title':"Traducteur d'ocarina",
+  's.title':"Traducteur d'ocarina",
+  's.lead':"Écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.",
+  's.legendAria':"Les touches de l'ocarina",'s.high':'aigu',
+  's.legStick':'joystick : un ton plus haut ou plus bas','s.legPad':'croix : un demi-ton plus haut ou plus bas','s.legHold':'barre après la touche : note tenue',
+  's.legHow':"Le losange montre les 4 boutons de droite de la manette, celui à presser est allumé (B ne sert pas). L et R sont les gâchettes du haut. Garde le joystick ou la croix enfoncé, puis appuie sur le bouton.",
+  's.modeAria':'Mode','s.tabNotes':'Écrire des notes','s.tabVideo':'Vidéo ou son','s.melody':'Ta mélodie',
+  's.notesHelp':"Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.",
+  's.examples':'Exemples :','s.sJoie':'Hymne à la joie','s.sLune':'Au clair de la lune','s.sElise':'Lettre à Élise','s.sClear':'Effacer',
+  's.source':'Ce qui joue la mélodie','s.srcOcarina':'Ocarina, sifflement ou flûte','s.srcVoice':'Voix seule, chantée ou fredonnée',
+  's.fileLabel':'Vidéo ou fichier audio',
+  's.fileHelp':"Rien n'est envoyé : l'analyse se fait directement sur ton appareil. Pour une vidéo, la page l'écoute en la lisant (sans le son), donc ça dure le temps de la vidéo. Tu peux arrêter avant la fin.",
+  's.ocarinaTip':"Le mieux, c'est un passage où l'ocarina joue seul ou par-dessus un accompagnement discret.",
+  's.voiceHint':"Chante seul, sans musique derrière. Sur des syllabes nettes comme « la la la » ou « ta ta ta », les notes répétées sont bien séparées, ce qui n'est pas le cas bouche fermée. Tu peux t'enregistrer avec le dictaphone ou l'appareil photo de ton téléphone, puis choisir le fichier ici.",
+  's.purity':'Filtre anti-piano','s.purityLo':'Garde plus de notes','s.purityHi':'Ignore plus le piano',
+  's.ocType':"Type d'ocarina dans la vidéo",'s.ocAny':'Je ne sais pas (tout)','s.ocAlto':'Alto, le plus courant','s.ocSoprano':'Soprano, petit et très aigu','s.ocBass':'Ténor ou basse, gros et grave',
+  's.rollAria':'Graphique des notes trouvées dans le temps','s.toText':'Modifier sous forme de texte',
+  's.pitchAria':'Hauteur','s.pitch':'Hauteur :','s.easiest':'La plus facile à jouer','s.sameNotes':'Garder les mêmes notes',
+  's.buttons':'Les touches','s.viewAria':'Affichage','s.viewBig':'Grandes touches','s.viewStaff':'Portée',
+  's.learnOpen':'Apprendre le morceau','s.fullscreen':'Plein écran','s.editHint':"Touche une note pour l'écouter et la corriger.",
+  's.textVersion':'Version texte','s.copyText':'Copier le texte',
+  's.myCompos':'Mes compositions','s.nameLabel':'Nom de la mélodie','s.saveAs':'Enregistrer comme nouvelle','s.newCompo':'Nouvelle',
+  's.exportAll':'Tout exporter','s.importFile':'Importer un fichier','s.pasteSummary':'Pas de fichier ? Copier ou coller un code',
+  's.pastePh':'Colle ici un code de composition','s.importCode':'Importer ce code','s.copyCode':'Copier le code',
+  's.foot':"Le joystick et la croix vers le bas ont été vérifiés dans le jeu. La croix vers le haut est supposée monter d'un demi-ton comme sur 3DS : si une note avec ▲ sonne faux, remplace-la par la touche juste au-dessus avec ▼. Les notes entourées en pointillé ont été décalées d'une octave parce que la mélodie dépasse la plage de l'ocarina.",
+  's.editorAria':'Correction de la note','s.prevNote':'Note précédente','s.nextNote':'Note suivante','s.closeEdit':'Fermer la correction',
+  's.edSemiDown':'½ ton −','s.edSemiUp':'½ ton +','s.edOctDown':'Octave −','s.edOctUp':'Octave +','s.edShort':'Plus court','s.edLong':'Plus long','s.edDup':'Doubler',
+  's.edNote':'▶ La note','s.edPassage':'▶ Le passage','s.edOrig':"▶ L'original",'s.edUndo':'↶ Annuler',
+  's.modePlay':'Jouer','s.modeLearn':'Apprendre','s.closeFull':'Quitter le plein écran',
+  's.gameTip':'Glisse vers la gauche ou la droite pour changer de phrase. Touche une note pour la corriger.',
+  's.prev':'◀ Avant','s.next':'Après ▶','s.tempoAria':"Vitesse d'écoute",'s.tempo':'Vitesse :','s.slow':'Lente','s.medium':'Moyenne','s.normal':'Normale',
+  analyze:'Analyser',chooseFile:'Choisis un fichier pour commencer.',playAll:'▶ Tout écouter',listen:'▶ Écouter',stop:'■ Arrêter',
+  save:'Enregistrer',delete:'Supprimer',
+  'empty.videoNone':"Aucune note trouvée. Change les réglages puis relance l'analyse.",'empty.videoWait':"Les touches apparaîtront ici après l'analyse.",
+  'empty.notes':'Écris quelques notes au-dessus, par exemple « do ré mi ».',
+  unknown:'Pas compris : {x}',original:"Hauteur d'origine",
+  octaves:(n,up)=>'Mêmes notes, '+(n===1?'une octave':n+' octaves')+(up?' plus haut':' plus bas'),
+  shifted:(n,up)=>'Décalée de '+n+' demi-ton'+(n>1?'s':'')+(up?' vers le haut':' vers le bas'),
+  plain:(p,tot)=>p+' note'+(p>1?'s':'')+' sur '+tot+' sans joystick ni croix',
+  folded:n=>n+' note'+(n>1?'s':'')+' hors plage, décalée'+(n>1?'s':'')+" d'une octave",
+  phrase:'Phrase {n}',enlarge:'Agrandir',held:'tenue',hidden:'note cachée',
+  noteOf:'Note {i} sur {n}',phraseOf:'Phrase {i} sur {n}',nextUp:'Ensuite :',lastPhrase:'Dernière phrase',
+  'step.listen':'1. Écoute','step.notes':'2. Note par note','step.recall':'3. Sans regarder','step.chain':'Enchaîner','step.ask':'Enchaîner','step.done':'Morceau appris',
+  resume:"On reprend là où tu t'étais arrêté.",phrasesLearned:'{n} phrases sur {t}',
+  listenText:"Écoute la phrase en suivant les touches qui s'allument.",continue:'Continuer',holdNote:' Tiens la note.',
+  noteCount:'{name} · note {i} sur {n}',fixNote:'Corriger cette note',replay:'🔊 Rejouer',doneNext:'Fini, la suite',played:'Note jouée',
+  recallText:'Joue la phrase dans le jeu <strong>sans regarder</strong> les touches. Écoute le modèle si besoin.',
+  model:'▶ Modèle',show:'Montrer',hide:'Cacher',notYet:'Pas encore',gotIt:'Réussi ✓',
+  chainText:"Enchaîne les phrases 1 à {n} d'un seul coup, sans regarder.",askText:'Où est-ce que ça a coincé ? On retravaillera cette phrase.',retry:'Je réessaie',
+  doneBig:'Bravo, tu connais le morceau !',hardIntro:"Les phrases qui t'ont donné le plus de mal : {x}.",
+  hardItem:(k,m)=>'phrase '+k+' ('+m+' essai'+(m>1?'s':'')+' de plus)',noMistake:'Sans une seule erreur.',
+  review:'Réviser les difficiles',restart:'Recommencer',playWhole:'Jouer en entier',
+  peekOk:'Bien. Refais-la une fois sans regarder pour la valider.',reworked:"Phrase reprise. On réessaie l'enchaînement.",
+  validated:'Phrase {n} validée !',chainOk:'Enchaînement réussi !',chainOkNext:'Enchaînement réussi ! Phrase suivante.',
+  missMsg:'Pas de souci : on reprend note par note, un peu plus lentement.',weakMsg:'On retravaille la phrase {n}, plus lentement.',
+  fileReady:'Fichier prêt : {x}. Appuie sur Analyser.',listeningFile:'Écoute du fichier… {a} / {b}. Tu peux arrêter avant la fin.',
+  stopAnalyze:"Arrêter l'écoute et analyser",listeningVideo:'Écoute de la vidéo…',extracting:'Extraction du son…',
+  blocked:'La lecture a été bloquée par le navigateur. Appuie encore une fois sur Analyser.',
+  retryDecode:"Ce fichier ne se décode pas directement. Appuie encore une fois sur Analyser : la page va l'écouter en le lisant.",
+  cantRead:"Je n'arrive pas à lire le son de ce fichier. Essaie de l'exporter en audio (m4a ou mp3), ou ouvre la page dans un autre navigateur.",
+  first10:' (seules les 10 premières minutes sont analysées)',tooShort:'Le son récupéré est trop court ou vide. Réessaie, ou exporte la vidéo en audio (m4a ou mp3).',
+  searching:'Recherche des notes…',foundN:'{n} notes trouvées{x}. Vérifie-les en écoutant le résultat.',
+  noVoice:"Aucune note chantée trouvée. Vérifie que la voix s'entend bien et qu'il n'y a pas de musique derrière.",
+  noOcarina:"Aucune note d'ocarina trouvée. Baisse le filtre anti-piano ou change le type d'ocarina, puis relance.",
+  foundList:'Notes trouvées : ',settingChanged:'Réglage changé : appuie de nouveau sur Analyser.',
+  errQuota:'Plus de place pour de nouvelles compositions. Supprimes-en une, puis réessaie.',
+  errAccess:"Ton accès à cette page ne permet pas d'enregistrer dans ton compte.",errOther:"L'enregistrement n'a pas abouti. Réessaie dans un instant.",
+  nothingToSave:"Il n'y a pas encore de notes à enregistrer.",needName:"Donne un nom à ta mélodie avant de l'enregistrer.",saving:'Enregistrement…',
+  savedDb:'« {x} » est enregistrée dans ton compte.',savedLocal:'« {x} » est enregistrée sur cet appareil.',deleted:'Composition supprimée.',
+  opened:'« {x} » est ouverte.',saveChanges:'Enregistrer les changements',openLabel:'Ouverte : {x}',
+  whereDb:'Dans ton compte',whereLocal:'Sur cet appareil',loading:'Chargement de tes compositions…',
+  emptyCompos:"Aucune composition pour l'instant. Donne un nom à ta mélodie et appuie sur Enregistrer.",untitled:'Sans nom',
+  metaNotes:'{n} notes',metaLearned:'{n}/{t} phrases apprises',deleteQ:'Supprimer ?',yesDelete:'Oui, supprimer',no:'Non',open:'Ouvrir',export:'Exporter',
+  deleteAria:'Supprimer {x}',exportAria:'Exporter {x}',
+  noStorage:'Ce navigateur ne garde rien : tes compositions disparaîtront quand tu fermeras la page.',
+  slowDb:'Tes compositions ne répondent pas encore. Elles apparaîtront dès que la connexion revient.',
+  dbDown:"Ton compte ne répond pas : les compositions sont gardées sur cet appareil pour l'instant.",
+  nextNew:'La prochaine sauvegarde créera une nouvelle composition.',
+  copyLegend:'Légende : ↑↓ joystick, ▲▼ croix, — note tenue',copied:'Copié.',copySelected:'Sélectionné : copie-le à la main.',
+  exported:'Fichier « {x} » enregistré. Garde-le comme sauvegarde ou envoie-le.',exportCancelled:'Export annulé.',
+  codeShown:'Ce navigateur ne peut pas créer le fichier : copie le code ci-dessous à la place.',
+  imported:n=>n+' composition'+(n>1?'s':'')+' importée'+(n>1?'s':'')+'.',badImport:"Ce n'est pas un fichier ou un code de compositions valide.",
+  noneInImport:'Aucune composition trouvée dans ce code.',importedSuffix:' (importée)',nothingToExport:'Aucune composition à exporter.',codeCopied:'Code copié.',
+  pressBtn:{L:'la gâchette L',R:'la gâchette R',A:'A',Y:'Y',X:'X'},
+  mod:{'↑':'pousse le joystick vers le haut','↓':'pousse le joystick vers le bas','▲':'appuie sur la croix en haut','▼':'appuie sur la croix en bas'},
+  modShort:{'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'},
+  instr:(parts,btn)=>(parts.length?parts.join(' et ')+', puis appuie sur '+btn:'appuie sur '+btn),
+  dateLocale:'fr-FR'
+},
+en:{
+  'doc.title':'Ocarina Translator',
+  's.title':'Ocarina Translator',
+  's.lead':"Type a melody, or give the page an ocarina video or a recording of your voice. It turns the melody into controller buttons, shifted if needed so it fits the game's ocarina.",
+  's.legendAria':'The ocarina buttons','s.high':'high',
+  's.legStick':'stick: one whole step higher or lower','s.legPad':'D-pad: one half step higher or lower','s.legHold':'bar after the button: held note',
+  's.legHow':"The diamond shows the controller's 4 right-hand buttons; the one to press is lit (B isn't used). L and R are the top shoulder buttons. Hold the stick or D-pad, then press the button.",
+  's.modeAria':'Mode','s.tabNotes':'Type notes','s.tabVideo':'Video or audio','s.melody':'Your melody',
+  's.notesHelp':"Separate notes with spaces: <code>C D E F G A B</code>. Sharp: <code>F#</code>, flat: <code>Bb</code>. A <code>—</code> or <code>-</code> after a note holds it. Write <code>high</code> or <code>low</code> after a note to force the jump up or down. Start a new line for a new phrase. Solfège works too: <code>do ré mi</code>.",
+  's.examples':'Examples:','s.sJoie':'Ode to Joy','s.sLune':'Au Clair de la Lune','s.sElise':'Für Elise','s.sClear':'Clear',
+  's.source':'What plays the melody','s.srcOcarina':'Ocarina, whistling or flute','s.srcVoice':'Voice alone, sung or hummed',
+  's.fileLabel':'Video or audio file',
+  's.fileHelp':"Nothing is uploaded: the analysis runs on your device. For a video, the page listens to it while playing it (muted), so it takes as long as the video. You can stop before the end.",
+  's.ocarinaTip':'Best results come from a part where the ocarina plays alone or over a quiet accompaniment.',
+  's.voiceHint':"Sing alone, with no music behind you. On clear syllables like \"la la la\" or \"ta ta ta\", repeated notes stay separate, which isn't the case when humming with your mouth closed. Record yourself with your phone's voice memo app or camera, then choose the file here.",
+  's.purity':'Piano filter','s.purityLo':'Keeps more notes','s.purityHi':'Ignores more piano',
+  's.ocType':'Ocarina in the video','s.ocAny':"I don't know (all)",'s.ocAlto':'Alto, the most common','s.ocSoprano':'Soprano, small and very high','s.ocBass':'Tenor or bass, large and low',
+  's.rollAria':'Chart of the notes found over time','s.toText':'Edit as text',
+  's.pitchAria':'Pitch','s.pitch':'Pitch:','s.easiest':'Easiest to play','s.sameNotes':'Keep the same notes',
+  's.buttons':'The buttons','s.viewAria':'Display','s.viewBig':'Big buttons','s.viewStaff':'Staff',
+  's.learnOpen':'Learn the song','s.fullscreen':'Full screen','s.editHint':'Tap a note to hear it and fix it.',
+  's.textVersion':'Text version','s.copyText':'Copy the text',
+  's.myCompos':'My compositions','s.nameLabel':'Melody name','s.saveAs':'Save as new','s.newCompo':'New',
+  's.exportAll':'Export all','s.importFile':'Import a file','s.pasteSummary':'No file? Copy or paste a code',
+  's.pastePh':'Paste a composition code here','s.importCode':'Import this code','s.copyCode':'Copy the code',
+  's.foot':"The stick and the D-pad down have been checked in the game. D-pad up is assumed to raise a note by a half step, as on 3DS: if a note with ▲ sounds wrong, use the button just above with ▼ instead. Notes circled with dots were moved by an octave because the melody goes beyond the ocarina's range.",
+  's.editorAria':'Fix the note','s.prevNote':'Previous note','s.nextNote':'Next note','s.closeEdit':'Close the editor',
+  's.edSemiDown':'½ step −','s.edSemiUp':'½ step +','s.edOctDown':'Octave −','s.edOctUp':'Octave +','s.edShort':'Shorter','s.edLong':'Longer','s.edDup':'Duplicate',
+  's.edNote':'▶ The note','s.edPassage':'▶ The passage','s.edOrig':'▶ Original','s.edUndo':'↶ Undo',
+  's.modePlay':'Play','s.modeLearn':'Learn','s.closeFull':'Leave full screen',
+  's.gameTip':'Swipe left or right to change phrase. Tap a note to fix it.',
+  's.prev':'◀ Back','s.next':'Next ▶','s.tempoAria':'Listening speed','s.tempo':'Speed:','s.slow':'Slow','s.medium':'Medium','s.normal':'Normal',
+  analyze:'Analyze',chooseFile:'Choose a file to start.',playAll:'▶ Play all',listen:'▶ Listen',stop:'■ Stop',
+  save:'Save',delete:'Delete',
+  'empty.videoNone':'No notes found. Change the settings and run the analysis again.','empty.videoWait':'The buttons will appear here after the analysis.',
+  'empty.notes':'Type a few notes above, for example "C D E".',
+  unknown:'Not understood: {x}',original:'Original pitch',
+  octaves:(n,up)=>'Same notes, '+(n===1?'one octave':n+' octaves')+(up?' higher':' lower'),
+  shifted:(n,up)=>'Shifted '+n+' half step'+(n>1?'s':'')+(up?' up':' down'),
+  plain:(p,tot)=>p+' of '+tot+' notes need no stick or D-pad',
+  folded:n=>n+' note'+(n>1?'s':'')+' out of range, moved by an octave',
+  phrase:'Phrase {n}',enlarge:'Enlarge',held:'held',hidden:'hidden note',
+  noteOf:'Note {i} of {n}',phraseOf:'Phrase {i} of {n}',nextUp:'Next:',lastPhrase:'Last phrase',
+  'step.listen':'1. Listen','step.notes':'2. Note by note','step.recall':'3. Without looking','step.chain':'Chain','step.ask':'Chain','step.done':'Song learned',
+  resume:'Picking up where you left off.',phrasesLearned:'{n} of {t} phrases',
+  listenText:'Listen to the phrase and follow the buttons as they light up.',continue:'Continue',holdNote:' Hold the note.',
+  noteCount:'{name} · note {i} of {n}',fixNote:'Fix this note',replay:'🔊 Replay',doneNext:'Done, next',played:'Played it',
+  recallText:'Play the phrase in the game <strong>without looking</strong> at the buttons. Listen to the example if you need to.',
+  model:'▶ Example',show:'Show',hide:'Hide',notYet:'Not yet',gotIt:'Got it ✓',
+  chainText:'Play phrases 1 to {n} in one go, without looking.',askText:"Where did it go wrong? We'll work on that phrase again.",retry:'Try again',
+  doneBig:'Well done, you know the song!',hardIntro:'The phrases that gave you the most trouble: {x}.',
+  hardItem:(k,m)=>'phrase '+k+' ('+m+' extra '+(m>1?'tries':'try')+')',noMistake:'Without a single mistake.',
+  review:'Review the hard ones',restart:'Start over',playWhole:'Play it all',
+  peekOk:'Good. Play it once more without looking to confirm it.',reworked:"Phrase reworked. Let's try the chain again.",
+  validated:'Phrase {n} done!',chainOk:'Chain complete!',chainOkNext:'Chain complete! On to the next phrase.',
+  missMsg:"No problem: let's go note by note again, a bit slower.",weakMsg:"Let's work on phrase {n} again, more slowly.",
+  fileReady:'File ready: {x}. Press Analyze.',listeningFile:'Listening to the file… {a} / {b}. You can stop before the end.',
+  stopAnalyze:'Stop listening and analyze',listeningVideo:'Listening to the video…',extracting:'Extracting the sound…',
+  blocked:'The browser blocked playback. Press Analyze once more.',
+  retryDecode:"This file can't be decoded directly. Press Analyze once more: the page will listen to it while playing it.",
+  cantRead:"The page can't read the sound of this file. Try exporting it as audio (m4a or mp3), or open the page in another browser.",
+  first10:' (only the first 10 minutes are analyzed)',tooShort:'The sound is too short or empty. Try again, or export the video as audio (m4a or mp3).',
+  searching:'Looking for notes…',foundN:'{n} notes found{x}. Check them by listening to the result.',
+  noVoice:"No sung notes found. Make sure the voice is clearly audible and there's no music behind it.",
+  noOcarina:'No ocarina notes found. Lower the piano filter or change the ocarina type, then try again.',
+  foundList:'Notes found: ',settingChanged:'Setting changed: press Analyze again.',
+  errQuota:'No room for new compositions. Delete one, then try again.',
+  errAccess:"Your access to this page doesn't allow saving to your account.",errOther:"Saving didn't work. Try again in a moment.",
+  nothingToSave:'There are no notes to save yet.',needName:'Give your melody a name before saving it.',saving:'Saving…',
+  savedDb:'"{x}" is saved to your account.',savedLocal:'"{x}" is saved on this device.',deleted:'Composition deleted.',
+  opened:'"{x}" is open.',saveChanges:'Save changes',openLabel:'Open: {x}',
+  whereDb:'In your account',whereLocal:'On this device',loading:'Loading your compositions…',
+  emptyCompos:'No compositions yet. Give your melody a name and press Save.',untitled:'Untitled',
+  metaNotes:'{n} notes',metaLearned:'{n}/{t} phrases learned',deleteQ:'Delete?',yesDelete:'Yes, delete',no:'No',open:'Open',export:'Export',
+  deleteAria:'Delete {x}',exportAria:'Export {x}',
+  noStorage:"This browser keeps nothing: your compositions will disappear when you close the page.",
+  slowDb:"Your compositions aren't responding yet. They'll appear as soon as the connection is back.",
+  dbDown:"Your account isn't responding: compositions are kept on this device for now.",
+  nextNew:'The next save will create a new composition.',
+  copyLegend:'Key: ↑↓ stick, ▲▼ D-pad, — held note',copied:'Copied.',copySelected:'Selected: copy it by hand.',
+  exported:'File "{x}" saved. Keep it as a backup or send it.',exportCancelled:'Export cancelled.',
+  codeShown:"This browser can't create the file: copy the code below instead.",
+  imported:n=>n+' composition'+(n>1?'s':'')+' imported.',badImport:"This isn't a valid compositions file or code.",
+  noneInImport:'No composition found in this code.',importedSuffix:' (imported)',nothingToExport:'No compositions to export.',codeCopied:'Code copied.',
+  pressBtn:{L:'the L button',R:'the R button',A:'A',Y:'Y',X:'X'},
+  mod:{'↑':'push the stick up','↓':'push the stick down','▲':'press up on the D-pad','▼':'press down on the D-pad'},
+  modShort:{'↑':'stick up','↓':'stick down','▲':'D-pad up','▼':'D-pad down'},
+  instr:(parts,btn)=>(parts.length?parts.join(' and ')+', then press '+btn:'press '+btn),
+  dateLocale:'en-US'
+}};
+let LANG=(()=>{let v=null;try{v=localStorage.getItem('ocarina-lang');}catch(e){}if(v==='fr'||v==='en')return v;return (navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en';})();
+NOTE_LANG=LANG;
+function t(k,v){
+  let s=I18N[LANG][k];if(s==null)s=I18N.fr[k];if(s==null)return k;
+  if(typeof s==='string'&&v)s=s.replace(/\{(\w+)\}/g,(m,x)=>v[x]!=null?v[x]:m);
+  return s;
+}
+function applyStatic(){
+  document.documentElement.lang=LANG;document.title=t('doc.title');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAria));});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.i18nPh));});
+  document.querySelectorAll('[data-note]').forEach(el=>{el.textContent=noteName(+el.dataset.note);});
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));
+}
+
+const SAMPLES_EN={
+  joie:"E E F G G F E D C C D E E — D D —\nE E F G G F E D C C D E D — C C —\nD D E C D E F E C D E F E D C D G low —\nE E F G G F E D C C D E D — C C —",
+  lune:"C C C D E — D — C E D D C —\nC C C D E — D — C E D D C —\nD D D D A low — A — D C B A G —\nC C C D E — D — C E D D C —",
+  elise:"E high D# E D# E B D C A —\nC low E A B —\nE low G# B C —\nE low E high D# E D# E B D C A —\nC low E A B —\nE low C high B A —",
+  vide:""
+};
 const SAMPLES={
   joie:"mi mi fa sol sol fa mi ré do do ré mi mi — ré ré —\nmi mi fa sol sol fa mi ré do do ré mi ré — do do —\nré ré mi do ré mi fa mi do ré mi fa mi ré do ré sol grave —\nmi mi fa sol sol fa mi ré do do ré mi ré — do do —",
   lune:"do do do ré mi — ré — do mi ré ré do —\ndo do do ré mi — ré — do mi ré ré do —\nré ré ré ré la grave — la — ré do si la sol —\ndo do do ré mi — ré — do mi ré ré do —",
@@ -825,9 +1112,8 @@ const PIC={
   'pad-down':'<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M10 2h8v8h8v8h-8v8h-8v-8H2v-8h8z" style="fill:var(--padbase)"/><path d="M10 18h8v8h-8z" style="fill:var(--gold)"/><path d="M14 24.4 10.8 20h6.4z" style="fill:var(--surface)"/></svg>'
 };
 const MODPIC={'↑':'joy-up','↓':'joy-down','▲':'pad-up','▼':'pad-down'};
-const MODWORD={'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'};
 function picHTML(mod){return [...(mod||'')].map(g=>PIC[MODPIC[g]]).join('');}
-function keyText(m){return m.key+(m.mod?' + '+[...m.mod].map(g=>MODWORD[g]).join(' + '):'');}
+function keyText(m){const w=t('modShort');return m.key+(m.mod?' + '+[...m.mod].map(g=>w[g]).join(' + '):'');}
 /* The right-hand face buttons as on the controller (X top, Y left, A right, B bottom), the one to press lit.
    L and R are drawn as the two shoulder buttons. */
 function btnSVG(key){
@@ -842,11 +1128,9 @@ function btnSVG(key){
     '<circle cx="'+cx+'" cy="'+cy+'" r="'+(on(lab)?9.8:7.4)+'" style="'+(on(lab)?'fill:'+kc:'fill:none;stroke:var(--staff);stroke-width:1.5')+'"/>'
     +'<text x="'+cx+'" y="'+(cy+(on(lab)?4.5:3.3))+'" text-anchor="middle" style="fill:'+(on(lab)?'var(--key-ink)':'var(--muted)')+';font:700 '+(on(lab)?13:9)+'px var(--font-body)">'+lab+'</text>').join('')+'</svg>';
 }
-const BTNWORD={L:'la gâchette L',R:'la gâchette R',A:'A',Y:'Y',X:'X'};
 function instruction(m){
-  const parts=[...(m.mod||'')].map(g=>({'↑':'pousse le joystick vers le haut','↓':'pousse le joystick vers le bas','▲':'appuie sur la croix en haut','▼':'appuie sur la croix en bas'}[g]));
-  const press='appuie sur '+BTNWORD[m.key];
-  const txt=parts.length?parts.join(' et ')+', puis '+press:press;
+  const mw=t('mod'),parts=[...(m.mod||'')].map(g=>mw[g]);
+  const txt=t('instr')(parts,t('pressBtn')[m.key]);
   return txt.charAt(0).toUpperCase()+txt.slice(1)+'.';
 }
 document.querySelectorAll('[data-pic]').forEach(el=>{el.innerHTML=PIC[el.dataset.pic];});
@@ -854,14 +1138,14 @@ document.querySelectorAll('[data-btn]').forEach(el=>{el.innerHTML=btnSVG(el.data
 
 function tileHTML(n,m,i,tag,withSel){
   const cls='tile k-'+m.key+(n.hold?' h'+Math.min(3,n.hold):'')+(m.folded?' folded':'')+(withSel&&i===st.sel?' sel':'');
-  const aria=keyText(m)+(n.hold?', tenue':'')+', '+noteName(n.midi);
+  const aria=keyText(m)+(n.hold?', '+t('held'):'')+', '+noteName(n.midi);
   return '<'+tag+' class="'+cls+'" data-i="'+i+'"'+(tag==='button'?' type="button"':' role="img"')+' aria-label="'+esc(aria)+'">'
     +'<span class="pic">'+picHTML(m.mod)+'</span>'
     +'<span class="face-row">'+btnSVG(m.key)+(n.hold?'<span class="hbar"></span>':'')+'</span>'
     +'<span class="nm">'+noteName(n.midi)+'</span></'+tag+'>';
 }
 function hiddenTileHTML(n,i){
-  return '<div class="tile hid'+(n.hold?' h'+Math.min(3,n.hold):'')+'" data-i="'+i+'" role="img" aria-label="note cachée"><span class="pic"></span><span class="face-row"><span class="qmark">?</span>'+(n.hold?'<span class="hbar"></span>':'')+'</span><span class="nm">&nbsp;</span></div>';
+  return '<div class="tile hid'+(n.hold?' h'+Math.min(3,n.hold):'')+'" data-i="'+i+'" role="img" aria-label="'+esc(t('hidden'))+'"><span class="pic"></span><span class="face-row"><span class="qmark">?</span>'+(n.hold?'<span class="hbar"></span>':'')+'</span><span class="nm">&nbsp;</span></div>';
 }
 
 function activeLines(){return st.tab==='notes'?st.textLines:(st.audioLines||[]);}
@@ -876,8 +1160,8 @@ function render(fresh){
   const unknown=st.tab==='notes'?st.unknown:[];
   st.flat=flat;
   if(!flat.length){
-    box.innerHTML='<p class="empty">'+(st.tab==='video'?(st.audioRes?'Aucune note trouvée. Change les réglages puis relance l\'analyse.':'Les touches apparaîtront ici après l\'analyse.'):'Écris quelques notes au-dessus, par exemple « do ré mi ».')+'</p>';
-    if(unknown.length)addFact('Pas compris : '+unknown.slice(0,6).join(', '),true);
+    box.innerHTML='<p class="empty">'+esc(st.tab==='video'?(st.audioRes?t('empty.videoNone'):t('empty.videoWait')):t('empty.notes'))+'</p>';
+    if(unknown.length)addFact(t('unknown',{x:unknown.slice(0,6).join(', ')}),true);
     $('#textout').textContent='';['#play','#copy','#game-open'].forEach(s=>$(s).disabled=true);
     st.seq=[];st.res=null;st.sel=null;$('#edit-hint').hidden=true;$('#learn-open').disabled=true;syncEditor();if(game.open)closeGame();return;
   }
@@ -887,14 +1171,14 @@ function render(fresh){
   else res=mapWithShift(flat.map(n=>n.midi),st.shift);
   st.res=res;
   if(st.sel!=null&&st.sel>=flat.length)st.sel=flat.length-1;
-  const t=res.t,tt=((t%12)+12)%12;
-  if(t===0)addFact('Hauteur d\'origine');
-  else if(tt===0)addFact('Mêmes notes, '+(Math.abs(t)===12?'une octave':Math.abs(t)/12+' octaves')+(t>0?' plus haut':' plus bas'));
-  else addFact('Décalée de '+Math.abs(t)+' demi-ton'+(Math.abs(t)>1?'s':'')+(t>0?' vers le haut':' vers le bas'));
+  const sh=res.t,tt=((sh%12)+12)%12;
+  if(sh===0)addFact(t('original'));
+  else if(tt===0)addFact(t('octaves')(Math.abs(sh)/12,sh>0));
+  else addFact(t('shifted')(Math.abs(sh),sh>0));
   const plain=res.notes.filter(n=>!n.mod).length;
-  addFact(plain+' note'+(plain>1?'s':'')+' sur '+res.notes.length+' sans joystick ni croix');
-  if(res.folded)addFact(res.folded+' note'+(res.folded>1?'s':'')+' hors plage, décalée'+(res.folded>1?'s':'')+' d\'une octave',true);
-  if(unknown.length)addFact('Pas compris : '+unknown.slice(0,6).join(', '),true);
+  addFact(t('plain')(plain,res.notes.length));
+  if(res.folded)addFact(t('folded')(res.folded),true);
+  if(unknown.length)addFact(t('unknown',{x:unknown.slice(0,6).join(', ')}),true);
   box.innerHTML=st.view==='staff'?staffHTML(lines,res):bigHTML(lines,res);
   $('#textout').textContent=linesToText(lines,res.notes);
   st.seq=flat.map((n,i)=>({p:res.notes[i].p,dur:noteDur(n),i}));
@@ -906,9 +1190,9 @@ function bigHTML(lines,res){
   let i=0;
   return lines.map((line,li)=>{
     const tiles=line.map(n=>{const k=i++;return tileHTML(n,res.notes[k],k,'button',true);}).join('');
-    return '<section class="phr"><div class="phr-head"><h3 class="phr-num">Phrase '+(li+1)+'</h3><div class="phr-acts">'
-      +'<button class="mini" type="button" data-play-ph="'+li+'">▶ Écouter</button>'
-      +'<button class="mini" type="button" data-game-ph="'+li+'">Agrandir</button></div></div>'
+    return '<section class="phr"><div class="phr-head"><h3 class="phr-num">'+t('phrase',{n:li+1})+'</h3><div class="phr-acts">'
+      +'<button class="mini" type="button" data-play-ph="'+li+'">'+t('listen')+'</button>'
+      +'<button class="mini" type="button" data-game-ph="'+li+'">'+t('enlarge')+'</button></div></div>'
       +'<div class="bigkeys">'+tiles+'</div></section>';
   }).join('');
 }
@@ -919,7 +1203,7 @@ function staffHTML(lines,res){
   return '<div class="staffs">'+lines.map(line=>'<div class="phrase">'+clef+line.map(n=>{
     const k=i++,m=res.notes[k],y=Y[m.key],sh=(m.key==='L'||m.key==='R')?' sh':'';
     let mods='';for(const g of m.mod)mods+=(g==='↑'||g==='↓')?'<i class="m joy">'+g+'</i>':'<i class="m arr">'+g+'</i>';
-    return '<button type="button" class="col k-'+m.key+(n.hold?' h'+Math.min(3,n.hold):'')+(m.folded?' folded':'')+(k===st.sel?' sel':'')+'" data-i="'+k+'" aria-label="'+esc(keyText(m)+(n.hold?', tenue':'')+', '+noteName(n.midi))+'">'
+    return '<button type="button" class="col k-'+m.key+(n.hold?' h'+Math.min(3,n.hold):'')+(m.folded?' folded':'')+(k===st.sel?' sel':'')+'" data-i="'+k+'" aria-label="'+esc(keyText(m)+(n.hold?', '+t('held'):'')+', '+noteName(n.midi))+'">'
       +(n.hold?'<span class="tail k-'+m.key+'" style="--y:'+y+'px"></span>':'')+'<span class="key k-'+m.key+sh+'" style="--y:'+y+'px">'+m.key+mods+'</span><span class="nm">'+noteName(n.midi)+'</span></button>';
   }).join('')+'</div>').join('')+'</div>';
 }
@@ -933,8 +1217,8 @@ function markPlaying(i){document.querySelectorAll('.playing').forEach(e=>e.class
 function stopPlay(){
   if(playState){playState.nodes.forEach(o=>{try{o.stop();}catch(e){}});playState.timers.forEach(clearTimeout);}
   playState=null;markPlaying(null);
-  $('#play').textContent='▶ Tout écouter';$('#game-play').textContent='▶ Écouter';
-  const lb=$('#lv-listen');if(lb)lb.textContent=lb.dataset.label||'▶ Écouter';
+  $('#play').textContent=t('playAll');$('#game-play').textContent=t('listen');
+  const lb=$('#lv-listen');if(lb)lb.textContent=lb.dataset.label||t('listen');
 }
 function playSynth(items,label,tempo){
   stopPlay();if(!items.length)return;tempo=tempo||1;if(tempo!==1)items=items.map(x=>Object.assign({},x,{dur:x.dur/tempo}));
@@ -953,9 +1237,9 @@ function playSynth(items,label,tempo){
     t+=n.dur;
   }
   ps.timers.push(setTimeout(()=>{if(playState===ps)stopPlay();},(t-c.currentTime)*1000+80));
-  if(label==='all')$('#play').textContent='■ Arrêter';
-  if(label==='game')$('#game-play').textContent='■ Arrêter';
-  if(label==='learn'){const b=$('#lv-listen');if(b)b.textContent='■ Arrêter';}
+  if(label==='all')$('#play').textContent=t('stop');
+  if(label==='game')$('#game-play').textContent=t('stop');
+  if(label==='learn'){const b=$('#lv-listen');if(b)b.textContent=t('stop');}
 }
 function playRange(a,b,label){a=Math.max(0,a);b=Math.min(st.seq.length-1,b);playSynth(st.seq.slice(a,b+1),label);}
 function playNote(i){const s=st.seq[i];if(s)playSynth([{p:s.p,dur:Math.min(1.1,Math.max(0.4,s.dur)),i}],'note');}
@@ -987,7 +1271,7 @@ function syncEditor(){
   if(st.sel==null||!st.flat.length||!st.res){ed.hidden=true;document.body.classList.remove('editing');return;}
   ed.hidden=false;document.body.classList.add('editing');
   const n=st.flat[st.sel],m=st.res.notes[st.sel];
-  $('#ed-info').innerHTML='<strong>Note '+(st.sel+1)+' sur '+st.flat.length+'</strong><span>'+esc(noteName(n.midi))+(n.hold?' tenue':'')+' → '+esc(keyText(m))+'</span>';
+  $('#ed-info').innerHTML='<strong>'+esc(t('noteOf',{i:st.sel+1,n:st.flat.length}))+'</strong><span>'+esc(noteName(n.midi))+(n.hold?' '+esc(t('held')):'')+' → '+esc(keyText(m))+'</span>';
   $('#ed-orig').hidden=!(st.tab==='video'&&st.audioSrc&&n.t0!=null);
   $('#ed-undo').disabled=!st.undo[st.tab].length;
   $('#ed-prev').disabled=st.sel===0;$('#ed-next').disabled=st.sel>=st.flat.length-1;
@@ -995,7 +1279,7 @@ function syncEditor(){
 function locate(lines,idx){let s=0;for(let li=0;li<lines.length;li++){if(idx<s+lines[li].length)return {li,ni:idx-s};s+=lines[li].length;}return null;}
 function pushUndo(){const u=st.undo[st.tab];u.push({lines:JSON.stringify(activeLines()),sel:st.sel});if(u.length>60)u.shift();}
 function afterEdit(playIt){
-  if(st.tab==='notes'){$('#notes-input').value=serializeLines(st.textLines);storeSet('ocarina-notes',$('#notes-input').value);st.unknown=[];}
+  if(st.tab==='notes'){$('#notes-input').value=serializeLines(st.textLines,LANG);storeSet('ocarina-notes',$('#notes-input').value);st.unknown=[];}
   render(false);
   if(st.sel!=null){if(playIt)playNote(st.sel);const el=document.querySelector((game.open&&game.mode==='play'?'#game-keys':'#results')+' [data-i="'+st.sel+'"]');if(el)el.scrollIntoView({block:'nearest'});}
 }
@@ -1057,11 +1341,11 @@ function renderGame(){
   game.ph=Math.max(0,Math.min(game.ph,lines.length-1));
   const [a]=phraseRange(game.ph);
   $('#game-keys').innerHTML=lines[game.ph].map((n,j)=>tileHTML(n,st.res.notes[a+j],a+j,'button',true)).join('');
-  $('#game-pos').textContent='Phrase '+(game.ph+1)+' sur '+lines.length;
+  $('#game-pos').textContent=t('phraseOf',{i:game.ph+1,n:lines.length});
   if(game.ph+1<lines.length){
     const b=a+lines[game.ph].length,nx=lines[game.ph+1];
-    $('#game-next').innerHTML='<span>Ensuite :</span><div class="mini-tiles">'+nx.slice(0,5).map((n,j)=>tileHTML(n,st.res.notes[b+j],b+j,'div',false)).join('')+'</div>'+(nx.length>5?'<span>…</span>':'');
-  }else $('#game-next').innerHTML='<span>Dernière phrase</span>';
+    $('#game-next').innerHTML='<span>'+esc(t('nextUp'))+'</span><div class="mini-tiles">'+nx.slice(0,5).map((n,j)=>tileHTML(n,st.res.notes[b+j],b+j,'div',false)).join('')+'</div>'+(nx.length>5?'<span>…</span>':'');
+  }else $('#game-next').innerHTML='<span>'+esc(t('lastPhrase'))+'</span>';
   $('#game-prev').disabled=game.ph===0;$('#game-nextbtn').disabled=game.ph>=lines.length-1;
 }
 function gameGo(d){const n=activeLines().length;const p=Math.max(0,Math.min(n-1,game.ph+d));if(p!==game.ph){stopPlay();deselect();game.ph=p;renderGame();}}
@@ -1086,7 +1370,6 @@ document.addEventListener('visibilitychange',()=>{if(game.open&&document.visibil
    A miss sends the phrase back to note by note, slower. Once two or more phrases are known,
    they are chained; if the chain breaks, the learner says where, and that phrase is reworked. */
 const learn={ph:0,step:'listen',ni:0,tempo:1,prog:null,peek:false,chainBack:null,msg:''};
-const STEPNAME={listen:'1. Écoute',notes:'2. Note par note',recall:'3. Sans regarder',chain:'Enchaîner',ask:'Enchaîner',done:'Morceau appris'};
 function sigOf(lines){let h=2166136261;const s=lines.map(l=>l.map(n=>n.midi+'.'+n.hold).join(',')).join('|');for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return 's'+h.toString(36);}
 function freshProg(lines){return {sig:sigOf(lines),ph:0,phrases:lines.map(()=>({ok:0,miss:0,learned:false,tempo:1}))};}
 function loadProg(){
@@ -1102,7 +1385,7 @@ function startLearn(){
   learn.prog=loadProg();learn.peek=false;learn.chainBack=null;learn.msg='';learn.ni=0;
   const k=learn.prog.phrases.findIndex(x=>!x.learned);
   if(k<0){learn.step='done';learn.ph=0;}
-  else{learn.ph=k;learn.step='listen';learn.msg=learn.prog.phrases.some(x=>x.learned)?'On reprend là où tu t\'étais arrêté.':'';}
+  else{learn.ph=k;learn.step='listen';learn.msg=learn.prog.phrases.some(x=>x.learned)?t('resume'):'';}
   learn.tempo=(learn.prog.phrases[learn.ph]||{}).tempo||1;
 }
 function phraseItems(li){const [a,b]=phraseRange(li);return st.seq.slice(a,b+1);}
@@ -1117,45 +1400,49 @@ function renderLearn(){
   if(learn.prog.phrases.length!==lines.length){learn.prog=freshProg(lines);learn.ph=0;learn.step='listen';}
   learn.ph=Math.max(0,Math.min(learn.ph,lines.length-1));
   const P=learn.prog.phrases;
-  $('#lv-dots').innerHTML=P.map((x,k)=>'<span class="dot'+(x.learned?' ok':'')+(k===learn.ph&&learn.step!=='done'?' cur':'')+'" title="Phrase '+(k+1)+'"></span>').join('');
+  $('#lv-dots').innerHTML=P.map((x,k)=>'<span class="dot'+(x.learned?' ok':'')+(k===learn.ph&&learn.step!=='done'?' cur':'')+'" title="'+esc(t('phrase',{n:k+1}))+'"></span>').join('');
   const learned=P.filter(x=>x.learned).length;
-  $('#lv-pos').textContent=learn.step==='done'?(learned+' phrases sur '+P.length):('Phrase '+(learn.ph+1)+' sur '+P.length);
-  $('#lv-step').textContent=STEPNAME[learn.step];
+  $('#lv-pos').textContent=learn.step==='done'?t('phrasesLearned',{n:learned,t:P.length}):t('phraseOf',{i:learn.ph+1,n:P.length});
+  $('#lv-step').textContent=t('step.'+learn.step);
   document.querySelectorAll('[data-tempo]').forEach(b=>b.setAttribute('aria-pressed',Math.abs(+b.dataset.tempo-learn.tempo)<0.01));
   const msg=learn.msg?'<p class="lv-msg">'+esc(learn.msg)+'</p>':'';learn.msg='';
   const [a]=phraseRange(learn.ph),line=lines[learn.ph];
   let body='',bar='';
   if(learn.step==='listen'){
-    body=msg+'<p class="lv-text">Écoute la phrase en suivant les touches qui s\'allument.</p><div class="lv-keys">'+line.map((n,j)=>tileHTML(n,st.res.notes[a+j],a+j,'div',false)).join('')+'</div>';
-    bar='<button type="button" id="lv-listen" data-label="▶ Écouter" class="ghost">▶ Écouter</button><button type="button" data-lv="to-notes" class="primary">Continuer</button>';
+    body=msg+'<p class="lv-text">'+esc(t('listenText'))+'</p><div class="lv-keys">'+line.map((n,j)=>tileHTML(n,st.res.notes[a+j],a+j,'div',false)).join('')+'</div>';
+    bar='<button type="button" id="lv-listen" data-label="'+esc(t('listen'))+'" class="ghost">'+esc(t('listen'))+'</button><button type="button" data-lv="to-notes" class="primary">'+esc(t('continue'))+'</button>';
   }else if(learn.step==='notes'){
     const n=line[learn.ni],m=st.res.notes[a+learn.ni];
     body=msg+'<div class="bignote k-'+m.key+'"><div class="bn-pic">'+picHTML(m.mod)+'</div><div class="bn-btn">'+btnSVG(m.key)+'</div>'
-      +'<p class="bn-instr">'+esc(instruction(m))+(n.hold?' Tiens la note.':'')+'</p>'
-      +'<p class="bn-nm">'+esc(noteName(n.midi))+' · note '+(learn.ni+1)+' sur '+line.length+'</p></div>'
+      +'<p class="bn-instr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p>'
+      +'<p class="bn-nm">'+esc(t('noteCount',{name:noteName(n.midi),i:learn.ni+1,n:line.length}))+'</p></div>'
       +'<div class="mini-tiles strip">'+line.map((x,j)=>tileHTML(x,st.res.notes[a+j],a+j,'div',false).replace('class="tile','class="tile'+(j===learn.ni?' cur':j<learn.ni?' done':''))).join('')+'</div>'
-      +'<p class="lv-small"><button type="button" class="linkbtn" data-lv="fix">Corriger cette note</button></p>';
-    bar='<button type="button" data-lv="prev-note" class="ghost"'+(learn.ni===0?' disabled':'')+'>◀</button><button type="button" data-lv="replay" class="ghost">🔊 Rejouer</button><button type="button" data-lv="next-note" class="primary">'+(learn.ni>=line.length-1?'Fini, la suite':'Note jouée')+' ▶</button>';
+      +'<p class="lv-small"><button type="button" class="linkbtn" data-lv="fix">'+esc(t('fixNote'))+'</button></p>';
+    bar='<button type="button" data-lv="prev-note" class="ghost"'+(learn.ni===0?' disabled':'')+'>◀</button><button type="button" data-lv="replay" class="ghost">'+esc(t('replay'))+'</button><button type="button" data-lv="next-note" class="primary">'+esc(learn.ni>=line.length-1?t('doneNext'):t('played'))+' ▶</button>';
   }else if(learn.step==='recall'){
-    body=msg+'<p class="lv-text">Joue la phrase dans le jeu <strong>sans regarder</strong> les touches. Écoute le modèle si besoin.</p><div class="lv-keys">'+line.map((n,j)=>learn.peek?tileHTML(n,st.res.notes[a+j],a+j,'div',false):hiddenTileHTML(n,a+j)).join('')+'</div>';
-    bar='<button type="button" id="lv-listen" data-label="▶ Modèle" class="ghost">▶ Modèle</button><button type="button" data-lv="peek" class="ghost">'+(learn.peek?'Cacher':'Montrer')+'</button>'
-      +'<button type="button" data-lv="miss" class="ghost">Pas encore</button><button type="button" data-lv="ok" class="primary">Réussi ✓</button>';
+    body=msg+'<p class="lv-text">'+t('recallText')+'</p><div class="lv-keys">'+line.map((n,j)=>learn.peek?tileHTML(n,st.res.notes[a+j],a+j,'div',false):hiddenTileHTML(n,a+j)).join('')+'</div>';
+    bar=answerBar();
   }else if(learn.step==='chain'){
-    let html='';for(let k=0;k<=learn.ph;k++){const [s]=phraseRange(k);html+='<div class="lv-chain"><span class="lv-chain-n">'+(k+1)+'</span><div class="lv-keys small">'+lines[k].map((n,j)=>learn.peek?tileHTML(n,st.res.notes[s+j],s+j,'div',false):hiddenTileHTML(n,s+j)).join('')+'</div></div>';}
-    body=msg+'<p class="lv-text">Enchaîne les phrases 1 à '+(learn.ph+1)+' d\'un seul coup, sans regarder.</p>'+html;
-    bar='<button type="button" id="lv-listen" data-label="▶ Modèle" class="ghost">▶ Modèle</button><button type="button" data-lv="peek" class="ghost">'+(learn.peek?'Cacher':'Montrer')+'</button>'
-      +'<button type="button" data-lv="miss" class="ghost">Pas encore</button><button type="button" data-lv="ok" class="primary">Réussi ✓</button>';
+    let html='';for(let k=0;k<=learn.ph;k++){const [s]=phraseRange(k);html+='<div class="lv-chain"><span class="lv-chain-n">'+esc(t('phrase',{n:k+1}))+'</span><div class="lv-keys small chainkeys">'+lines[k].map((n,j)=>learn.peek?tileHTML(n,st.res.notes[s+j],s+j,'div',false):hiddenTileHTML(n,s+j)).join('')+'</div></div>';}
+    body=msg+'<p class="lv-text">'+esc(t('chainText',{n:learn.ph+1}))+'</p>'+html;
+    bar=answerBar();
   }else if(learn.step==='ask'){
-    body=msg+'<p class="lv-text">Où est-ce que ça a coincé ? On retravaillera cette phrase.</p><div class="lv-ask">'+Array.from({length:learn.ph+1},(_,k)=>'<button type="button" data-lv="weak" data-k="'+k+'">Phrase '+(k+1)+'</button>').join('')+'</div>';
-    bar='<button type="button" data-lv="retry-chain" class="ghost">Je réessaie</button>';
+    body=msg+'<p class="lv-text">'+esc(t('askText'))+'</p><div class="lv-ask">'+Array.from({length:learn.ph+1},(_,k)=>'<button type="button" data-lv="weak" data-k="'+k+'">'+esc(t('phrase',{n:k+1}))+'</button>').join('')+'</div>';
+    bar='<button type="button" data-lv="retry-chain" class="ghost">'+esc(t('retry'))+'</button>';
   }else{
     const hard=P.map((x,k)=>({k,miss:x.miss})).filter(x=>x.miss>0).sort((x,y)=>y.miss-x.miss);
-    body='<div class="lv-done"><p class="lv-big">Bravo, tu connais le morceau !</p>'
-      +(hard.length?'<p class="lv-text">Les phrases qui t\'ont donné le plus de mal : '+hard.slice(0,3).map(x=>'phrase '+(x.k+1)+' ('+x.miss+' essai'+(x.miss>1?'s':'')+' de plus)').join(', ')+'.</p>':'<p class="lv-text">Sans une seule erreur.</p>')+'</div>';
-    bar='<button type="button" data-lv="review" class="ghost"'+(hard.length?'':' disabled')+'>Réviser les difficiles</button><button type="button" data-lv="restart" class="ghost">Recommencer</button><button type="button" data-lv="to-play" class="primary">Jouer en entier</button>';
+    body='<div class="lv-done"><p class="lv-big">'+esc(t('doneBig'))+'</p>'
+      +'<p class="lv-text">'+esc(hard.length?t('hardIntro',{x:hard.slice(0,3).map(x=>t('hardItem')(x.k+1,x.miss)).join(', ')}):t('noMistake'))+'</p></div>';
+    bar='<button type="button" data-lv="review" class="ghost"'+(hard.length?'':' disabled')+'>'+esc(t('review'))+'</button><button type="button" data-lv="restart" class="ghost">'+esc(t('restart'))+'</button><button type="button" data-lv="to-play" class="primary">'+esc(t('playWhole'))+'</button>';
   }
-  $('#lv-body').innerHTML=body;$('#lv-bar').innerHTML=bar;
+  const lvb=$('#lv-body');lvb.innerHTML=body;lvb.scrollTop=0;
+  const barEl=$('#lv-bar');barEl.innerHTML=bar;barEl.dataset.n=barEl.children.length;
+  if(learn.step==='notes'){const cur=lvb.querySelector('.strip .tile.cur');if(cur&&cur.parentElement.scrollWidth>cur.parentElement.clientWidth)cur.parentElement.scrollLeft=cur.offsetLeft-cur.parentElement.clientWidth/2+cur.offsetWidth/2;}
   const lb=$('#lv-listen');if(lb)lb.addEventListener('click',()=>{if(learn.step==='chain')learnListen(0,learn.ph);else learnListen(learn.ph,learn.ph);});
+}
+function answerBar(){
+  return '<button type="button" id="lv-listen" data-label="'+esc(t('model'))+'" class="ghost">'+esc(t('model'))+'</button><button type="button" data-lv="peek" class="ghost">'+esc(learn.peek?t('hide'):t('show'))+'</button>'
+    +'<button type="button" data-lv="miss" class="ghost">'+esc(t('notYet'))+'</button><button type="button" data-lv="ok" class="primary">'+esc(t('gotIt'))+'</button>';
 }
 function nextPhrase(){
   const k=learn.prog.phrases.findIndex(x=>!x.learned);
@@ -1173,22 +1460,22 @@ function learnAction(act,el){
   if(act==='fix'){const [a]=phraseRange(learn.ph);select(a+learn.ni,false);return;}
   if(act==='peek'){learn.peek=!learn.peek;renderLearn();return;}
   if(act==='ok'){
-    if(learn.peek){learn.peek=false;learn.msg='Bien. Refais-la une fois sans regarder pour la valider.';renderLearn();return;}
+    if(learn.peek){learn.peek=false;learn.msg=t('peekOk');renderLearn();return;}
     if(learn.step==='recall'){
       pr.ok++;pr.learned=true;
-      if(learn.chainBack!=null){learn.ph=learn.chainBack;learn.chainBack=null;learn.step='chain';learn.msg='Phrase reprise. On réessaie l\'enchaînement.';saveProg();}
-      else if(learn.ph>0){learn.step='chain';learn.msg='Phrase '+(learn.ph+1)+' validée !';saveProg();}
-      else{learn.msg='Phrase 1 validée !';nextPhrase();}
-    }else{learn.msg='Enchaînement réussi !';nextPhrase();if(learn.step!=='done')learn.msg='Enchaînement réussi ! Phrase suivante.';}
+      if(learn.chainBack!=null){learn.ph=learn.chainBack;learn.chainBack=null;learn.step='chain';learn.msg=t('reworked');saveProg();}
+      else if(learn.ph>0){learn.step='chain';learn.msg=t('validated',{n:learn.ph+1});saveProg();}
+      else{learn.msg=t('validated',{n:1});nextPhrase();}
+    }else{learn.msg=t('chainOk');nextPhrase();if(learn.step!=='done')learn.msg=t('chainOkNext');}
     learn.peek=false;renderLearn();return;
   }
   if(act==='miss'){
     learn.peek=false;
-    if(learn.step==='recall'){pr.miss++;slowDown(pr);saveProg();learn.step='notes';learn.ni=0;learn.msg='Pas de souci : on reprend note par note, un peu plus lentement.';renderLearn();playLearnNote();}
+    if(learn.step==='recall'){pr.miss++;slowDown(pr);saveProg();learn.step='notes';learn.ni=0;learn.msg=t('missMsg');renderLearn();playLearnNote();}
     else{learn.step='ask';renderLearn();}
     return;
   }
-  if(act==='weak'){const k=+el.dataset.k;P[k].miss++;P[k].learned=false;slowDown(P[k]);learn.chainBack=learn.ph;learn.ph=k;learn.step='notes';learn.ni=0;saveProg();learn.msg='On retravaille la phrase '+(k+1)+', plus lentement.';renderLearn();playLearnNote();return;}
+  if(act==='weak'){const k=+el.dataset.k;P[k].miss++;P[k].learned=false;slowDown(P[k]);learn.chainBack=learn.ph;learn.ph=k;learn.step='notes';learn.ni=0;saveProg();learn.msg=t('weakMsg',{n:k+1});renderLearn();playLearnNote();return;}
   if(act==='retry-chain'){learn.step='chain';renderLearn();return;}
   if(act==='review'){const k=P.map((x,i)=>({x,i})).filter(o=>o.x.miss>0).sort((p,q)=>q.x.miss-p.x.miss)[0];if(k){learn.ph=k.i;learn.step='notes';learn.ni=0;learn.tempo=k.x.tempo||0.8;renderLearn();playLearnNote();}return;}
   if(act==='restart'){learn.prog=freshProg(activeLines());learn.ph=0;learn.step='listen';learn.tempo=1;saveProg();renderLearn();return;}
@@ -1210,9 +1497,9 @@ function setTab(tab){
 $('#tab-notes').addEventListener('click',()=>setTab('notes'));
 $('#tab-video').addEventListener('click',()=>setTab('video'));
 const ta=$('#notes-input');
-ta.value=storeGet('ocarina-notes')??SAMPLES.joie;
+ta.value=storeGet('ocarina-notes')??(LANG==='en'?SAMPLES_EN:SAMPLES).joie;
 ta.addEventListener('input',()=>{storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();render(true);});
-document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{st.openId=null;syncSaveRow();ta.value=SAMPLES[b.dataset.sample];storeSet('ocarina-notes',ta.value);st.undo.notes=[];st.sel=null;syncFromText();render(true);if(!ta.value)ta.focus();}));
+document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{st.openId=null;syncSaveRow();ta.value=(LANG==='en'?SAMPLES_EN:SAMPLES)[b.dataset.sample];storeSet('ocarina-notes',ta.value);st.undo.notes=[];st.sel=null;syncFromText();render(true);if(!ta.value)ta.focus();}));
 document.querySelectorAll('input[name=keep]').forEach(r=>r.addEventListener('change',()=>{stopPlay();render(true);}));
 
 
@@ -1221,7 +1508,7 @@ let fileObj=null,capture=null,busy=false;
 $('#file-input').addEventListener('change',e=>{
   const f=e.target.files&&e.target.files[0];fileObj=f||null;window.__forceCapture=false;
   $('#analyze').disabled=!f;
-  if(f)setStatus('Fichier prêt : '+f.name+'. Appuie sur Analyser.');
+  if(f)setStatus(t('fileReady',{x:f.name}));
 });
 function setStatus(t,err){const s=$('#status');s.textContent=t;s.classList.toggle('err',!!err);}
 function setBar(p){$('#bar').style.width=Math.round(Math.max(0,Math.min(1,p))*100)+'%';}
@@ -1260,7 +1547,7 @@ function startCapture(c,file){
   function cancel(){if(done)return;done=true;cleanup();resolveFn(null);}
   el.addEventListener('ended',finish);
   el.addEventListener('error',()=>{if(done)return;done=true;cleanup();rejectFn(new Error('media'));});
-  el.addEventListener('timeupdate',()=>{if(!done&&el.duration&&isFinite(el.duration)){setBar(el.currentTime/el.duration);setStatus('Écoute du fichier… '+fmtT(el.currentTime)+' / '+fmtT(el.duration)+'. Tu peux arrêter avant la fin.');}});
+  el.addEventListener('timeupdate',()=>{if(!done&&el.duration&&isFinite(el.duration)){setBar(el.currentTime/el.duration);setStatus(t('listeningFile',{a:fmtT(el.currentTime),b:fmtT(el.duration)}));}});
   const playP=el.play();
   if(playP&&playP.catch)playP.catch(err=>{if(done)return;done=true;cleanup();rejectFn(Object.assign(new Error('blocked'),{blocked:true}));});
   return {promise,finish,cancel,isDone:()=>done};
@@ -1275,8 +1562,8 @@ async function runAnalysis(){
     if(isVideo){
       // Start listening right away (inside the tap), and try the fast decoder in parallel.
       capture=startCapture(c,file);
-      btn.textContent='Arrêter l\'écoute et analyser';btn.disabled=false;
-      setStatus('Écoute de la vidéo…');
+      btn.textContent=t('stopAnalyze');btn.disabled=false;
+      setStatus(t('listeningVideo'));
       if(!window.__forceCapture){
         file.arrayBuffer().then(decode).then(ab=>{if(capture&&!capture.isDone()){const cap=capture;capture=null;cap.cancel();data=mixDown(ab);finishWith(data);}}).catch(()=>{});
       }
@@ -1284,35 +1571,35 @@ async function runAnalysis(){
       capture=null;
       if(got){data=got;await finishWith(data);}
     }else{
-      setStatus('Extraction du son…');
+      setStatus(t('extracting'));
       try{data=mixDown(await decode(await file.arrayBuffer()));}
       catch(e){window.__forceCapture=true;throw Object.assign(new Error('retry'),{retry:true});}
       await finishWith(data);
     }
   }catch(e){
     capture=null;
-    if(e&&e.blocked)setStatus('La lecture a été bloquée par le navigateur. Appuie encore une fois sur Analyser.',true);
-    else if(e&&e.retry)setStatus('Ce fichier ne se décode pas directement. Appuie encore une fois sur Analyser : la page va l\'écouter en le lisant.',true);
-    else setStatus('Je n\'arrive pas à lire le son de ce fichier. Essaie de l\'exporter en audio (m4a ou mp3), ou ouvre la page dans un autre navigateur.',true);
-    busy=false;btn.textContent='Analyser';btn.disabled=!fileObj;
+    if(e&&e.blocked)setStatus(t('blocked'),true);
+    else if(e&&e.retry)setStatus(t('retryDecode'),true);
+    else setStatus(t('cantRead'),true);
+    busy=false;btn.textContent=t('analyze');btn.disabled=!fileObj;
   }
 }
 let finishing=false;
 async function finishWith(d){
   if(finishing)return;finishing=true;
-  const btn=$('#analyze');btn.textContent='Analyser';btn.disabled=true;
+  const btn=$('#analyze');btn.textContent=t('analyze');btn.disabled=true;
   try{
     let x=d.x;const maxS=d.sr*600;let note='';
-    if(x.length>maxS||d.truncated){x=x.subarray(0,Math.min(x.length,maxS));note=' (seules les 10 premières minutes sont analysées)';}
-    if(x.length<d.sr*0.3){setStatus('Le son récupéré est trop court ou vide. Réessaie, ou exporte la vidéo en audio (m4a ou mp3).',true);return;}
+    if(x.length>maxS||d.truncated){x=x.subarray(0,Math.min(x.length,maxS));note=t('first10');}
+    if(x.length<d.sr*0.3){setStatus(t('tooShort'),true);return;}
     const [fmin,fmax]=$('#range-sel').value.split('-').map(Number);
-    setStatus('Recherche des notes d\'ocarina…');setBar(0);
+    setStatus(t('searching'));setBar(0);
     const voice=$('#source-sel').value==='voice';
     const r=voice?await analyzeVoice(x,d.sr,{minDur:0.1},setBar):await analyzeAudio(x,d.sr,{fmin,fmax,purity:+$('#purity').value,minDur:0.08},setBar);
     st.audioRes=r;st.audioLines=audioToLines(r.notes);st.audioSrc={x,sr:d.sr};st.sel=null;st.undo.video=[];if(game.open)closeGame();
-    setStatus(r.notes.length?(r.notes.length+' notes trouvées'+note+'. Vérifie-les en écoutant le résultat.'):(voice?'Aucune note chantée trouvée. Vérifie que la voix s\'entend bien et qu\'il n\'y a pas de musique derrière.':'Aucune note d\'ocarina trouvée. Baisse le filtre anti-piano ou change le type d\'ocarina, puis relance.')+note,!r.notes.length);
+    setStatus(r.notes.length?t('foundN',{n:r.notes.length,x:note}):(voice?t('noVoice'):t('noOcarina'))+note,!r.notes.length);
     $('#roll-wrap').hidden=!r.notes.length;
-    $('#found').textContent=r.notes.length?'Notes trouvées : '+st.audioLines.map(l=>l.map(n=>noteName(n.midi)+(n.hold?'—':'')).join(' ')).join(' / '):'';
+    $('#found').textContent=r.notes.length?t('foundList')+st.audioLines.map(l=>l.map(n=>noteName(n.midi)+(n.hold?'—':'')).join(' ')).join(' / '):'';
     drawRoll();render(true);
   }finally{finishing=false;busy=false;btn.disabled=!fileObj;}
 }
@@ -1321,14 +1608,14 @@ $('#analyze').addEventListener('click',()=>{
   if(busy)return;
   runAnalysis();
 });
-$('#purity').addEventListener('change',()=>{if(st.audioRes)setStatus('Réglage changé : appuie de nouveau sur Analyser.');});
-$('#range-sel').addEventListener('change',()=>{if(st.audioRes)setStatus('Réglage changé : appuie de nouveau sur Analyser.');});
+$('#purity').addEventListener('change',()=>{if(st.audioRes)setStatus(t('settingChanged'));});
+$('#range-sel').addEventListener('change',()=>{if(st.audioRes)setStatus(t('settingChanged'));});
 function syncSource(){const voice=$('#source-sel').value==='voice';$('#ocarina-settings').hidden=voice;$('#voice-hint').hidden=!voice;$('#ocarina-tip').hidden=voice;}
-$('#source-sel').addEventListener('change',()=>{syncSource();storeSet('ocarina-source',$('#source-sel').value);if(st.audioRes)setStatus('Réglage changé : appuie de nouveau sur Analyser.');});
+$('#source-sel').addEventListener('change',()=>{syncSource();storeSet('ocarina-source',$('#source-sel').value);if(st.audioRes)setStatus(t('settingChanged'));});
 {const sv=storeGet('ocarina-source');if(sv==='voice'||sv==='ocarina')$('#source-sel').value=sv;syncSource();}
 $('#to-text').addEventListener('click',()=>{
   if(!st.audioLines)return;
-  ta.value=serializeLines(st.audioLines);storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();setTab('notes');ta.focus();
+  ta.value=serializeLines(st.audioLines,LANG);storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();setTab('notes');ta.focus();
 });
 
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
@@ -1341,7 +1628,7 @@ function drawRoll(){
   const t0=0,t1=r.frames.length?r.frames[r.frames.length-1].t:1;
   const X=t=>8+(w-16)*(t-t0)/Math.max(0.001,t1-t0),Y=m=>h-14-(h-28)*(m-lo)/Math.max(1,hi-lo);
   g.strokeStyle=cssVar('--line');g.lineWidth=1;g.fillStyle=cssVar('--muted');g.font='10px '+cssVar('--font-body');
-  for(let m=Math.ceil(lo);m<=hi;m++){if(((m%12)+12)%12===0){const y=Y(m);g.beginPath();g.moveTo(8,y);g.lineTo(w-8,y);g.stroke();g.fillText('do',10,y-2);}}
+  for(let m=Math.ceil(lo);m<=hi;m++){if(((m%12)+12)%12===0){const y=Y(m);g.beginPath();g.moveTo(8,y);g.lineTo(w-8,y);g.stroke();g.fillText(noteName(m),10,y-2);}}
   g.fillStyle=cssVar('--staff');
   r.frames.forEach((f,i)=>{if(r.voiced[i]){const m=f.mf-r.tune;if(m>lo-1&&m<hi+1)g.fillRect(X(f.t)-0.5,Y(m)-0.5,1.2,1.2);}});
   g.fillStyle=cssVar('--accent');
@@ -1368,26 +1655,26 @@ function newId(){return 'c-'+Date.now().toString(36)+'-'+Math.random().toString(
 function compoStatus(t,err){const s=$('#compo-status');s.textContent=t;s.classList.toggle('err',!!err);}
 function dbErrText(e){
   const c=e&&e.code;
-  if(c==='quota_exceeded')return 'Plus de place pour de nouvelles compositions. Supprimes-en une, puis réessaie.';
-  if(c==='invalid_argument')return 'Ton accès à cette page ne permet pas d\'enregistrer dans ton compte.';
-  return 'L\'enregistrement n\'a pas abouti. Réessaie dans un instant.';
+  if(c==='quota_exceeded')return t('errQuota');
+  if(c==='invalid_argument')return t('errAccess');
+  return t('errOther');
 }
 function queueWrite(fn){compos.writing=compos.writing.then(fn,fn);return compos.writing;}
 async function saveCompo(asNew){
   const name=($('#compo-name').value||'').trim();
-  if(!st.flat.length){compoStatus('Il n\'y a pas encore de notes à enregistrer.',true);return;}
-  if(!name){compoStatus('Donne un nom à ta mélodie avant de l\'enregistrer.',true);$('#compo-name').focus();return;}
+  if(!st.flat.length){compoStatus(t('nothingToSave'),true);return;}
+  if(!name){compoStatus(t('needName'),true);$('#compo-name').focus();return;}
   const id=(!asNew&&openCompoId())?openCompoId():newId();
   const doc=compoDoc(name);
   const prev=compos.items.find(c=>c.id===id);if(prev&&prev.progress&&!asNew)doc.progress=prev.progress;
   if(compos.kind==='db'){
-    compoStatus('Enregistrement…');
+    compoStatus(t('saving'));
     try{await queueWrite(()=>compos.db.collection('data/users/'+compos.uid).doc(id).set(doc));}
     catch(e){compoStatus(dbErrText(e),true);return;}
   }else{
     const a=compos.items.filter(c=>c.id!==id);a.unshift(Object.assign({id},doc));compos.items=a;compoLocalWrite(a);
   }
-  st.openId=id;compoStatus('« '+name+' » est enregistrée'+(compos.kind==='db'?' dans ton compte.':' sur cet appareil.'));
+  st.openId=id;compoStatus(t(compos.kind==='db'?'savedDb':'savedLocal',{x:name}));
   syncSaveRow();renderCompos();
 }
 async function deleteCompo(id){
@@ -1396,17 +1683,17 @@ async function deleteCompo(id){
     catch(e){compoStatus(dbErrText(e),true);return;}
   }else{const a=compos.items.filter(c=>c.id!==id);compos.items=a;compoLocalWrite(a);}
   if(st.openId===id)st.openId=null;
-  compos.confirmDel=null;compoStatus('Composition supprimée.');syncSaveRow();renderCompos();
+  compos.confirmDel=null;compoStatus(t('deleted'));syncSaveRow();renderCompos();
 }
 function openCompo(id){
   const c=compos.items.find(x=>x.id===id);if(!c||!Array.isArray(c.lines))return;
   const lines=c.lines.map(l=>l.map(n=>({midi:n.m,hold:n.h||0})));
   $('#keep-same').checked=!!c.keep;$('#keep-auto').checked=!c.keep;
-  const text=serializeLines(lines);
+  const text=serializeLines(lines,LANG);
   ta.value=text;storeSet('ocarina-notes',text);st.undo.notes=[];syncFromText();
   st.openId=id;$('#compo-name').value=c.name||'';
   setTab('notes');syncSaveRow();renderCompos();
-  compoStatus('« '+(c.name||'Sans nom')+' » est ouverte.');
+  compoStatus(t('opened',{x:c.name||t('untitled')}));
   $('#result-title').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 }
 async function saveProgressToCompo(p){
@@ -1417,40 +1704,42 @@ async function saveProgressToCompo(p){
 }
 function syncSaveRow(){
   const oid=openCompoId(),open=oid?compos.items.find(c=>c.id===oid):null;
-  $('#compo-save').textContent=open?'Enregistrer les changements':'Enregistrer';
+  $('#compo-save').textContent=open?t('saveChanges'):t('save');
   $('#compo-saveas').hidden=!open;
-  $('#compo-open-name').textContent=open?('Ouverte : '+(open.name||'Sans nom')):'';
+  $('#compo-open-name').textContent=open?t('openLabel',{x:open.name||t('untitled')}):'';
 }
-function fmtDate(t){try{return new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}catch(e){return '';}}
+function fmtDate(d){try{return new Date(d).toLocaleDateString(t('dateLocale'),{day:'numeric',month:'short'});}catch(e){return '';}}
 function renderCompos(){
-  $('#compos-where').textContent=compos.kind==='db'?'Dans ton compte':'Sur cet appareil';
+  $('#compos-where').textContent=compos.kind==='db'?t('whereDb'):t('whereLocal');
+  $('#io-export-all').disabled=!compos.items.length;
   const ul=$('#compo-list');ul.innerHTML='';
-  if(compos.kind==='db'&&!compos.loaded){const li=document.createElement('li');li.className='compo-empty';li.textContent=compos.note||'Chargement de tes compositions…';ul.appendChild(li);return;}
-  if(compos.note){const li=document.createElement('li');li.className='compo-empty';li.textContent=compos.note;ul.appendChild(li);}
-  if(!compos.items.length){const li=document.createElement('li');li.className='compo-empty';li.textContent='Aucune composition pour l\'instant. Donne un nom à ta mélodie et appuie sur Enregistrer.';ul.appendChild(li);return;}
+  if(compos.kind==='db'&&!compos.loaded){const li=document.createElement('li');li.className='compo-empty';li.textContent=compos.note?t(compos.note):t('loading');ul.appendChild(li);return;}
+  if(compos.note){const li=document.createElement('li');li.className='compo-empty';li.textContent=t(compos.note);ul.appendChild(li);}
+  if(!compos.items.length){const li=document.createElement('li');li.className='compo-empty';li.textContent=t('emptyCompos');ul.appendChild(li);return;}
   for(const c of compos.items){
     const li=document.createElement('li');li.className='compo'+(c.id===openCompoId()?' open':'');
     const info=document.createElement('div');info.className='compo-info';
-    const nm=document.createElement('strong');nm.textContent=c.name||'Sans nom';
+    const nm=document.createElement('strong');nm.textContent=c.name||t('untitled');
     const meta=document.createElement('span');
     const learned=c.progress&&Array.isArray(c.progress.phrases)?c.progress.phrases.filter(x=>x.learned).length:0;
-    meta.textContent=(c.count||0)+' notes · '+fmtDate(c.updatedAt)+(learned?' · '+learned+'/'+c.progress.phrases.length+' phrases apprises':'');
+    meta.textContent=t('metaNotes',{n:c.count||0})+' · '+fmtDate(c.updatedAt)+(learned?' · '+t('metaLearned',{n:learned,t:c.progress.phrases.length}):'');
     info.append(nm,meta);
     const acts=document.createElement('div');acts.className='compo-acts';
     if(compos.confirmDel===c.id){
-      const q=document.createElement('span');q.className='compo-q';q.textContent='Supprimer ?';
-      const yes=document.createElement('button');yes.type='button';yes.className='mini danger';yes.textContent='Oui, supprimer';yes.addEventListener('click',()=>deleteCompo(c.id));
-      const no=document.createElement('button');no.type='button';no.className='mini';no.textContent='Non';no.addEventListener('click',()=>{compos.confirmDel=null;renderCompos();});
+      const q=document.createElement('span');q.className='compo-q';q.textContent=t('deleteQ');
+      const yes=document.createElement('button');yes.type='button';yes.className='mini danger';yes.textContent=t('yesDelete');yes.addEventListener('click',()=>deleteCompo(c.id));
+      const no=document.createElement('button');no.type='button';no.className='mini';no.textContent=t('no');no.addEventListener('click',()=>{compos.confirmDel=null;renderCompos();});
       acts.append(q,yes,no);
     }else{
-      const op=document.createElement('button');op.type='button';op.className='mini';op.textContent='Ouvrir';op.addEventListener('click',()=>openCompo(c.id));
-      const del=document.createElement('button');del.type='button';del.className='mini';del.textContent='Supprimer';del.setAttribute('aria-label','Supprimer '+(c.name||'Sans nom'));del.addEventListener('click',()=>{compos.confirmDel=c.id;renderCompos();});
-      acts.append(op,del);
+      const op=document.createElement('button');op.type='button';op.className='mini';op.textContent=t('open');op.addEventListener('click',()=>openCompo(c.id));
+      const ex=document.createElement('button');ex.type='button';ex.className='mini';ex.textContent=t('export');ex.setAttribute('aria-label',t('exportAria',{x:c.name||t('untitled')}));ex.addEventListener('click',()=>exportCompos([c]));
+      const del=document.createElement('button');del.type='button';del.className='mini';del.textContent=t('delete');del.setAttribute('aria-label',t('deleteAria',{x:c.name||t('untitled')}));del.addEventListener('click',()=>{compos.confirmDel=c.id;renderCompos();});
+      acts.append(op,ex,del);
     }
     li.append(info,acts);ul.appendChild(li);
   }
 }
-function useLocal(note){compos.kind='local';compos.items=compoLocalRead();compos.loaded=true;compos.note=note||(localWorks()?'':'Ce navigateur ne garde rien : tes compositions disparaîtront quand tu fermeras la page.');renderCompos();syncSaveRow();}
+function useLocal(note){compos.kind='local';compos.items=compoLocalRead();compos.loaded=true;compos.note=note||(localWorks()?'':'noStorage');renderCompos();syncSaveRow();}
 async function initCompos(){
   useLocal();
   if(!window.claude||typeof window.claude.use!=='function')return;
@@ -1459,31 +1748,118 @@ async function initCompos(){
     const uid=user?await user.id():null;
     if(!db||!uid)return;
     compos.kind='db';compos.db=db;compos.uid=uid;compos.loaded=false;compos.items=[];renderCompos();
-    let timer=setTimeout(()=>{compos.note='Tes compositions ne répondent pas encore. Elles apparaîtront dès que la connexion revient.';if(!compos.loaded)renderCompos();},10000);
+    let timer=setTimeout(()=>{compos.note='slowDb';if(!compos.loaded)renderCompos();},10000);
     db.collection('data/users/'+uid).onSnapshot(snap=>{
       if(!snap.metadata.fromCache){clearTimeout(timer);compos.note='';}
       compos.items=snap.docs.map(d=>Object.assign({id:d.id},d.data())).filter(c=>c.kind==='compo').sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
       compos.loaded=true;renderCompos();syncSaveRow();
-    },err=>{clearTimeout(timer);useLocal(err&&err.code==='revoked'?'':'Ton compte ne répond pas : les compositions sont gardées sur cet appareil pour l\'instant.');});
+    },err=>{clearTimeout(timer);useLocal(err&&err.code==='revoked'?'':'dbDown');});
   }catch(e){}
 }
 $('#compo-save').addEventListener('click',()=>saveCompo(false));
 $('#compo-saveas').addEventListener('click',()=>saveCompo(true));
-$('#compo-new').addEventListener('click',()=>{st.openId=null;$('#compo-name').value='';syncSaveRow();renderCompos();compoStatus('La prochaine sauvegarde créera une nouvelle composition.');$('#compo-name').focus();});
+$('#compo-new').addEventListener('click',()=>{st.openId=null;$('#compo-name').value='';syncSaveRow();renderCompos();compoStatus(t('nextNew'));$('#compo-name').focus();});
 $('#compo-name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCompo(false);}});
 initCompos();
 
 /* ---------- copy ---------- */
 $('#copy').addEventListener('click',()=>{
-  const txt='Légende : ↑↓ joystick, ▲▼ croix, — note tenue\n'+$('#textout').textContent;
+  const txt=t('copyLegend')+'\n'+$('#textout').textContent;
   const done=m=>{$('#copy-status').textContent=m;setTimeout(()=>$('#copy-status').textContent='',2500);};
   const selectOut=()=>{const d=$('.textbox');if(d)d.open=true;const r=document.createRange();r.selectNodeContents($('#textout'));const s=getSelection();s.removeAllRanges();s.addRange(r);};
-  try{navigator.clipboard.writeText(txt).then(()=>done('Copié.'),()=>{selectOut();done('Sélectionné : copie-le à la main.');});}
-  catch(e){selectOut();done('Sélectionné : copie-le à la main.');}
+  try{navigator.clipboard.writeText(txt).then(()=>done(t('copied')),()=>{selectOut();done(t('copySelected'));});}
+  catch(e){selectOut();done(t('copySelected'));}
 });
 
+/* ---------- export / import ----------
+   A JSON file (or the same text, copied) that any copy of the page can import. Inside Claude the file goes
+   through the downloads capability; on a plain web page it is an ordinary download. */
+function exportPayload(list){return JSON.stringify({app:'traducteur-ocarina',version:1,exportedAt:new Date().toISOString(),
+  compositions:list.map(c=>({name:c.name||'',keep:!!c.keep,count:c.count||0,lines:c.lines}))});}
+function slug(x){return (x||'composition').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'composition';}
+let dlCap;
+if(window.claude&&typeof window.claude.use==='function')window.claude.use('downloads').then(d=>{dlCap=d;},()=>{dlCap=null;});
+async function offerFile(filename,text){
+  if(window.claude&&typeof window.claude.use==='function'){
+    if(dlCap===undefined){try{dlCap=await window.claude.use('downloads');}catch(e){dlCap=null;}}
+    if(dlCap){try{await dlCap.save({filename,data:text});return 'saved';}catch(e){if(e&&e.code==='declined')return 'declined';}}
+    return 'code';
+  }
+  try{
+    const url=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download=filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);return 'saved';
+  }catch(e){return 'code';}
+}
+async function exportCompos(list){
+  if(!list.length){compoStatus(t('nothingToExport'),true);return;}
+  const text=exportPayload(list);
+  const fname=list.length===1?'ocarina-'+slug(list[0].name)+'.json':(LANG==='en'?'my-ocarina-songs.json':'mes-compositions-ocarina.json');
+  $('#io-text').value=text;
+  const r=await offerFile(fname,text);
+  if(r==='saved')compoStatus(t('exported',{x:fname}));
+  else if(r==='declined')compoStatus(t('exportCancelled'));
+  else{const d=$('#io-paste');d.open=true;const tx=$('#io-text');tx.focus();tx.select();compoStatus(t('codeShown'));}
+}
+function parseImport(text){
+  let o;try{o=JSON.parse(String(text).trim());}catch(e){throw new Error(t('badImport'));}
+  const arr=Array.isArray(o)?o:(o&&Array.isArray(o.compositions)?o.compositions:(o&&Array.isArray(o.lines)?[o]:null));
+  if(!arr)throw new Error(t('badImport'));
+  const out=[];
+  for(const c of arr.slice(0,200)){
+    if(!c||!Array.isArray(c.lines))continue;
+    const lines=c.lines.slice(0,300).map(l=>Array.isArray(l)?l.slice(0,500)
+      .filter(n=>n&&typeof n.m==='number'&&isFinite(n.m)&&n.m>=12&&n.m<=120)
+      .map(n=>{const x={m:Math.round(n.m),h:Math.max(0,Math.min(3,Math.round(+n.h||0)))};if(typeof n.d==='number'&&isFinite(n.d)&&n.d>0&&n.d<30)x.d=Math.round(n.d*1000)/1000;return x;}):[])
+      .filter(l=>l.length);
+    if(!lines.length)continue;
+    out.push({kind:'compo',name:String(c.name||'').replace(/\s+/g,' ').trim().slice(0,60)||t('untitled'),keep:!!c.keep,updatedAt:Date.now(),count:lines.reduce((s,l)=>s+l.length,0),lines});
+  }
+  if(!out.length)throw new Error(t('noneInImport'));
+  return out;
+}
+async function importCompos(list){
+  const names=new Set(compos.items.map(c=>c.name)),suf=t('importedSuffix');
+  list.forEach((d,i)=>{if(names.has(d.name))d.name=d.name.slice(0,60-suf.length)+suf;names.add(d.name);d.updatedAt=Date.now()+i;});
+  if(compos.kind==='db'){
+    try{for(const d of list){const id=newId();await queueWrite(()=>compos.db.collection('data/users/'+compos.uid).doc(id).set(d));}}
+    catch(e){compoStatus(dbErrText(e),true);return;}
+  }else{compos.items=list.map(d=>Object.assign({id:newId()},d)).reverse().concat(compos.items);compoLocalWrite(compos.items);renderCompos();}
+  compoStatus(t('imported')(list.length));
+}
+$('#io-export-all').addEventListener('click',()=>exportCompos(compos.items));
+$('#io-file').addEventListener('change',async e=>{
+  const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
+  try{await importCompos(parseImport(await f.text()));}catch(err){compoStatus(err.message||t('badImport'),true);}
+});
+$('#io-import-text').addEventListener('click',async()=>{
+  const v=$('#io-text').value;if(!v.trim())return;
+  try{await importCompos(parseImport(v));$('#io-text').value='';}catch(err){compoStatus(err.message||t('badImport'),true);}
+});
+$('#io-copy').addEventListener('click',()=>{
+  const tx=$('#io-text');if(!tx.value)tx.value=exportPayload(compos.items);
+  const sel=()=>{tx.focus();tx.select();compoStatus(t('copySelected'));};
+  try{navigator.clipboard.writeText(tx.value).then(()=>compoStatus(t('codeCopied')),sel);}catch(e){sel();}
+});
+
+/* ---------- language switch ---------- */
+function setLang(l){
+  if(l===LANG)return;
+  const old=LANG;LANG=l;NOTE_LANG=l;storeSet('ocarina-lang',l);stopPlay();
+  const from=old==='en'?SAMPLES_EN:SAMPLES,to=l==='en'?SAMPLES_EN:SAMPLES;
+  for(const k of Object.keys(from)){if(from[k]&&ta.value===from[k]){ta.value=to[k];storeSet('ocarina-notes',ta.value);syncFromText();break;}}
+  applyStatic();syncSource();
+  if(!st.audioRes&&!capture&&!busy)setStatus(fileObj?t('fileReady',{x:fileObj.name}):t('chooseFile'));
+  if(!busy)$('#analyze').textContent=capture?t('stopAnalyze'):t('analyze');
+  if(st.audioRes&&st.audioLines&&st.audioRes.notes.length)$('#found').textContent=t('foundList')+st.audioLines.map(x=>x.map(n=>noteName(n.midi)+(n.hold?'—':'')).join(' ')).join(' / ');
+  render(false);renderCompos();syncSaveRow();drawRoll();
+}
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+setStatus(t('chooseFile'));$('#analyze').textContent=t('analyze');
+
 {const v=storeGet('ocarina-view');if(v==='staff'||v==='big'){st.view=v;$('#view-big').setAttribute('aria-pressed',v==='big');$('#view-staff').setAttribute('aria-pressed',v==='staff');}}
-syncFromText();render(true);
+applyStatic();syncSource();syncFromText();render(true);renderCompos();syncSaveRow();
+
 </script>
 
 </body>
