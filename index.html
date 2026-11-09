@@ -316,6 +316,12 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 @media (max-width:560px){.game-top .vbtn{padding:6px 8px}}
 @media (prefers-reduced-motion: reduce){.live-prog>i{transition:none}}
 
+/* fullscreen bar: phrase, whole song, back, next */
+.game-bar{grid-template-columns:repeat(4,minmax(0,1fr))}
+.game-bar #game-play{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.game-bar #game-all{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+@media (max-width:560px){.game-bar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* loop toggle */
 .game-top-r{display:flex;gap:8px}
 .loop[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -608,8 +614,9 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
     <div class="game-next" id="game-next"></div>
     <p class="game-tip" data-i18n="s.gameTip">Glisse vers la gauche ou la droite pour changer de phrase. Touche une note pour la corriger.</p>
     <div class="game-bar">
+      <button type="button" id="game-play" data-i18n="s.playPhrase">▶ La phrase</button>
+      <button type="button" id="game-all" data-i18n="playSong">▶ Tout le morceau</button>
       <button type="button" id="game-prev" data-i18n="s.prev">◀ Avant</button>
-      <button type="button" id="game-play" data-i18n="listen">▶ Écouter</button>
       <button type="button" id="game-nextbtn" data-i18n="s.next">Après ▶</button>
     </div>
   </div>
@@ -1048,7 +1055,7 @@ fr:{
   mod:{'↑':'pousse le joystick vers le haut','↓':'pousse le joystick vers le bas','▲':'appuie sur la croix en haut','▼':'appuie sur la croix en bas'},
   modShort:{'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'},
   instr:(parts,btn)=>(parts.length?parts.join(' et ')+', puis appuie sur '+btn:'appuie sur '+btn),
-  loop:'↻ En boucle',loopAria:'Lecture en boucle',
+  loop:'↻ En boucle',loopAria:'Lecture en boucle','s.playPhrase':'▶ La phrase',playSong:'▶ Tout le morceau',
   's.modeLive':'Vérifier','s.liveOpen':'Vérifier au micro',
   'live.sens':'Sensibilité :','live.sensAria':'Sensibilité du micro','live.low':'Basse','live.mid':'Moyenne','live.high':'Haute','live.restart':'Recommencer',
   'live.start':'● Écouter le jeu','live.stop':"■ Arrêter l'écoute",'live.skip':'Passer ▶','live.again':'Rejouer le morceau',
@@ -1149,7 +1156,7 @@ en:{
   mod:{'↑':'push the stick up','↓':'push the stick down','▲':'press up on the D-pad','▼':'press down on the D-pad'},
   modShort:{'↑':'stick up','↓':'stick down','▲':'D-pad up','▼':'D-pad down'},
   instr:(parts,btn)=>(parts.length?parts.join(' and ')+', then press '+btn:'press '+btn),
-  loop:'↻ Loop',loopAria:'Loop playback',
+  loop:'↻ Loop',loopAria:'Loop playback','s.playPhrase':'▶ This phrase',playSong:'▶ Whole song',
   's.modeLive':'Check','s.liveOpen':'Check with the mic',
   'live.sens':'Sensitivity:','live.sensAria':'Microphone sensitivity','live.low':'Low','live.mid':'Medium','live.high':'High','live.restart':'Start over',
   'live.start':'● Listen to the game','live.stop':'■ Stop listening','live.skip':'Skip ▶','live.again':'Play the song again',
@@ -1427,13 +1434,34 @@ function phraseOf(i){const lines=activeLines();let s=0;for(let k=0;k<lines.lengt
 
 /* ---------- playback ---------- */
 let playState=null;
-function markPlaying(i){document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));if(i!=null)document.querySelectorAll('[data-i="'+i+'"]').forEach(e=>e.classList.add('playing'));}
+function markPlaying(i){
+  document.querySelectorAll('.playing').forEach(e=>e.classList.remove('playing'));
+  if(i==null||i<0)return;
+  followGame(i);
+  document.querySelectorAll('[data-i="'+i+'"]').forEach(e=>e.classList.add('playing'));
+  followTile(i);
+}
+/* Keep the playing note on screen. A manual scroll pauses this for a few seconds. */
+let userScrollAt=0;
+addEventListener('wheel',()=>{userScrollAt=performance.now();},{passive:true});
+addEventListener('touchmove',()=>{userScrollAt=performance.now();},{passive:true});
+function followTile(i){
+  if(game.open||performance.now()-userScrollAt<2500)return;
+  const el=document.querySelector('#results [data-i="'+i+'"]');if(!el)return;
+  const r=el.getBoundingClientRect(),limit=innerHeight-(document.body.classList.contains('editing')?280:90);
+  if(r.top<70||r.bottom>limit)el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+}
+/* Fullscreen "whole song": turn to the phrase that holds the playing note. */
+function followGame(i){
+  if(!game.open||game.mode!=='play'||!playState||playState.label!=='game-all')return;
+  const ph=phraseOf(i);if(ph!==game.ph){game.ph=ph;renderGame();}
+}
 /* Every listen button toggles play / stop. With "loop" on, playback starts again after a short pause until stopped. */
-const loopable=l=>!!l&&(l==='all'||l==='game'||l==='learn'||l==='passage'||l==='orig'||l.startsWith('phrase-')||l.startsWith('cat-'));
+const loopable=l=>!!l&&(l==='all'||l==='game'||l==='game-all'||l==='learn'||l==='passage'||l==='orig'||l.startsWith('phrase-')||l.startsWith('cat-'));
 function resetPlayLabels(){
   document.querySelectorAll('.cat-play').forEach(b=>{b.textContent='▶';});
   document.querySelectorAll('[data-play-ph]').forEach(b=>{b.textContent=t('listen');});
-  $('#play').textContent=t('playAll');$('#game-play').textContent=t('listen');
+  $('#play').textContent=t('playAll');$('#game-play').textContent=t('s.playPhrase');$('#game-all').textContent=t('playSong');
   $('#ed-passage').textContent=t('s.edPassage');$('#ed-orig').textContent=t('s.edOrig');
   const lb=$('#lv-listen');if(lb)lb.textContent=lb.dataset.label||t('listen');
 }
@@ -1441,6 +1469,7 @@ function showPlayingLabel(label){
   const stopTxt=t('stop');
   if(label==='all')$('#play').textContent=stopTxt;
   else if(label==='game')$('#game-play').textContent=stopTxt;
+  else if(label==='game-all')$('#game-all').textContent=stopTxt;
   else if(label==='learn'){const b=$('#lv-listen');if(b)b.textContent=stopTxt;}
   else if(label==='passage')$('#ed-passage').textContent=stopTxt;
   else if(label==='orig')$('#ed-orig').textContent=stopTxt;
@@ -1598,6 +1627,7 @@ $('#live-open').addEventListener('click',()=>openGame(st.sel!=null?phraseOf(st.s
 $('#game-close').addEventListener('click',()=>{deselect();closeGame();});
 $('#game-prev').addEventListener('click',()=>gameGo(-1));
 $('#game-nextbtn').addEventListener('click',()=>gameGo(1));
+$('#game-all').addEventListener('click',()=>{if(playState&&playState.label==='game-all'){stopPlay();return;}const [a]=phraseRange(game.ph);playSynth(st.seq.slice(a),'game-all');});
 $('#game-play').addEventListener('click',()=>{if(playState&&playState.label==='game'){stopPlay();return;}const [a,b]=phraseRange(game.ph);playSynth(st.seq.slice(a,b+1),'game');});
 $('#game-keys').addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(t)select(+t.dataset.i,false);});
 {let x0=null,y0=null;const area=$('#game-keys');
