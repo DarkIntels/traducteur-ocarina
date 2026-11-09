@@ -862,6 +862,12 @@ body.editing .game{padding-bottom:calc(var(--ed-h,280px) + 10px)}
         <button type="button" class="vbtn" data-sens="2" aria-pressed="false" data-i18n="live.high">Haute</button>
         <button type="button" class="linkbtn" id="lv2-restart" data-i18n="live.restart">Recommencer</button>
       </div>
+      <div class="tempo" role="group" data-i18n-aria="live.loopAria" aria-label="Jouer en boucle">
+        <span data-i18n="live.loop">En boucle :</span>
+        <button type="button" class="vbtn" data-liveloop="off" aria-pressed="true" data-i18n="live.loopOff">Non</button>
+        <button type="button" class="vbtn" data-liveloop="phrase" aria-pressed="false" data-i18n="live.loopPhrase">La phrase</button>
+        <button type="button" class="vbtn" data-liveloop="song" aria-pressed="false" data-i18n="live.loopSong">Le morceau</button>
+      </div>
     </div>
     <div class="lv-body" id="lv2-body" aria-live="polite"></div>
     <div class="lv-bar" id="lv2-bar"></div>
@@ -1556,6 +1562,9 @@ Object.assign(I18N.fr,{
   's.edSplit':'✂ Couper ici','s.edSplitAria':'Couper ici : une nouvelle phrase commence à cette note',
   's.edJoin':'Joindre à la précédente','s.edJoinAria':'Joindre cette phrase à la précédente',
   's.cutLabel':'Découpage','s.cutShort':'Courtes','s.cutMedium':'Moyennes','s.cutLong':'Longues',
+  'live.loop':'En boucle :','live.loopAria':'Jouer en boucle','live.loopOff':'Non','live.loopPhrase':'La phrase','live.loopSong':'Le morceau',
+  'live.againPhrase':'Phrase {n} réussie ! On la rejoue.','live.round':'tour {n}',
+  'live.againSong':(d,e)=>'Morceau joué en '+d+(e?' avec '+e+' fausse'+(e>1?'s':'')+' note'+(e>1?'s':''):' sans fausse note')+'. On recommence !',
   's.cutShortAria':'Redécouper en phrases courtes','s.cutMediumAria':'Redécouper en phrases moyennes','s.cutLongAria':'Redécouper en phrases longues',
   's.editHint':"Touche une note pour l'écouter, la corriger, ou couper la phrase à cet endroit.",
   join:'Joindre',joinAria:'Joindre la phrase {n} à la précédente',joined:'Phrases {a} et {b} réunies.',
@@ -1577,6 +1586,9 @@ Object.assign(I18N.en,{
   's.edSplit':'✂ Split here','s.edSplitAria':'Split here: a new phrase starts at this note',
   's.edJoin':'Join to previous','s.edJoinAria':'Join this phrase to the previous one',
   's.cutLabel':'Phrases','s.cutShort':'Short','s.cutMedium':'Medium','s.cutLong':'Long',
+  'live.loop':'Loop:','live.loopAria':'Play on a loop','live.loopOff':'Off','live.loopPhrase':'Phrase','live.loopSong':'Whole song',
+  'live.againPhrase':'Phrase {n} done! Once more.','live.round':'round {n}',
+  'live.againSong':(d,e)=>'Song played in '+d+(e?' with '+e+' wrong note'+(e>1?'s':''):' with no wrong notes')+'. Again!',
   's.cutShortAria':'Re-split into short phrases','s.cutMediumAria':'Re-split into medium phrases','s.cutLongAria':'Re-split into long phrases',
   's.editHint':'Tap a note to hear it, fix it, or split the phrase there.',
   join:'Join',joinAria:'Join phrase {n} to the previous one',joined:'Phrases {a} and {b} joined.',
@@ -1924,6 +1936,7 @@ function renderOverlay(){
   $('#mode-play').setAttribute('aria-pressed',game.mode==='play');
   $('#mode-learn').setAttribute('aria-pressed',game.mode==='learn');
   $('#mode-live').setAttribute('aria-pressed',game.mode==='live');
+  $('#loop-btn2').hidden=game.mode==='live';
   $('#play-view').hidden=game.mode!=='play';$('#learn-view').hidden=game.mode!=='learn';$('#live-view').hidden=game.mode!=='live';
   if(game.mode==='play')renderGame();else if(game.mode==='live')renderLive();else renderLearn();
 }
@@ -2008,8 +2021,8 @@ function renderLearn(){
   }else if(learn.step==='notes'){
     const n=line[learn.ni],m=st.res.notes[a+learn.ni];
     body=msg+'<div class="bignote k-'+m.key+'"><div class="bn-pic">'+picHTML(m.mod)+'</div><div class="bn-btn">'+btnSVG(m.key)+'</div>'
-      +'<p class="bn-instr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p>'
-      +'<p class="bn-nm">'+esc(t('noteCount',{name:noteName(n.midi),i:learn.ni+1,n:line.length}))+'</p></div>'
+      +'<p class="sr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p>'
+      +'<p class="bn-nm">'+esc(t('noteCount',{name:noteName(n.midi)+(n.hold?' ('+t('held')+')':''),i:learn.ni+1,n:line.length}))+'</p></div>'
       +'<div class="mini-tiles strip">'+line.map((x,j)=>tileHTML(x,st.res.notes[a+j],a+j,'div',false).replace('class="tile','class="tile'+(j===learn.ni?' cur':j<learn.ni?' done':''))).join('')+'</div>'
       +'<p class="lv-small"><button type="button" class="linkbtn" data-lv="fix">'+esc(t('fixNote'))+'</button></p>';
     bar='<button type="button" data-lv="prev-note" class="ghost"'+(learn.ni===0?' disabled':'')+'>◀</button><button type="button" data-lv="replay" class="ghost">'+esc(t('replay'))+'</button><button type="button" data-lv="next-note" class="primary">'+esc(learn.ni>=line.length-1?t('doneNext'):t('played'))+' ▶</button>';
@@ -2088,10 +2101,11 @@ document.querySelectorAll('[data-tempo]').forEach(b=>b.addEventListener('click',
 const LIVE_SENS=[{pur:0.55,db:20},{pur:0.45,db:14},{pur:0.35,db:9}];
 const live={on:false,idx:0,offset:null,errors:0,done:false,stream:null,src:null,an:null,sink:null,timer:null,
   N:4096,buf:null,fft:null,win:null,re:null,im:null,P:null,noise:-80,cur:null,curCount:0,silent:9,fired:false,peak:-200,dip:200,dipped:false,
-  muteUntil:0,heard:null,msg:'',msgBad:false,sens:1,startT:0,endT:0,phraseMsg:''};
+  muteUntil:0,heard:null,msg:'',msgBad:false,sens:1,startT:0,endT:0,phraseMsg:'',loop:'off',round:1};
+{const v=storeGet('ocarina-live-loop');if(v==='phrase'||v==='song')live.loop=v;}
 {const v=storeGet('ocarina-live-sens');if(v==='0'||v==='1'||v==='2')live.sens=+v;}
 function liveInClaude(){return !!(window.claude&&typeof window.claude.use==='function');}
-function liveResetSong(from){live.idx=from||0;live.offset=null;live.errors=0;live.done=false;live.heard=null;live.startT=0;live.endT=0;live.phraseMsg='';}
+function liveResetSong(from){live.round=1;live.idx=from||0;live.offset=null;live.errors=0;live.done=false;live.heard=null;live.startT=0;live.endT=0;live.phraseMsg='';}
 function enterLive(){liveResetSong(st.flat.length?phraseRange(Math.min(game.ph,activeLines().length-1))[0]:0);live.msg=liveInClaude()?'inClaude':'';}
 async function liveStart(){
   if(live.on)return;
@@ -2162,19 +2176,31 @@ function liveNote(n){
   const heardP=live.offset!=null?n-live.offset:null;
   live.heard={ok,name:noteName(n-(live.offset||0)-st.res.t),key:heardP!=null?liveKeyName(heardP):'',expName:noteName(st.flat[live.idx].midi),expKey:keyText(st.res.notes[live.idx])};
   live.phraseMsg='';
-  if(ok){
-    const before=phraseOf(live.idx);live.idx++;
-    if(live.idx>=st.flat.length){live.done=true;live.endT=performance.now();liveStop(true);live.msg='';}
-    else if(phraseOf(live.idx)!==before)live.phraseMsg=t('live.phraseDone',{n:before+1});
-  }else live.errors++;
+  if(ok)liveAdvance(false);else live.errors++;
   renderLive();
+}
+/* Moves to the next note. With the loop on, the end of the phrase (or of the song) starts it again
+   and the microphone keeps listening. */
+function liveAdvance(skipped){
+  const before=phraseOf(live.idx),[ps,pe]=phraseRange(before);
+  if(live.loop==='phrase'&&live.idx===pe){live.idx=ps;live.round++;live.phraseMsg=t('live.againPhrase',{n:before+1});return;}
+  live.idx++;
+  if(live.idx>=st.flat.length){
+    if(live.loop==='song'){
+      const now=performance.now();live.phraseMsg=t('live.againSong')(fmtDur(now-(live.startT||now)),live.errors);
+      live.idx=0;live.errors=0;live.startT=live.on?now:0;live.round++;return;
+    }
+    live.idx=st.flat.length-1;live.done=true;live.endT=performance.now();liveStop(true);live.msg='';return;
+  }
+  if(!skipped&&phraseOf(live.idx)!==before)live.phraseMsg=t('live.phraseDone',{n:before+1});
 }
 function fmtDur(ms){const s=Math.max(0,Math.round(ms/1000));return Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s';}
 function renderLive(){
   const lines=activeLines();if(!lines.length||!st.res){closeGame();return;}
   if(live.idx>=st.flat.length&&!live.done)live.idx=st.flat.length-1;
   const total=st.flat.length,ph=phraseOf(Math.min(live.idx,total-1)),[a]=phraseRange(ph),line=lines[ph];
-  $('#lv2-pos').textContent=live.done?t('live.doneTitle'):t('noteOf',{i:live.idx+1,n:total})+' · '+t('phraseOf',{i:ph+1,n:lines.length});
+  $('#lv2-pos').textContent=live.done?t('live.doneTitle'):t('noteOf',{i:live.idx+1,n:total})+' · '+t('phraseOf',{i:ph+1,n:lines.length})+(live.loop!=='off'&&live.round>1?' · '+t('live.round',{n:live.round}):'');
+  document.querySelectorAll('[data-liveloop]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.liveloop===live.loop));
   $('#lv2-prog').style.width=Math.round((live.done?1:live.idx/total)*100)+'%';
   document.querySelectorAll('[data-sens]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.sens===live.sens));
   let body='';
@@ -2186,7 +2212,7 @@ function renderLive(){
     const heard=h?(h.ok?'<span class="ok">✓ '+esc(h.name)+'</span>':'<span class="bad">✗ '+esc(t('live.wrong',{x:h.name+(h.key?' ('+h.key+')':''),y:h.expName+' ('+h.expKey+')'}))+'</span>'):'';
     body=(live.phraseMsg?'<p class="lv-msg">'+esc(live.phraseMsg)+'</p>':'')
       +'<div class="bignote k-'+m.key+'"><div class="bn-pic">'+picHTML(m.mod)+'</div><div class="bn-btn">'+btnSVG(m.key)+'</div>'
-      +'<p class="bn-instr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p><p class="bn-nm">'+esc(noteName(n.midi))+'</p></div>'
+      +'<p class="sr">'+esc(instruction(m))+(n.hold?esc(t('holdNote')):'')+'</p><p class="bn-nm">'+esc(noteName(n.midi)+(n.hold?' ('+t('held')+')':''))+'</p></div>'
       +'<div class="mini-tiles strip">'+line.map((x,j)=>tileHTML(x,st.res.notes[a+j],a+j,'div',false).replace('class="tile','class="tile'+(a+j===live.idx?' cur':a+j<live.idx?' done':''))).join('')+'</div>'
       +'<div class="live-ear"><div class="meter"><i id="lv2-meter"></i></div><p class="heard">'+(heard||esc(live.on?t('live.waiting'):''))+'</p></div>';
   }
@@ -2209,7 +2235,7 @@ $('#lv2-bar').addEventListener('click',e=>{
   const b=e.target.closest('[data-lv2]');if(!b||b.disabled)return;const act=b.dataset.lv2;
   if(act==='mic'){if(live.on)liveStop();else liveStart();return;}
   if(act==='back'){if(live.idx>0){live.idx--;live.heard=null;live.phraseMsg='';renderLive();}return;}
-  if(act==='skip'){if(live.idx<st.flat.length-1){live.idx++;live.heard=null;live.phraseMsg='';renderLive();}else{live.done=true;live.endT=performance.now();liveStop(true);renderLive();}return;}
+  if(act==='skip'){live.heard=null;live.phraseMsg='';liveAdvance(true);renderLive();return;}
   if(act==='model'){
     const ph=phraseOf(live.idx),[,end]=phraseRange(ph),items=st.seq.slice(live.idx,end+1);
     const dur=items.reduce((s,x)=>s+x.dur,0);live.muteUntil=performance.now()+dur*1000+500;playSynth(items,'model');return;
@@ -2218,6 +2244,7 @@ $('#lv2-bar').addEventListener('click',e=>{
 });
 $('#lv2-body').addEventListener('click',e=>{const tl=e.target.closest('.strip [data-i]');if(tl&&!live.done){live.idx=+tl.dataset.i;live.heard=null;live.phraseMsg='';renderLive();}});
 document.querySelectorAll('[data-sens]').forEach(b=>b.addEventListener('click',()=>{live.sens=+b.dataset.sens;storeSet('ocarina-live-sens',String(live.sens));renderLive();}));
+document.querySelectorAll('[data-liveloop]').forEach(b=>b.addEventListener('click',()=>{live.loop=b.dataset.liveloop;live.round=1;storeSet('ocarina-live-loop',live.loop);renderLive();}));
 $('#lv2-restart').addEventListener('click',()=>{liveResetSong(0);renderLive();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&live.on)liveStop();});
 
