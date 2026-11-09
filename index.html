@@ -10,43 +10,53 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Marcellus&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Layout: one narrow phone-first column — key legend, mode switch, input panel, then the result drawn on the game's five-line ocarina staff */
+/* Theme: a Hyrule-inspired look drawn from scratch: parchment by day, a starry night by dark mode,
+   gold double-line frames and diamond badges. No game artwork, logos or emblems are used. */
 :root{
-  --bg:#ECEFF3; --surface:#FFFFFF; --sunk:#F4F6F9; --ink:#161E2C; --muted:#5A6476;
-  --line:#D2D8E2; --staff:#C3CAD6; --accent:#2848A8; --accent-ink:#FFFFFF; --gold:#A26F12; --warn:#B3261E;
-  --kL:#6650C2; --kR:#11796F; --kA:#B9491A; --kY:#367F28; --kX:#2557B8; --key-ink:#FFFFFF; --padbase:#B5BECC;
-  --font-display:"Marcellus","Cormorant Garamond",Georgia,serif;
+  --bg:#EFE6D1; --surface:#FBF7EC; --sunk:#F3ECDA; --ink:#2A2317; --muted:#665A44;
+  --line:#DACDAF; --staff:#CDBD98; --accent:#2C6A3F; --accent-ink:#FFFFFF; --gold:#85590A; --warn:#A8321F;
+  --frame:#B08A3E; --frame-soft:#E4D3A9; --title:#2B4D33; --emblem:#2D5FA8; --hole:#F3ECDA;
+  --kL:#6650C2; --kR:#11796F; --kA:#B9491A; --kY:#367F28; --kX:#2557B8; --key-ink:#FFFFFF; --padbase:#BFB49B;
+  --bg-art:radial-gradient(ellipse 75% 50% at 50% -6%,rgba(255,252,238,.85),transparent 70%),radial-gradient(ellipse 110% 100% at 50% 50%,transparent 58%,rgba(140,100,40,.2) 100%);
+  --tex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); --tex-size:220px 220px;
+  --shadow:0 14px 34px -20px rgba(90,62,18,.55);
+  --font-display:"Cinzel","Marcellus",Georgia,serif;
   --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --fs-s:13px; --fs-m:15px; --fs-l:17px; --fs-xl:22px; --fs-xxl:34px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0E131D; --surface:#161D2A; --sunk:#111723; --ink:#E5E9F1; --muted:#98A2B5;
-    --line:#273044; --staff:#3A4560; --accent:#8CA6F4; --accent-ink:#0E131D; --gold:#E0AE45; --warn:#F2867C;
+    --bg:#0A101D; --surface:#121A2B; --sunk:#0E1524; --ink:#EEE7D4; --muted:#A9A390;
+    --line:#28334B; --staff:#3B4760; --accent:#E2B653; --accent-ink:#1A1405; --gold:#E2B653; --warn:#F2867C;
+    --frame:#9C7C36; --frame-soft:#3A3628; --title:#E9C46B; --emblem:#4F82D6; --hole:#0A101D;
     --kL:#9C8BF0; --kR:#3FC2B3; --kA:#F08A55; --kY:#7ACB66; --kX:#6F9BF2; --key-ink:#0E131D; --padbase:#4A5570;
+    --bg-art:radial-gradient(ellipse 90% 55% at 50% -8%,rgba(226,182,83,.13),transparent 70%),radial-gradient(ellipse 120% 70% at 50% 112%,rgba(46,110,82,.28),transparent 70%);
+    --tex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cg fill='%23FFF6DC'%3E%3Ccircle cx='24' cy='40' r='.9' fill-opacity='.7'/%3E%3Ccircle cx='90' cy='12' r='.6' fill-opacity='.5'/%3E%3Ccircle cx='150' cy='70' r='1.1' fill-opacity='.6'/%3E%3Ccircle cx='210' cy='30' r='.7' fill-opacity='.45'/%3E%3Ccircle cx='282' cy='92' r='.9' fill-opacity='.55'/%3E%3Ccircle cx='60' cy='150' r='.7' fill-opacity='.4'/%3E%3Ccircle cx='122' cy='200' r='1.2' fill-opacity='.5'/%3E%3Ccircle cx='190' cy='160' r='.6' fill-opacity='.4'/%3E%3Ccircle cx='250' cy='222' r='.9' fill-opacity='.55'/%3E%3Ccircle cx='302' cy='180' r='.6' fill-opacity='.35'/%3E%3Ccircle cx='30' cy='262' r='1' fill-opacity='.5'/%3E%3Ccircle cx='100' cy='300' r='.7' fill-opacity='.4'/%3E%3Ccircle cx='170' cy='282' r='.8' fill-opacity='.45'/%3E%3Ccircle cx='232' cy='310' r='.6' fill-opacity='.35'/%3E%3Ccircle cx='310' cy='268' r='.8' fill-opacity='.5'/%3E%3Ccircle cx='140' cy='120' r='.5' fill-opacity='.35'/%3E%3Ccircle cx='266' cy='140' r='.5' fill-opacity='.3'/%3E%3C/g%3E%3C/svg%3E"); --tex-size:320px 320px;
+    --shadow:0 18px 40px -22px rgba(0,0,0,.8);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0E131D; --surface:#161D2A; --sunk:#111723; --ink:#E5E9F1; --muted:#98A2B5;
-  --line:#273044; --staff:#3A4560; --accent:#8CA6F4; --accent-ink:#0E131D; --gold:#E0AE45; --warn:#F2867C;
-  --kL:#9C8BF0; --kR:#3FC2B3; --kA:#F08A55; --kY:#7ACB66; --kX:#6F9BF2; --key-ink:#0E131D; --padbase:#4A5570;
-  color-scheme:dark;
+    --bg:#0A101D; --surface:#121A2B; --sunk:#0E1524; --ink:#EEE7D4; --muted:#A9A390;
+    --line:#28334B; --staff:#3B4760; --accent:#E2B653; --accent-ink:#1A1405; --gold:#E2B653; --warn:#F2867C;
+    --frame:#9C7C36; --frame-soft:#3A3628; --title:#E9C46B; --emblem:#4F82D6; --hole:#0A101D;
+    --kL:#9C8BF0; --kR:#3FC2B3; --kA:#F08A55; --kY:#7ACB66; --kX:#6F9BF2; --key-ink:#0E131D; --padbase:#4A5570;
+    --bg-art:radial-gradient(ellipse 90% 55% at 50% -8%,rgba(226,182,83,.13),transparent 70%),radial-gradient(ellipse 120% 70% at 50% 112%,rgba(46,110,82,.28),transparent 70%);
+    --tex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cg fill='%23FFF6DC'%3E%3Ccircle cx='24' cy='40' r='.9' fill-opacity='.7'/%3E%3Ccircle cx='90' cy='12' r='.6' fill-opacity='.5'/%3E%3Ccircle cx='150' cy='70' r='1.1' fill-opacity='.6'/%3E%3Ccircle cx='210' cy='30' r='.7' fill-opacity='.45'/%3E%3Ccircle cx='282' cy='92' r='.9' fill-opacity='.55'/%3E%3Ccircle cx='60' cy='150' r='.7' fill-opacity='.4'/%3E%3Ccircle cx='122' cy='200' r='1.2' fill-opacity='.5'/%3E%3Ccircle cx='190' cy='160' r='.6' fill-opacity='.4'/%3E%3Ccircle cx='250' cy='222' r='.9' fill-opacity='.55'/%3E%3Ccircle cx='302' cy='180' r='.6' fill-opacity='.35'/%3E%3Ccircle cx='30' cy='262' r='1' fill-opacity='.5'/%3E%3Ccircle cx='100' cy='300' r='.7' fill-opacity='.4'/%3E%3Ccircle cx='170' cy='282' r='.8' fill-opacity='.45'/%3E%3Ccircle cx='232' cy='310' r='.6' fill-opacity='.35'/%3E%3Ccircle cx='310' cy='268' r='.8' fill-opacity='.5'/%3E%3Ccircle cx='140' cy='120' r='.5' fill-opacity='.35'/%3E%3Ccircle cx='266' cy='140' r='.5' fill-opacity='.3'/%3E%3C/g%3E%3C/svg%3E"); --tex-size:320px 320px;
+    --shadow:0 18px 40px -22px rgba(0,0,0,.8);
+    color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--fs-m);line-height:1.5}
 .wrap{max-width:760px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
-header{display:grid;gap:6px}
 .eyebrow{font-size:var(--fs-s);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
 h1{font-family:var(--font-display);font-weight:400;font-size:var(--fs-xxl);line-height:1.1;margin:0;text-wrap:balance}
 .lead{margin:0;color:var(--muted);max-width:62ch}
 h2{font-family:var(--font-display);font-weight:400;font-size:var(--fs-xl);margin:0;text-wrap:balance}
 
-/* legend */
-.legend{display:grid;gap:12px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
 .legend-keys{display:flex;flex-wrap:wrap;gap:10px 16px}
 .lk{display:flex;align-items:center;gap:8px;font-size:var(--fs-m)}
 .legend-mods{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:var(--fs-s);color:var(--muted)}
@@ -102,7 +112,6 @@ canvas#roll{display:block;width:100%;height:150px}
 .found{font-size:var(--fs-s);color:var(--muted);margin:0;overflow-wrap:anywhere}
 
 /* result */
-.result{display:grid;gap:14px;padding:18px 16px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
 .result-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
 .facts{display:flex;flex-wrap:wrap;gap:6px}
 .fact{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
@@ -279,7 +288,6 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 .lv-big{margin:0;font-family:var(--font-display);font-size:var(--fs-xxl);text-wrap:balance}
 .linkbtn{appearance:none;border:0;background:none;color:var(--accent);font:inherit;font-size:var(--fs-s);text-decoration:underline;cursor:pointer;padding:4px}
 /* saved compositions */
-.compos{display:grid;gap:12px;padding:18px 16px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
 .compos-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .save-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .save-row input{flex:1 1 200px;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -328,14 +336,6 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 .game-close.loop{font-weight:700}
 
 /* song catalogue */
-.catalog{border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-.catalog>summary{list-style:none;cursor:pointer;display:grid;gap:2px;padding:12px 14px;border-radius:14px}
-.catalog>summary::-webkit-details-marker{display:none}
-.cat-sum-title{font-weight:700;display:flex;align-items:center;gap:8px}
-.cat-sum-title::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
-.catalog[open] .cat-sum-title::after{transform:rotate(-135deg)}
-.cat-sum-sub{font-size:var(--fs-s);color:var(--muted)}
-.cat-body{display:grid;gap:10px;padding:0 12px 12px}
 .cat-filters{display:flex;flex-wrap:wrap;gap:6px}
 .cat-filters .vbtn{border:1px solid var(--line)}
 .cat-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
@@ -349,9 +349,7 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
 .cat-acts{display:flex;gap:6px;margin-left:auto}
 .mini.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 #cat-status:empty{display:none}
-@media (prefers-reduced-motion: reduce){.cat-sum-title::after{transition:none}}
 /* language switch, export / import */
-.top-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .lang .vbtn{padding:4px 11px}
 .io-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .save-row .btn,.io-row .btn{flex:1 1 auto;justify-content:center;text-align:center}
@@ -407,51 +405,184 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
   .lv-big{font-size:28px}
   .ed-grid button,.ed-listen button{font-size:12px;padding:9px 2px}
 }
+/* ===== page structure: app bar, then two cards (choose a melody / the buttons) ===== */
+body{background:var(--bg);margin:0;min-height:100vh}
+body::before,body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1}
+body::before{background-image:var(--bg-art)}
+body::after{background-image:var(--tex);background-size:var(--tex-size)}
+.game{background-color:var(--bg);background-image:var(--bg-art)}
+.wrap{max-width:820px;gap:20px;padding-top:22px}
+h1,h2{font-family:var(--font-display)}
+h1{font-weight:600;font-size:clamp(25px,5.2vw,40px);letter-spacing:.02em;color:var(--title);line-height:1.08}
+h2{font-weight:600;font-size:21px;letter-spacing:.02em;line-height:1.2}
+.sub{margin:0;font-size:var(--fs-m);font-weight:700}
+
+.appbar{display:grid;gap:12px}
+.appbar-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px}
+.brand{display:grid;gap:4px;min-width:0}
+.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.14em;font-size:12px}
+.emblem{width:58px;height:58px;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.18))}
+.em-body{fill:var(--emblem);stroke:var(--frame);stroke-width:1.8;stroke-linejoin:round}
+.em-hole{fill:var(--hole);stroke:var(--frame);stroke-width:1}
+.em-note{fill:var(--frame)}
+.em-stem{fill:none;stroke:var(--frame);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.em-shine{fill:none;stroke:rgba(255,255,255,.5);stroke-width:1.8;stroke-linecap:round}
+.lang{align-self:start}
+.lead{max-width:70ch}
+
+/* gold ornaments: a thin rule with a diamond in the middle */
+.orn,.card-head::after,.result-foot::before{display:block;height:1px;background:linear-gradient(90deg,transparent,var(--frame) 18%,var(--frame) 82%,transparent)}
+.orn::before,.card-head::before,.result-foot::after{content:"";position:absolute;left:50%;width:7px;height:7px;margin-left:-3.5px;background:var(--frame);transform:rotate(45deg)}
+.orn{position:relative;width:min(320px,80%);margin:4px auto}
+.orn::before{top:-3px}
+
+.layout{display:grid;gap:22px}
+.card{position:relative;display:grid;gap:16px;align-content:start;min-width:0;padding:20px 18px 22px;background:var(--surface);
+  border:1px solid var(--frame);border-radius:16px;
+  box-shadow:inset 0 0 0 3px var(--surface),inset 0 0 0 4px var(--frame-soft),var(--shadow)}
+.card::before,.card::after{content:"";position:absolute;top:-5px;width:9px;height:9px;background:var(--frame);transform:rotate(45deg);border-radius:1px}
+.card::before{left:26px}.card::after{right:26px}
+.card-head{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding-bottom:18px}
+.card-head::after{content:"";position:absolute;left:0;right:0;bottom:4px}
+.card-head::before{bottom:1px}
+.card-titles{flex:1 1 180px;min-width:0;display:grid;gap:2px}
+.result-name{margin:0;font-weight:700;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.step{flex:none;display:grid;place-items:center;width:28px;height:28px;margin:5px;border-radius:6px;transform:rotate(45deg);
+  background:var(--accent);box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--frame)}
+.step b{transform:rotate(-45deg);color:var(--accent-ink);font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1}
+.card-head .viewsw{margin-left:auto}
+
+/* tabs */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--sunk);border:1px solid var(--line);border-radius:12px}
+.tab{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:14px;padding:9px 8px;white-space:nowrap;min-width:0}
+.tab[aria-selected="true"]{box-shadow:inset 0 0 0 1px var(--frame),0 1px 2px rgba(0,0,0,.14)}
+.tab:hover:not([aria-selected="true"]){color:var(--ink)}
+.tab-count{min-width:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:11px;line-height:18px;text-align:center}
+.tab-count:empty{display:none}
+@media (max-width:440px){.tabs{display:grid;grid-template-columns:1fr 1fr}}
+.panel{align-content:start}
+
+/* controls */
+.btn{border:1px solid rgba(0,0,0,.14);background-color:var(--accent);background-image:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 65%);box-shadow:0 1px 0 rgba(0,0,0,.16)}
+.btn:hover:not(:disabled){filter:brightness(1.07)}
+.btn.ghost{background:var(--surface);border-color:var(--line);box-shadow:none}
+.btn.ghost:hover:not(:disabled),.mini:hover,.chipbtn:hover,.cat-play:hover{border-color:var(--frame)}
+.loop[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.vbtn[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--frame),0 1px 2px rgba(0,0,0,.14)}
+.card textarea,.card select,.save-row input,.share-out{background:var(--sunk)}
+.card .file{background:var(--sunk);border-color:var(--frame-soft)}
+.card .roll-box{background:var(--sunk)}
+
+/* catalogue and saved lists */
+.cat-item{background:var(--surface)}
+.cat-item.open{border-color:var(--frame);box-shadow:inset 0 0 0 1px var(--frame)}
+.cat-info{flex-basis:140px}
+.cat-meta-row{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.cat-info .cat-meta{font-size:12px;color:var(--muted)}
+.cat-info .lvl{font-size:11px}
+.cat-info .lvl-easy{color:var(--kY)}.cat-info .lvl-medium{color:var(--gold)}.cat-info .lvl-hard{color:var(--warn)}
+.compos-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#compo-status:empty,#save-status:empty{min-height:0}
+.io-block{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+
+/* result card */
+.opts{padding:2px 0}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 22px;padding:12px 14px;background:var(--sunk);border:1px solid var(--line);border-radius:14px}
+.toolbar{display:grid;gap:10px}
+.tgroup{display:flex;align-items:center;gap:8px 14px}
+.tg-label{flex:0 0 7.2rem;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tg-listen{padding-top:10px;border-top:1px solid var(--line)}
+.tg-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tg-btns .btn{padding:10px 15px;justify-self:stretch}
+.howto{border:1px solid var(--line);border-radius:14px;background:var(--sunk)}
+.howto>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;font-weight:700;font-size:var(--fs-s);border-radius:14px}
+.howto>summary::-webkit-details-marker{display:none}
+.howto>summary::before{content:"";width:8px;height:8px;flex:none;background:var(--frame);transform:rotate(45deg);border-radius:1px}
+.howto>summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+.howto[open]>summary::after{transform:rotate(-135deg)}
+.howto .legend{display:grid;gap:12px;padding:2px 14px 14px}
+.shared-banner{display:flex;align-items:center;gap:10px;margin:0;padding:10px 12px;border-radius:12px;background:var(--sunk);border:1px solid var(--frame);font-size:var(--fs-s);font-weight:700}
+.shared-banner span{flex:1;min-width:0}
+.shared-banner.err{border-color:var(--warn);color:var(--warn)}
+.result-foot{position:relative;display:grid;gap:22px;padding-top:24px;margin-top:4px}
+.result-foot::before{content:"";position:absolute;left:0;right:0;top:4px}
+.result-foot::after{top:1px}
+.foot-block{display:grid;gap:10px}
+.share-out{width:100%;font:13px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:9px 11px;border-radius:10px;border:1px solid var(--line);color:var(--ink)}
+.pagefoot{display:grid;gap:10px;justify-items:center;text-align:center;padding-top:6px}
+.pagefoot p{margin:0;font-size:12px;color:var(--muted);max-width:62ch}
+.editor{border-top-color:var(--frame)}
+@media (prefers-reduced-motion: reduce){.howto>summary::after{transition:none}}
+
+/* wide screens: the two cards side by side, the melody picker stays in view */
+@media (min-width:1080px){
+  .wrap{max-width:1280px}
+  .layout{grid-template-columns:minmax(400px,470px) minmax(0,1fr);align-items:start}
+  .pick{position:sticky;top:16px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);grid-template-rows:auto auto minmax(0,1fr)}
+  .pick>.panel{overflow-y:auto;overscroll-behavior:contain;min-height:0;padding:3px 6px 3px 3px;margin:-3px -6px -3px -3px;scrollbar-width:thin}
+  body.editing .pick{max-height:calc(100dvh - 300px)}
+}
+@media (max-width:560px){
+  .card{padding:18px 14px 20px}
+  .card::before{left:20px}.card::after{right:20px}
+  .emblem{width:46px;height:46px}
+  .appbar-row{gap:10px}
+  .tgroup{flex-direction:column;align-items:stretch}
+  .tg-label{flex:none}
+  .tg-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tg-practice #learn-open{grid-column:1/-1}
+  .tg-btns .btn{padding:11px 8px}
+  .toolbar{padding:12px}
+  .appbar-row{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"eb eb lang" "em ti ti";row-gap:6px}
+  .brand{display:contents}
+  .eyebrow{grid-area:eb;align-self:center}
+  .lang{grid-area:lang}
+  .emblem{grid-area:em}
+  h1{grid-area:ti}
+}
 </style>
 
 <div class="wrap">
-  <header>
-    <div class="top-row">
-      <p class="eyebrow">Ocarina of Time · Switch 2</p>
+  <header class="appbar">
+    <div class="appbar-row">
+      <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <ellipse class="em-note" cx="49.5" cy="13.5" rx="3.3" ry="2.5" transform="rotate(-20 49.5 13.5)"/>
+        <path class="em-stem" d="M52.6 12.6V3.2c1.6 1.8 5 2.6 5.4 6.4"/>
+        <g transform="rotate(-9 32 34)"><path class="em-body" d="M14.2 27.4 5.6 25a2.2 2.2 0 0 0-2.7 2.4l.5 3.5a2.2 2.2 0 0 0 2.1 1.9l8.6.6"/>
+        <path class="em-body" d="M11.5 31.5c1.8-9 13-14.6 26-13.6 12.6 1 21.4 7.6 20.6 16.6-.8 9.2-11.4 14.8-24.4 13.8-13.4-1-24.2-7.4-22.2-16.8z"/>
+        <path class="em-shine" d="M21.5 24.6c4.4-2.5 10-3.6 15.4-3.3"/>
+        <circle class="em-hole" cx="27" cy="29" r="2.3"/><circle class="em-hole" cx="35" cy="27.6" r="2.3"/>
+        <circle class="em-hole" cx="43" cy="28.6" r="2.3"/><circle class="em-hole" cx="50" cy="32" r="2"/>
+        <circle class="em-hole" cx="31" cy="38.4" r="1.7"/></g>
+      </svg>
+      <div class="brand">
+        <p class="eyebrow">Ocarina of Time · Switch 2</p>
+        <h1 data-i18n="s.title">Traducteur d'ocarina</h1>
+      </div>
       <div class="viewsw lang" role="group" aria-label="Langue / Language">
         <button type="button" class="vbtn" data-lang="fr" aria-pressed="true" lang="fr">FR</button>
         <button type="button" class="vbtn" data-lang="en" aria-pressed="false" lang="en">EN</button>
       </div>
     </div>
-    <h1 data-i18n="s.title">Traducteur d'ocarina</h1>
-    <p class="lead" data-i18n="s.lead">Écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.</p>
+    <p class="lead" data-i18n="s.lead">Choisis un morceau du catalogue, écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.</p>
   </header>
 
-  <section class="legend" data-i18n-aria="s.legendAria" aria-label="Les touches de l'ocarina">
-    <div class="legend-keys">
-      <span class="lk"><span data-btn="L"></span><span data-note="62"></span></span>
-      <span class="lk"><span data-btn="R"></span><span data-note="65"></span></span>
-      <span class="lk"><span data-btn="A"></span><span data-note="69"></span></span>
-      <span class="lk"><span data-btn="Y"></span><span data-note="71"></span></span>
-      <span class="lk"><span data-btn="X"></span><span data-note="74"></span>&nbsp;<span data-i18n="s.high">aigu</span></span>
-    </div>
-    <div class="legend-mods">
-      <span><span class="pic" data-pic="joy-up"></span><span class="pic" data-pic="joy-down"></span> <span data-i18n="s.legStick">joystick : un ton plus haut ou plus bas</span></span>
-      <span><span class="pic" data-pic="pad-up"></span><span class="pic" data-pic="pad-down"></span> <span data-i18n="s.legPad">croix : un demi-ton plus haut ou plus bas</span></span>
-      <span data-i18n="s.legHold">barre après la touche : note tenue</span>
-    </div>
-    <p class="legend-how" data-i18n="s.legHow">Le losange montre les 4 boutons de droite de la manette, celui à presser est allumé (B ne sert pas). L et R sont les gâchettes du haut. Garde le joystick ou la croix enfoncé, puis appuie sur le bouton.</p>
-  </section>
+  <div class="layout">
+    <section class="card pick" aria-labelledby="pick-title">
+      <div class="card-head">
+        <span class="step" aria-hidden="true"><b>1</b></span>
+        <h2 id="pick-title" data-i18n="s.pickTitle">Choisir une mélodie</h2>
+      </div>
+      <div class="tabs" role="tablist" data-i18n-aria="s.modeAria" aria-label="Source de la mélodie">
+        <button class="tab" type="button" role="tab" id="tab-catalog" aria-selected="true" aria-controls="panel-catalog" data-i18n="s.tabCatalog">Catalogue</button>
+        <button class="tab" type="button" role="tab" id="tab-notes" aria-selected="false" aria-controls="panel-notes" tabindex="-1" data-i18n="s.tabNotes">Écrire</button>
+        <button class="tab" type="button" role="tab" id="tab-video" aria-selected="false" aria-controls="panel-video" tabindex="-1" data-i18n="s.tabVideo">Vidéo ou son</button>
+        <button class="tab" type="button" role="tab" id="tab-compos" aria-selected="false" aria-controls="panel-compos" tabindex="-1"><span data-i18n="s.tabCompos">Enregistrés</span><span class="tab-count" id="compo-count"></span></button>
+      </div>
 
-  <div class="tabs" role="tablist" data-i18n-aria="s.modeAria" aria-label="Mode">
-    <button class="tab" role="tab" id="tab-notes" aria-selected="true" aria-controls="panel-notes" data-i18n="s.tabNotes">Écrire des notes</button>
-    <button class="tab" role="tab" id="tab-video" aria-selected="false" aria-controls="panel-video" data-i18n="s.tabVideo">Vidéo ou son</button>
-  </div>
-
-  <section class="panel" id="panel-notes" role="tabpanel" aria-labelledby="tab-notes">
-    <label class="field" for="notes-input"><span data-i18n="s.melody">Ta mélodie</span>
-      <textarea id="notes-input" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
-    </label>
-    <p class="help" data-i18n-html="s.notesHelp">Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.</p>
-    <div class="sample"><button class="chipbtn" type="button" data-sample="vide" data-i18n="cat.clear">Effacer</button></div>
-    <details class="catalog" id="catalog">
-      <summary><span class="cat-sum-title" data-i18n="cat.title">Catalogue de morceaux</span><span class="cat-sum-sub" id="cat-count"></span></summary>
-      <div class="cat-body">
+      <section class="panel" id="panel-catalog" role="tabpanel" aria-labelledby="tab-catalog">
+        <p class="help" id="cat-count"></p>
         <div class="cat-filters" role="group" data-i18n-aria="cat.title" aria-label="Catalogue de morceaux">
           <button type="button" class="vbtn" data-cat="all" aria-pressed="true" data-i18n="cat.all">Tous</button>
           <button type="button" class="vbtn" data-cat="classic" aria-pressed="false" data-i18n="cat.classic">Classique</button>
@@ -459,114 +590,174 @@ body.editing .game{padding-bottom:calc(280px + env(safe-area-inset-bottom,0px))}
           <button type="button" class="vbtn" data-cat="xmas" aria-pressed="false" data-i18n="cat.xmas">Fêtes</button>
         </div>
         <ul class="cat-list" id="cat-list"></ul>
+        <p class="status" id="cat-status" role="status"></p>
+      </section>
+
+      <section class="panel" id="panel-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
+        <label class="field" for="notes-input"><span data-i18n="s.melody">Ta mélodie</span>
+          <textarea id="notes-input" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+        </label>
+        <p class="help" data-i18n-html="s.notesHelp">Sépare les notes par des espaces : <code>do ré mi fa sol la si</code>. Dièse : <code>fa#</code>, bémol : <code>sib</code>. Un <code>—</code> ou un <code>-</code> après une note la fait tenir. Écris <code>aigu</code> ou <code>grave</code> après une note pour forcer le saut vers le haut ou vers le bas. Va à la ligne pour commencer une nouvelle phrase. Les lettres marchent aussi : <code>C D E F# Bb</code>.</p>
+        <div class="sample"><button class="chipbtn" type="button" data-sample="vide" data-i18n="cat.clear">Effacer</button></div>
+      </section>
+
+      <section class="panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" hidden>
+        <label class="setting" for="source-sel">
+          <span data-i18n="s.source">Ce qui joue la mélodie</span>
+          <select id="source-sel">
+            <option value="ocarina" data-i18n="s.srcOcarina">Ocarina, sifflement ou flûte</option>
+            <option value="voice" data-i18n="s.srcVoice">Voix seule, chantée ou fredonnée</option>
+          </select>
+        </label>
+        <div class="file">
+          <label class="field" for="file-input" data-i18n="s.fileLabel">Vidéo ou fichier audio</label>
+          <input type="file" id="file-input" accept="video/*,audio/*,.mov,.mp4,.m4a,.mp3,.wav,.aac">
+          <p class="help"><span data-i18n="s.fileHelp">Rien n'est envoyé : l'analyse se fait directement sur ton appareil. Pour une vidéo, la page l'écoute en la lisant (sans le son), donc ça dure le temps de la vidéo. Tu peux arrêter avant la fin.</span> <span id="ocarina-tip" data-i18n="s.ocarinaTip">Le mieux, c'est un passage où l'ocarina joue seul ou par-dessus un accompagnement discret.</span></p>
+        </div>
+        <p class="help" id="voice-hint" hidden data-i18n="s.voiceHint">Chante seul, sans musique derrière. Sur des syllabes nettes comme « la la la » ou « ta ta ta », les notes répétées sont bien séparées, ce qui n'est pas le cas bouche fermée. Tu peux t'enregistrer avec le dictaphone ou l'appareil photo de ton téléphone, puis choisir le fichier ici.</p>
+        <div class="grid2" id="ocarina-settings">
+          <label class="setting" for="purity">
+            <span data-i18n="s.purity">Filtre anti-piano</span>
+            <input type="range" id="purity" min="0.25" max="0.85" step="0.05" value="0.5">
+            <span class="ends"><span data-i18n="s.purityLo">Garde plus de notes</span><span data-i18n="s.purityHi">Ignore plus le piano</span></span>
+          </label>
+          <label class="setting" for="range-sel">
+            <span data-i18n="s.ocType">Type d'ocarina dans la vidéo</span>
+            <select id="range-sel">
+              <option value="250-3000" data-i18n="s.ocAny">Je ne sais pas (tout)</option>
+              <option value="400-1800" data-i18n="s.ocAlto">Alto, le plus courant</option>
+              <option value="750-3500" data-i18n="s.ocSoprano">Soprano, petit et très aigu</option>
+              <option value="150-900" data-i18n="s.ocBass">Ténor ou basse, gros et grave</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn" type="button" id="analyze" disabled>Analyser</button>
+        <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+        <div id="media-slot" hidden></div>
+        <p class="status" id="status" role="status">Choisis un fichier pour commencer.</p>
+        <div id="roll-wrap" hidden>
+          <div class="roll-box"><canvas id="roll" data-i18n-aria="s.rollAria" aria-label="Graphique des notes trouvées dans le temps"></canvas></div>
+          <p class="found" id="found"></p>
+          <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" id="to-text" data-i18n="s.toText">Modifier sous forme de texte</button></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-compos" role="tabpanel" aria-labelledby="tab-compos" hidden>
+        <div class="compos-head">
+          <h3 class="sub" id="compos-title" data-i18n="s.myCompos">Mes compositions</h3>
+          <span class="fact" id="compos-where"></span>
+        </div>
+        <p class="help" data-i18n="s.composHelp">Pour enregistrer la mélodie affichée, donne-lui un nom en bas de « Les touches ».</p>
+        <p class="status" id="compo-status" role="status"></p>
+        <ul class="compo-list" id="compo-list"></ul>
+        <div class="io-block">
+          <h3 class="sub" data-i18n="s.ioTitle">Sauvegarder ou transférer</h3>
+          <div class="io-row">
+            <button class="btn ghost" type="button" id="io-export-all" data-i18n="s.exportAll">Tout exporter</button>
+            <label class="btn ghost filebtn" for="io-file" data-i18n="s.importFile">Importer un fichier</label>
+            <input type="file" id="io-file" class="sr" accept=".json,application/json,text/plain">
+          </div>
+          <details class="io-paste" id="io-paste">
+            <summary data-i18n="s.pasteSummary">Pas de fichier ? Copier ou coller un code</summary>
+            <textarea id="io-text" rows="4" spellcheck="false" autocomplete="off" data-i18n-ph="s.pastePh" placeholder="Colle ici un code de composition"></textarea>
+            <div class="actions">
+              <button class="btn ghost" type="button" id="io-import-text" data-i18n="s.importCode">Importer ce code</button>
+              <button class="btn ghost" type="button" id="io-copy" data-i18n="s.copyCode">Copier le code</button>
+            </div>
+          </details>
+        </div>
+      </section>
+    </section>
+
+    <section class="card result" aria-labelledby="result-title">
+      <div class="card-head">
+        <span class="step" aria-hidden="true"><b>2</b></span>
+        <div class="card-titles">
+          <h2 id="result-title" data-i18n="s.buttons">Les touches</h2>
+          <p class="result-name" id="result-name" hidden></p>
+        </div>
+        <div class="viewsw" role="group" data-i18n-aria="s.viewAria" aria-label="Affichage">
+          <button type="button" class="vbtn" id="view-big" aria-pressed="true" data-i18n="s.viewBig">Grandes touches</button>
+          <button type="button" class="vbtn" id="view-staff" aria-pressed="false" data-i18n="s.viewStaff">Portée</button>
+        </div>
       </div>
-    </details>
-    <p class="status" id="cat-status" role="status"></p>
-  </section>
-
-  <section class="panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" hidden>
-    <label class="setting" for="source-sel">
-      <span data-i18n="s.source">Ce qui joue la mélodie</span>
-      <select id="source-sel">
-        <option value="ocarina" data-i18n="s.srcOcarina">Ocarina, sifflement ou flûte</option>
-        <option value="voice" data-i18n="s.srcVoice">Voix seule, chantée ou fredonnée</option>
-      </select>
-    </label>
-    <div class="file">
-      <label class="field" for="file-input" data-i18n="s.fileLabel">Vidéo ou fichier audio</label>
-      <input type="file" id="file-input" accept="video/*,audio/*,.mov,.mp4,.m4a,.mp3,.wav,.aac">
-      <p class="help"><span data-i18n="s.fileHelp">Rien n'est envoyé : l'analyse se fait directement sur ton appareil. Pour une vidéo, la page l'écoute en la lisant (sans le son), donc ça dure le temps de la vidéo. Tu peux arrêter avant la fin.</span> <span id="ocarina-tip" data-i18n="s.ocarinaTip">Le mieux, c'est un passage où l'ocarina joue seul ou par-dessus un accompagnement discret.</span></p>
-    </div>
-    <p class="help" id="voice-hint" hidden data-i18n="s.voiceHint">Chante seul, sans musique derrière. Sur des syllabes nettes comme « la la la » ou « ta ta ta », les notes répétées sont bien séparées, ce qui n'est pas le cas bouche fermée. Tu peux t'enregistrer avec le dictaphone ou l'appareil photo de ton téléphone, puis choisir le fichier ici.</p>
-    <div class="grid2" id="ocarina-settings">
-      <label class="setting" for="purity">
-        <span data-i18n="s.purity">Filtre anti-piano</span>
-        <input type="range" id="purity" min="0.25" max="0.85" step="0.05" value="0.5">
-        <span class="ends"><span data-i18n="s.purityLo">Garde plus de notes</span><span data-i18n="s.purityHi">Ignore plus le piano</span></span>
-      </label>
-      <label class="setting" for="range-sel">
-        <span data-i18n="s.ocType">Type d'ocarina dans la vidéo</span>
-        <select id="range-sel">
-          <option value="250-3000" data-i18n="s.ocAny">Je ne sais pas (tout)</option>
-          <option value="400-1800" data-i18n="s.ocAlto">Alto, le plus courant</option>
-          <option value="750-3500" data-i18n="s.ocSoprano">Soprano, petit et très aigu</option>
-          <option value="150-900" data-i18n="s.ocBass">Ténor ou basse, gros et grave</option>
-        </select>
-      </label>
-    </div>
-    <button class="btn" type="button" id="analyze" disabled>Analyser</button>
-    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
-    <div id="media-slot" hidden></div>
-    <p class="status" id="status" role="status">Choisis un fichier pour commencer.</p>
-    <div id="roll-wrap" hidden>
-      <div class="roll-box"><canvas id="roll" data-i18n-aria="s.rollAria" aria-label="Graphique des notes trouvées dans le temps"></canvas></div>
-      <p class="found" id="found"></p>
-      <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" id="to-text" data-i18n="s.toText">Modifier sous forme de texte</button></div>
-    </div>
-  </section>
-
-  <div class="opts" role="radiogroup" data-i18n-aria="s.pitchAria" aria-label="Hauteur">
-    <span class="opts-title" data-i18n="s.pitch">Hauteur :</span>
-    <label class="radio"><input type="radio" name="keep" id="keep-auto" value="auto" checked> <span data-i18n="s.easiest">La plus facile à jouer</span></label>
-    <label class="radio"><input type="radio" name="keep" id="keep-same" value="same"> <span data-i18n="s.sameNotes">Garder les mêmes notes</span></label>
+      <p class="shared-banner" id="shared-banner" hidden><span id="shared-text" role="status"></span><button class="mini" type="button" id="shared-close" data-i18n="close">Fermer</button></p>
+      <div class="facts" id="facts"></div>
+      <div class="opts" role="radiogroup" data-i18n-aria="s.pitchAria" aria-label="Hauteur">
+        <span class="opts-title" data-i18n="s.pitch">Hauteur :</span>
+        <label class="radio"><input type="radio" name="keep" id="keep-auto" value="auto" checked> <span data-i18n="s.easiest">La plus facile à jouer</span></label>
+        <label class="radio"><input type="radio" name="keep" id="keep-same" value="same"> <span data-i18n="s.sameNotes">Garder les mêmes notes</span></label>
+      </div>
+      <div class="toolbar">
+        <div class="tgroup tg-practice" role="group" aria-labelledby="tg-practice">
+          <span class="tg-label" id="tg-practice" data-i18n="s.practice">S'entraîner</span>
+          <div class="tg-btns">
+            <button class="btn" type="button" id="learn-open" data-i18n="s.learnOpen">Apprendre le morceau</button>
+            <button class="btn ghost" type="button" id="game-open" data-i18n="s.fullscreen">Plein écran</button>
+            <button class="btn ghost" type="button" id="live-open" data-i18n="s.liveOpen">Vérifier au micro</button>
+          </div>
+        </div>
+        <div class="tgroup tg-listen" role="group" aria-labelledby="tg-listen">
+          <span class="tg-label" id="tg-listen" data-i18n="s.listen">Écouter</span>
+          <div class="tg-btns">
+            <button class="btn ghost" type="button" id="play" data-i18n="playAll">▶ Tout écouter</button>
+            <button class="btn ghost loop" type="button" id="loop-btn" aria-pressed="false" data-i18n="loop">↻ En boucle</button>
+          </div>
+        </div>
+      </div>
+      <details class="howto" id="howto">
+        <summary><span data-i18n="s.howto">Comment lire les touches</span></summary>
+        <div class="legend" role="group" data-i18n-aria="s.legendAria" aria-label="Les touches de l'ocarina">
+          <div class="legend-keys">
+            <span class="lk"><span data-btn="L"></span><span data-note="62"></span></span>
+            <span class="lk"><span data-btn="R"></span><span data-note="65"></span></span>
+            <span class="lk"><span data-btn="A"></span><span data-note="69"></span></span>
+            <span class="lk"><span data-btn="Y"></span><span data-note="71"></span></span>
+            <span class="lk"><span data-btn="X"></span><span data-note="74"></span>&nbsp;<span data-i18n="s.high">aigu</span></span>
+          </div>
+          <div class="legend-mods">
+            <span><span class="pic" data-pic="joy-up"></span><span class="pic" data-pic="joy-down"></span> <span data-i18n="s.legStick">joystick : un ton plus haut ou plus bas</span></span>
+            <span><span class="pic" data-pic="pad-up"></span><span class="pic" data-pic="pad-down"></span> <span data-i18n="s.legPad">croix : un demi-ton plus haut ou plus bas</span></span>
+            <span data-i18n="s.legHold">barre après la touche : note tenue</span>
+          </div>
+          <p class="legend-how" data-i18n="s.legHow">Le losange montre les 4 boutons de droite de la manette, celui à presser est allumé (B ne sert pas). L et R sont les gâchettes du haut. Garde le joystick ou la croix enfoncé, puis appuie sur le bouton.</p>
+          <p class="foot" data-i18n="s.foot">Le joystick et la croix vers le bas ont été vérifiés dans le jeu.</p>
+        </div>
+      </details>
+      <p class="hint" id="edit-hint" data-i18n="s.editHint">Touche une note pour l'écouter et la corriger.</p>
+      <div id="results"></div>
+      <div class="result-foot">
+        <div class="foot-block">
+          <h3 class="sub" data-i18n="s.saveTitle">Enregistrer cette mélodie</h3>
+          <div class="save-row">
+            <label class="sr" for="compo-name" data-i18n="s.nameLabel">Nom de la mélodie</label>
+            <input id="compo-name" type="text" maxlength="60" placeholder="Nom de la mélodie" data-i18n-ph="s.nameLabel" autocomplete="off">
+            <button class="btn" type="button" id="compo-save" data-i18n="save">Enregistrer</button>
+            <button class="btn ghost" type="button" id="compo-saveas" hidden data-i18n="s.saveAs">Enregistrer comme nouvelle</button>
+            <button class="btn ghost" type="button" id="compo-new" data-i18n="s.newCompo">Nouvelle</button>
+          </div>
+          <p class="open-name" id="compo-open-name"></p>
+          <p class="status" id="save-status" role="status"></p>
+        </div>
+        <div class="foot-block">
+          <h3 class="sub" data-i18n="s.shareTitle">Partager</h3>
+          <p class="help" data-i18n="s.shareHelp">Le lien ouvre directement cette mélodie, même sans compte Claude.</p>
+          <div class="actions">
+            <button class="btn" type="button" id="share-link" data-i18n="s.shareLink">Partager par lien</button>
+            <button class="btn ghost" type="button" id="copy" data-i18n="s.copyText">Copier le texte</button>
+            <span class="status" id="copy-status" role="status"></span>
+          </div>
+          <input class="share-out" id="share-out" type="text" readonly hidden data-i18n-aria="s.shareLink" aria-label="Partager par lien">
+          <details class="textbox"><summary data-i18n="s.textVersion">Version texte</summary><pre class="textout" id="textout"></pre></details>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <section class="result" aria-labelledby="result-title">
-    <div class="result-head">
-      <h2 id="result-title" data-i18n="s.buttons">Les touches</h2>
-      <div class="viewsw" role="group" data-i18n-aria="s.viewAria" aria-label="Affichage">
-        <button type="button" class="vbtn" id="view-big" aria-pressed="true" data-i18n="s.viewBig">Grandes touches</button>
-        <button type="button" class="vbtn" id="view-staff" aria-pressed="false" data-i18n="s.viewStaff">Portée</button>
-      </div>
-    </div>
-    <div class="facts" id="facts"></div>
-    <div class="actions">
-      <button class="btn" type="button" id="learn-open" data-i18n="s.learnOpen">Apprendre le morceau</button>
-      <button class="btn ghost" type="button" id="game-open" data-i18n="s.fullscreen">Plein écran</button>
-      <button class="btn ghost" type="button" id="live-open" data-i18n="s.liveOpen">Vérifier au micro</button>
-      <button class="btn ghost" type="button" id="play" data-i18n="playAll">▶ Tout écouter</button>
-      <button class="btn ghost loop" type="button" id="loop-btn" aria-pressed="false" data-i18n="loop">↻ En boucle</button>
-    </div>
-    <p class="hint" id="edit-hint" data-i18n="s.editHint">Touche une note pour l'écouter et la corriger.</p>
-    <div id="results"></div>
-    <details class="textbox"><summary data-i18n="s.textVersion">Version texte</summary><pre class="textout" id="textout"></pre></details>
-    <div class="actions">
-      <button class="btn ghost" type="button" id="copy" data-i18n="s.copyText">Copier le texte</button>
-      <span class="status" id="copy-status"></span>
-    </div>
-  </section>
-
-  <section class="compos" aria-labelledby="compos-title">
-    <div class="compos-head">
-      <h2 id="compos-title" data-i18n="s.myCompos">Mes compositions</h2>
-      <span class="fact" id="compos-where"></span>
-    </div>
-    <div class="save-row">
-      <label class="sr" for="compo-name" data-i18n="s.nameLabel">Nom de la mélodie</label>
-      <input id="compo-name" type="text" maxlength="60" placeholder="Nom de la mélodie" data-i18n-ph="s.nameLabel" autocomplete="off">
-      <button class="btn" type="button" id="compo-save" data-i18n="save">Enregistrer</button>
-      <button class="btn ghost" type="button" id="compo-saveas" hidden data-i18n="s.saveAs">Enregistrer comme nouvelle</button>
-      <button class="btn ghost" type="button" id="compo-new" data-i18n="s.newCompo">Nouvelle</button>
-    </div>
-    <p class="open-name" id="compo-open-name"></p>
-    <p class="status" id="compo-status" role="status"></p>
-    <ul class="compo-list" id="compo-list"></ul>
-    <div class="io-row">
-      <button class="btn ghost" type="button" id="io-export-all" data-i18n="s.exportAll">Tout exporter</button>
-      <label class="btn ghost filebtn" for="io-file" data-i18n="s.importFile">Importer un fichier</label>
-      <input type="file" id="io-file" class="sr" accept=".json,application/json,text/plain">
-    </div>
-    <details class="io-paste" id="io-paste">
-      <summary data-i18n="s.pasteSummary">Pas de fichier ? Copier ou coller un code</summary>
-      <textarea id="io-text" rows="4" spellcheck="false" autocomplete="off" data-i18n-ph="s.pastePh" placeholder="Colle ici un code de composition"></textarea>
-      <div class="actions">
-        <button class="btn ghost" type="button" id="io-import-text" data-i18n="s.importCode">Importer ce code</button>
-        <button class="btn ghost" type="button" id="io-copy" data-i18n="s.copyCode">Copier le code</button>
-      </div>
-    </details>
-  </section>
-
-  <p class="foot" data-i18n="s.foot">Le joystick et la croix vers le bas ont été vérifiés dans le jeu. La croix vers le haut est supposée monter d'un demi-ton comme sur 3DS : si une note avec ▲ sonne faux, remplace-la par la touche juste au-dessus avec ▼. Les notes entourées en pointillé ont été décalées d'une octave parce que la mélodie dépasse la plage de l'ocarina.</p>
+  <footer class="pagefoot">
+    <span class="orn" aria-hidden="true"></span>
+    <p data-i18n="s.disclaimer">Projet de fan non officiel, sans lien avec Nintendo. The Legend of Zelda et Ocarina of Time sont des marques de Nintendo.</p>
+  </footer>
 </div>
 
 <div class="editor" id="editor" hidden role="region" data-i18n-aria="s.editorAria" aria-label="Correction de la note">
@@ -991,7 +1182,7 @@ fr:{
   's.textVersion':'Version texte','s.copyText':'Copier le texte',
   's.myCompos':'Mes compositions','s.nameLabel':'Nom de la mélodie','s.saveAs':'Enregistrer comme nouvelle','s.newCompo':'Nouvelle',
   's.exportAll':'Tout exporter','s.importFile':'Importer un fichier','s.pasteSummary':'Pas de fichier ? Copier ou coller un code',
-  's.pastePh':'Colle ici un code de composition','s.importCode':'Importer ce code','s.copyCode':'Copier le code',
+  's.pastePh':'Colle ici un code de composition (il commence par OC1-)','s.importCode':'Importer ce code','s.copyCode':'Copier le code',
   's.foot':"Le joystick et la croix vers le bas ont été vérifiés dans le jeu. La croix vers le haut est supposée monter d'un demi-ton comme sur 3DS : si une note avec ▲ sonne faux, remplace-la par la touche juste au-dessus avec ▼. Les notes entourées en pointillé ont été décalées d'une octave parce que la mélodie dépasse la plage de l'ocarina.",
   's.editorAria':'Correction de la note','s.prevNote':'Note précédente','s.nextNote':'Note suivante','s.closeEdit':'Fermer la correction',
   's.edSemiDown':'½ ton −','s.edSemiUp':'½ ton +','s.edOctDown':'Octave −','s.edOctUp':'Octave +','s.edShort':'Plus court','s.edLong':'Plus long','s.edDup':'Doubler',
@@ -1055,6 +1246,8 @@ fr:{
   mod:{'↑':'pousse le joystick vers le haut','↓':'pousse le joystick vers le bas','▲':'appuie sur la croix en haut','▼':'appuie sur la croix en bas'},
   modShort:{'↑':'joystick haut','↓':'joystick bas','▲':'croix haut','▼':'croix bas'},
   instr:(parts,btn)=>(parts.length?parts.join(' et ')+', puis appuie sur '+btn:'appuie sur '+btn),
+  code:'Code',codeAria:'Copier le code de {x}',codeCopiedFor:"Code de « {x} » copié. Colle-le dans un message : il s'importe avec « Importer ce code ».",
+  badCode:"Ce code est incomplet ou abîmé. Vérifie qu'il a été copié en entier.",tooBig:'Ce fichier ou ce code est trop gros pour être une composition.',
   loop:'↻ En boucle',loopAria:'Lecture en boucle','s.playPhrase':'▶ La phrase',playSong:'▶ Tout le morceau',
   's.modeLive':'Vérifier','s.liveOpen':'Vérifier au micro',
   'live.sens':'Sensibilité :','live.sensAria':'Sensibilité du micro','live.low':'Basse','live.mid':'Moyenne','live.high':'Haute','live.restart':'Recommencer',
@@ -1092,7 +1285,7 @@ en:{
   's.textVersion':'Text version','s.copyText':'Copy the text',
   's.myCompos':'My compositions','s.nameLabel':'Melody name','s.saveAs':'Save as new','s.newCompo':'New',
   's.exportAll':'Export all','s.importFile':'Import a file','s.pasteSummary':'No file? Copy or paste a code',
-  's.pastePh':'Paste a composition code here','s.importCode':'Import this code','s.copyCode':'Copy the code',
+  's.pastePh':'Paste a composition code here (it starts with OC1-)','s.importCode':'Import this code','s.copyCode':'Copy the code',
   's.foot':"The stick and the D-pad down have been checked in the game. D-pad up is assumed to raise a note by a half step, as on 3DS: if a note with ▲ sounds wrong, use the button just above with ▼ instead. Notes circled with dots were moved by an octave because the melody goes beyond the ocarina's range.",
   's.editorAria':'Fix the note','s.prevNote':'Previous note','s.nextNote':'Next note','s.closeEdit':'Close the editor',
   's.edSemiDown':'½ step −','s.edSemiUp':'½ step +','s.edOctDown':'Octave −','s.edOctUp':'Octave +','s.edShort':'Shorter','s.edLong':'Longer','s.edDup':'Duplicate',
@@ -1156,6 +1349,8 @@ en:{
   mod:{'↑':'push the stick up','↓':'push the stick down','▲':'press up on the D-pad','▼':'press down on the D-pad'},
   modShort:{'↑':'stick up','↓':'stick down','▲':'D-pad up','▼':'D-pad down'},
   instr:(parts,btn)=>(parts.length?parts.join(' and ')+', then press '+btn:'press '+btn),
+  code:'Code',codeAria:'Copy the code of {x}',codeCopiedFor:'Code for "{x}" copied. Paste it in a message: it imports with "Import this code".',
+  badCode:'This code is incomplete or damaged. Make sure it was copied in full.',tooBig:'This file or code is too large to be a composition.',
   loop:'↻ Loop',loopAria:'Loop playback','s.playPhrase':'▶ This phrase',playSong:'▶ Whole song',
   's.modeLive':'Check','s.liveOpen':'Check with the mic',
   'live.sens':'Sensitivity:','live.sensAria':'Microphone sensitivity','live.low':'Low','live.mid':'Medium','live.high':'High','live.restart':'Start over',
@@ -1289,6 +1484,34 @@ const CAT_I18N={
   'by.trad':'Traditional','by.trad-ru':'Traditional Russian song','by.trad-en':'Traditional English carol','by.Hill':'Mildred & Patty Hill','by.Pierpont':'James Pierpont','by.Gruber':'Franz Gruber','by.Petzold':'Christian Petzold'}
 };
 Object.assign(I18N.fr,CAT_I18N.fr);Object.assign(I18N.en,CAT_I18N.en);
+Object.assign(I18N.fr,{
+  's.lead':"Choisis un morceau du catalogue, écris une mélodie, ou donne une vidéo d'ocarina ou un enregistrement de ta voix. La page la transforme en touches de manette, décalée si besoin pour qu'elle tienne dans l'ocarina du jeu.",
+  's.modeAria':'Source de la mélodie','s.tabCatalog':'Catalogue','s.tabNotes':'Écrire','s.tabCompos':'Enregistrés',
+  's.pickTitle':'Choisir une mélodie','s.practice':"S'entraîner",'s.listen':'Écouter','s.howto':'Comment lire les touches',
+  's.saveTitle':'Enregistrer cette mélodie','s.shareTitle':'Partager','s.shareLink':'Partager par lien',
+  's.shareHelp':"Le lien ouvre directement cette mélodie chez la personne qui le reçoit, même sans compte Claude.",
+  's.composHelp':'Pour enregistrer la mélodie affichée, donne-lui un nom en bas de « Les touches ».','s.ioTitle':'Sauvegarder ou transférer',
+  's.disclaimer':"Projet de fan non officiel, sans lien avec Nintendo. The Legend of Zelda et Ocarina of Time sont des marques de Nintendo.",
+  'src.video':'Analyse de la vidéo ou du son','src.typed':'Mélodie écrite','cat.opened':'« {x} » est ouvert.',
+  link:'Lien',linkAria:'Partager le lien de {x}',linkCopied:'Lien copié. Envoie-le à qui tu veux.',linkCopiedFor:'Lien de « {x} » copié.',
+  shared:'Lien partagé.',nothingToShare:"Il n'y a pas encore de notes à partager.",shareText:'« {x} » à jouer à l’ocarina',close:'Fermer',
+  linkOpened:"Mélodie reçue par lien : « {x} ». Pour la garder, enregistre-la en bas de cette carte.",
+  linkBad:"Ce lien de mélodie est abîmé ou incomplet. Demande à la personne de te le renvoyer."
+});
+Object.assign(I18N.en,{
+  's.lead':"Pick a song from the catalogue, type a melody, or give the page an ocarina video or a recording of your voice. It turns the melody into controller buttons, shifted if needed so it fits the game's ocarina.",
+  's.modeAria':'Melody source','s.tabCatalog':'Catalogue','s.tabNotes':'Type','s.tabCompos':'Saved',
+  's.pickTitle':'Choose a melody','s.practice':'Practice','s.listen':'Listen','s.howto':'How to read the buttons',
+  's.saveTitle':'Save this melody','s.shareTitle':'Share','s.shareLink':'Share as a link',
+  's.shareHelp':'The link opens this melody straight away for whoever gets it, no Claude account needed.',
+  's.composHelp':'To save the melody on screen, give it a name at the bottom of "The buttons".','s.ioTitle':'Back up or move',
+  's.disclaimer':'Unofficial fan project, not affiliated with Nintendo. The Legend of Zelda and Ocarina of Time are trademarks of Nintendo.',
+  'src.video':'Video or audio analysis','src.typed':'Typed melody','cat.opened':'"{x}" is open.',
+  link:'Link',linkAria:'Share the link to {x}',linkCopied:'Link copied. Send it to anyone.',linkCopiedFor:'Link to "{x}" copied.',
+  shared:'Link shared.',nothingToShare:'There are no notes to share yet.',shareText:'"{x}" to play on the ocarina',close:'Close',
+  linkOpened:'Melody received by link: "{x}". To keep it, save it at the bottom of this card.',
+  linkBad:'This melody link is damaged or incomplete. Ask the sender for it again.'
+});
 const catLinesCache={};
 function catLines(id){
   if(!catLinesCache[id]){const c=CATALOG.find(x=>x.id===id);const {items}=parseNotes(c.notes);inferPitches(items);catLinesCache[id]=itemsToLines(items);}
@@ -1379,7 +1602,7 @@ function render(fresh){
   facts.innerHTML='';
   const addFact=(txt,bad)=>{const s=document.createElement('span');s.className='fact'+(bad?' bad':'');s.textContent=txt;facts.appendChild(s);};
   const unknown=st.tab==='notes'?st.unknown:[];
-  st.flat=flat;
+  st.flat=flat;updateResultName();
   if(!flat.length){
     box.innerHTML='<p class="empty">'+esc(st.tab==='video'?(st.audioRes?t('empty.videoNone'):t('empty.videoWait')):t('empty.notes'))+'</p>';
     if(unknown.length)addFact(t('unknown',{x:unknown.slice(0,6).join(', ')}),true);
@@ -1899,18 +2122,51 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 
 
 /* ---------- tabs & text input ---------- */
+/* st.tab is where the notes come from (typed text or the audio analysis); the four panels only change what the
+   left card shows. Opening a catalogue song or a saved melody switches the source to text. */
 function setTab(tab){
   st.tab=tab;st.sel=null;
-  $('#tab-notes').setAttribute('aria-selected',tab==='notes');
-  $('#tab-video').setAttribute('aria-selected',tab==='video');
-  $('#panel-notes').hidden=tab!=='notes';
-  $('#panel-video').hidden=tab!=='video';
   stopPlay();render(true);syncSaveRow();
 }
-$('#tab-notes').addEventListener('click',()=>setTab('notes'));
-$('#tab-video').addEventListener('click',()=>setTab('video'));
+const PANELS=['catalog','notes','video','compos'];
+function setPanel(pn,focus){
+  if(!PANELS.includes(pn))pn='catalog';
+  st.panel=pn;
+  for(const p of PANELS){const b=$('#tab-'+p),on=p===pn;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$('#panel-'+p).hidden=!on;}
+  storeSet('ocarina-panel',pn);
+  if((pn==='notes'||pn==='video')&&st.tab!==pn)setTab(pn);
+  if(focus)$('#tab-'+pn).focus();
+}
+PANELS.forEach(p=>$('#tab-'+p).addEventListener('click',()=>setPanel(p)));
+$('.tabs').addEventListener('keydown',e=>{
+  const i=PANELS.indexOf(st.panel);let j=-1;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')j=(i+1)%PANELS.length;
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp')j=(i+PANELS.length-1)%PANELS.length;
+  else if(e.key==='Home')j=0;else if(e.key==='End')j=PANELS.length-1;
+  if(j<0)return;e.preventDefault();setPanel(PANELS[j],true);
+});
+function showResult(){
+  const el=$('#result-title'),r=el.getBoundingClientRect();
+  if(r.top<0||r.top>innerHeight*0.55)el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+}
+function curCatId(){try{return st.tab==='notes'&&!openCompoId()&&st.catId&&ta.value===st.catText?st.catId:null;}catch(e){return null;}}
+function markCatalog(){const id=curCatId();document.querySelectorAll('.cat-item').forEach(li=>li.classList.toggle('open',li.dataset.id===id));}
+function updateResultName(){
+  const el=$('#result-name');if(!el)return;let x='';
+  try{
+    if(st.tab==='video'){if(st.audioRes)x=t('src.video');}
+    else{
+      const oid=openCompoId(),open=oid?compos.items.find(c=>c.id===oid):null,cat=curCatId();
+      if(open)x=open.name||t('untitled');
+      else if(cat){const c=CATALOG.find(c=>c.id===cat);x=c[LANG]||c.fr;}
+      else if(st.shared&&st.shared.text===ta.value)x=st.shared.name||t('untitled');
+      else if(st.textLines.length)x=t('src.typed');
+    }
+  }catch(e){}
+  el.textContent=x;el.hidden=!x;markCatalog();
+}
 const ta=$('#notes-input');
-{const saved=storeGet('ocarina-notes');if(saved==null){ta.value=catText('joie');st.catId='joie';st.catText=ta.value;}else ta.value=saved;}
+{const saved=storeGet('ocarina-notes');if(saved==null){ta.value=catText('joie');st.catId='joie';st.catText=ta.value;}else{ta.value=saved;const m=CATALOG.find(c=>catText(c.id)===saved);if(m){st.catId=m.id;st.catText=saved;}}}
 ta.addEventListener('input',()=>{storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();render(true);});
 document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{st.openId=null;syncSaveRow();ta.value=(LANG==='en'?SAMPLES_EN:SAMPLES)[b.dataset.sample];storeSet('ocarina-notes',ta.value);st.undo.notes=[];st.sel=null;syncFromText();render(true);if(!ta.value)ta.focus();}));
 document.querySelectorAll('input[name=keep]').forEach(r=>r.addEventListener('change',()=>{stopPlay();render(true);}));
@@ -1925,18 +2181,20 @@ function renderCatalog(){
   for(const c of CATALOG){
     if(catFilter!=='all'&&c.cat!==catFilter)continue;
     const lvl=catLevelCache[c.id]||(catLevelCache[c.id]=catLevel(c.id)),title=c[LANG]||c.fr;
-    const li=document.createElement('li');li.className='cat-item';
+    const li=document.createElement('li');li.className='cat-item';li.dataset.id=c.id;
     const pb=document.createElement('button');pb.type='button';pb.className='cat-play';pb.dataset.catPlay=c.id;pb.textContent='▶';pb.setAttribute('aria-label',t('cat.preview',{x:title}));
     const info=document.createElement('div');info.className='cat-info';
     const nm=document.createElement('strong');nm.textContent=title;
-    const by=document.createElement('span');by.textContent=(c.by.startsWith('trad')||I18N.fr['by.'+c.by]?t('by.'+c.by):c.by)+' · '+t('cat.notes',{n:catLines(c.id).flat().length});
-    info.append(nm,by);
+    const by=document.createElement('span');by.className='cat-meta';by.textContent=(c.by.startsWith('trad')||I18N.fr['by.'+c.by]?t('by.'+c.by):c.by)+' · '+t('cat.notes',{n:catLines(c.id).flat().length});
     const lv=document.createElement('span');lv.className='lvl lvl-'+lvl;lv.textContent=t('cat.'+lvl);
+    const meta=document.createElement('span');meta.className='cat-meta-row';meta.append(by,lv);
+    info.append(nm,meta);
     const acts=document.createElement('div');acts.className='cat-acts';
     const op=document.createElement('button');op.type='button';op.className='mini';op.textContent=t('cat.open');op.addEventListener('click',()=>openCatalog(c.id,false));
     const le=document.createElement('button');le.type='button';le.className='mini primary';le.textContent=t('cat.learn');le.addEventListener('click',()=>openCatalog(c.id,true));
-    acts.append(op,le);li.append(pb,info,lv,acts);ul.appendChild(li);
+    acts.append(op,le);li.append(pb,info,acts);ul.appendChild(li);
   }
+  markCatalog();
 }
 function openCatalog(id,learnIt){
   const c=CATALOG.find(x=>x.id===id);if(!c)return;
@@ -1947,7 +2205,7 @@ function openCatalog(id,learnIt){
   $('#compo-name').value=c[LANG]||c.fr;syncSaveRow();renderCompos();
   $('#cat-status').textContent=t('cat.opened',{x:c[LANG]||c.fr});
   if(learnIt){openGame(0,'learn');return;}
-  $('#result-title').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  showResult();
 }
 function previewCatalog(id,btn){
   if(playState&&playState.label==='cat-'+id){stopPlay();return;}
@@ -1957,7 +2215,6 @@ function previewCatalog(id,btn){
 }
 $('#cat-list').addEventListener('click',e=>{const b=e.target.closest('[data-cat-play]');if(b)previewCatalog(b.dataset.catPlay,b);});
 document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{catFilter=b.dataset.cat;renderCatalog();}));
-{const cat=$('#catalog');if(storeGet('ocarina-cat-open')==='1')cat.open=true;cat.addEventListener('toggle',()=>storeSet('ocarina-cat-open',cat.open?'1':'0'));}
 renderCatalog();
 
 
@@ -2073,7 +2330,7 @@ $('#source-sel').addEventListener('change',()=>{syncSource();storeSet('ocarina-s
 {const sv=storeGet('ocarina-source');if(sv==='voice'||sv==='ocarina')$('#source-sel').value=sv;syncSource();}
 $('#to-text').addEventListener('click',()=>{
   if(!st.audioLines)return;
-  ta.value=serializeLines(st.audioLines,LANG);storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();setTab('notes');ta.focus();
+  ta.value=serializeLines(st.audioLines,LANG);storeSet('ocarina-notes',ta.value);st.undo.notes=[];syncFromText();setPanel('notes');ta.focus();
 });
 
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
@@ -2111,6 +2368,7 @@ function compoDoc(name){
 function openCompoId(){return st.tab==='notes'?st.openId:null;}
 function newId(){return 'c-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);}
 function compoStatus(t,err){const s=$('#compo-status');s.textContent=t;s.classList.toggle('err',!!err);}
+function saveStatus(t,err){const s=$('#save-status');s.textContent=t;s.classList.toggle('err',!!err);}
 function dbErrText(e){
   const c=e&&e.code;
   if(c==='quota_exceeded')return t('errQuota');
@@ -2120,19 +2378,19 @@ function dbErrText(e){
 function queueWrite(fn){compos.writing=compos.writing.then(fn,fn);return compos.writing;}
 async function saveCompo(asNew){
   const name=($('#compo-name').value||'').trim();
-  if(!st.flat.length){compoStatus(t('nothingToSave'),true);return;}
-  if(!name){compoStatus(t('needName'),true);$('#compo-name').focus();return;}
+  if(!st.flat.length){saveStatus(t('nothingToSave'),true);return;}
+  if(!name){saveStatus(t('needName'),true);$('#compo-name').focus();return;}
   const id=(!asNew&&openCompoId())?openCompoId():newId();
   const doc=compoDoc(name);
   const prev=compos.items.find(c=>c.id===id);if(prev&&prev.progress&&!asNew)doc.progress=prev.progress;
   if(compos.kind==='db'){
-    compoStatus(t('saving'));
+    saveStatus(t('saving'));
     try{await queueWrite(()=>compos.db.collection('data/users/'+compos.uid).doc(id).set(doc));}
-    catch(e){compoStatus(dbErrText(e),true);return;}
+    catch(e){saveStatus(dbErrText(e),true);return;}
   }else{
     const a=compos.items.filter(c=>c.id!==id);a.unshift(Object.assign({id},doc));compos.items=a;compoLocalWrite(a);
   }
-  st.openId=id;compoStatus(t(compos.kind==='db'?'savedDb':'savedLocal',{x:name}));
+  st.openId=id;saveStatus(t(compos.kind==='db'?'savedDb':'savedLocal',{x:name}));
   syncSaveRow();renderCompos();
 }
 async function deleteCompo(id){
@@ -2152,7 +2410,7 @@ function openCompo(id){
   st.openId=id;$('#compo-name').value=c.name||'';
   setTab('notes');syncSaveRow();renderCompos();
   compoStatus(t('opened',{x:c.name||t('untitled')}));
-  $('#result-title').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  showResult();
 }
 async function saveProgressToCompo(p){
   const id=openCompoId();if(!id)return;
@@ -2165,11 +2423,13 @@ function syncSaveRow(){
   $('#compo-save').textContent=open?t('saveChanges'):t('save');
   $('#compo-saveas').hidden=!open;
   $('#compo-open-name').textContent=open?t('openLabel',{x:open.name||t('untitled')}):'';
+  updateResultName();
 }
 function fmtDate(d){try{return new Date(d).toLocaleDateString(t('dateLocale'),{day:'numeric',month:'short'});}catch(e){return '';}}
 function renderCompos(){
   $('#compos-where').textContent=compos.kind==='db'?t('whereDb'):t('whereLocal');
   $('#io-export-all').disabled=!compos.items.length;
+  $('#compo-count').textContent=compos.items.length?String(compos.items.length):'';
   const ul=$('#compo-list');ul.innerHTML='';
   if(compos.kind==='db'&&!compos.loaded){const li=document.createElement('li');li.className='compo-empty';li.textContent=compos.note?t(compos.note):t('loading');ul.appendChild(li);return;}
   if(compos.note){const li=document.createElement('li');li.className='compo-empty';li.textContent=t(compos.note);ul.appendChild(li);}
@@ -2192,7 +2452,9 @@ function renderCompos(){
       const op=document.createElement('button');op.type='button';op.className='mini';op.textContent=t('open');op.addEventListener('click',()=>openCompo(c.id));
       const ex=document.createElement('button');ex.type='button';ex.className='mini';ex.textContent=t('export');ex.setAttribute('aria-label',t('exportAria',{x:c.name||t('untitled')}));ex.addEventListener('click',()=>exportCompos([c]));
       const del=document.createElement('button');del.type='button';del.className='mini';del.textContent=t('delete');del.setAttribute('aria-label',t('deleteAria',{x:c.name||t('untitled')}));del.addEventListener('click',()=>{compos.confirmDel=c.id;renderCompos();});
-      acts.append(op,ex,del);
+      const cd=document.createElement('button');cd.type='button';cd.className='mini';cd.textContent=t('code');cd.setAttribute('aria-label',t('codeAria',{x:c.name||t('untitled')}));cd.addEventListener('click',()=>copyCompoCode(c));
+      const lk=document.createElement('button');lk.type='button';lk.className='mini';lk.textContent=t('link');lk.setAttribute('aria-label',t('linkAria',{x:c.name||t('untitled')}));lk.addEventListener('click',()=>shareCompoLink(c));
+      acts.append(op,lk,cd,ex,del);
     }
     li.append(info,acts);ul.appendChild(li);
   }
@@ -2216,7 +2478,7 @@ async function initCompos(){
 }
 $('#compo-save').addEventListener('click',()=>saveCompo(false));
 $('#compo-saveas').addEventListener('click',()=>saveCompo(true));
-$('#compo-new').addEventListener('click',()=>{st.openId=null;$('#compo-name').value='';syncSaveRow();renderCompos();compoStatus(t('nextNew'));$('#compo-name').focus();});
+$('#compo-new').addEventListener('click',()=>{st.openId=null;$('#compo-name').value='';syncSaveRow();renderCompos();saveStatus(t('nextNew'));$('#compo-name').focus();});
 $('#compo-name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveCompo(false);}});
 initCompos();
 
@@ -2228,6 +2490,93 @@ $('#copy').addEventListener('click',()=>{
   try{navigator.clipboard.writeText(txt).then(()=>done(t('copied')),()=>{selectOut();done(t('copySelected'));});}
   catch(e){selectOut();done(t('copySelected'));}
 });
+
+/* ---------- short share code ----------
+   "OC1-" + base64url of: flags, name (UTF-8), phrase lengths, one byte per note (pitch 36–99 in 6 bits + hold in 2 bits),
+   and a checksum byte so a code cut short when copied is caught. Several compositions are joined with ".". */
+const SC_PREFIX='OC1-';
+function b64uEnc(bytes){let bin='';for(const b of bytes)bin+=String.fromCharCode(b);return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function b64uDec(s){if(!/^[A-Za-z0-9_-]+$/.test(s))throw new Error('chars');s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s),out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
+function encodeCompo(c){
+  let name=new TextEncoder().encode(String(c.name||'').slice(0,60));if(name.length>180)name=name.slice(0,180);
+  const lines=[];for(const l of (c.lines||[])){for(let i=0;i<l.length;i+=255)lines.push(l.slice(i,i+255));}
+  const ls=lines.filter(l=>l.length).slice(0,255);
+  const bytes=[c.keep?1:0,name.length,...name,ls.length,...ls.map(l=>l.length)];
+  for(const l of ls)for(const n of l){let m=Math.round(n.m);while(m<36)m+=12;while(m>99)m-=12;bytes.push(((m-36)<<2)|Math.max(0,Math.min(3,n.h|0)));}
+  let sum=0;for(const b of bytes)sum=(sum+b)&255;bytes.push(sum);
+  return b64uEnc(bytes);
+}
+function shortCode(list){return SC_PREFIX+list.map(encodeCompo).join('.');}
+function decodeShort(code){
+  const body=String(code).replace(/\s+/g,'').slice(SC_PREFIX.length);
+  const parts=body.split('.').filter(Boolean);if(!parts.length)throw new Error('empty');
+  return parts.map(part=>{
+    const b=b64uDec(part);if(b.length<4)throw new Error('short');
+    let sum=0;for(let i=0;i<b.length-1;i++)sum=(sum+b[i])&255;if(sum!==b[b.length-1])throw new Error('checksum');
+    let k=0;const keep=!!(b[k++]&1),nl=b[k++];if(k+nl>b.length-1)throw new Error('name');
+    const name=new TextDecoder().decode(b.slice(k,k+nl));k+=nl;
+    const lc=b[k++],lens=[];for(let i=0;i<lc;i++)lens.push(b[k++]);
+    const lines=lens.map(len=>{const l=[];for(let i=0;i<len;i++){if(k>=b.length-1)throw new Error('notes');const v=b[k++];l.push({m:36+(v>>2),h:v&3});}return l;});
+    if(k!==b.length-1)throw new Error('length');
+    return {name,keep,lines};
+  });
+}
+
+/* ---------- share by link ----------
+   A link is the public page address, "#", then the short code. Whoever opens it gets the melody on screen,
+   checked like any import and not saved until they choose to. Inside Claude the public address is used,
+   so the link works for people without a Claude account. */
+const SHARE_BASE='https://darkintels.github.io/traducteur-ocarina/';
+function shareBase(){try{const l=location;if(l.protocol==='https:'&&/\.github\.io$/i.test(l.hostname))return l.origin+l.pathname;}catch(e){}return SHARE_BASE;}
+function cleanName(x){return String(x||'').replace(/[\u0000-\u001f\u007f-\u009f​-‏‪-‮⁠-⁩﻿]/g,'').replace(/\s+/g,' ').trim().slice(0,60);}
+function linkFor(c){return shareBase()+'#'+shortCode([{name:cleanName(c.name),keep:!!c.keep,lines:c.lines}]);}
+function shareName(){
+  const v=cleanName($('#compo-name').value);if(v)return v;
+  const cat=curCatId();if(cat){const c=CATALOG.find(c=>c.id===cat);return c[LANG]||c.fr;}
+  if(st.tab==='notes'&&st.shared&&st.shared.text===ta.value)return st.shared.name||'';
+  return '';
+}
+function footStatus(m,err){const s=$('#copy-status');s.textContent=m;s.classList.toggle('err',!!err);clearTimeout(footStatus.tm);footStatus.tm=setTimeout(()=>{s.textContent='';s.classList.remove('err');},5000);}
+async function sendLink(url,title,say,fallback){
+  if(navigator.share&&matchMedia('(pointer: coarse)').matches){
+    try{await navigator.share({title,text:t('shareText',{x:title}),url});say(t('shared'));return;}
+    catch(e){if(e&&e.name==='AbortError')return;}
+  }
+  try{await navigator.clipboard.writeText(url);say(t('linkCopied'));}
+  catch(e){fallback();say(t('copySelected'));}
+}
+$('#share-link').addEventListener('click',()=>{
+  const lines=activeLines();if(!lines.flat().length){footStatus(t('nothingToShare'),true);return;}
+  const name=shareName();
+  const url=linkFor({name,keep:keepSame(),lines:lines.map(l=>l.map(n=>({m:n.midi,h:n.hold})))});
+  const out=$('#share-out');out.value=url;out.hidden=false;
+  sendLink(url,name||t('doc.title'),footStatus,()=>{out.focus();out.select();});
+});
+function shareCompoLink(c){
+  const url=linkFor(c),tx=$('#io-text'),nm=c.name||t('untitled');
+  sendLink(url,c.name||t('doc.title'),m=>compoStatus(m===t('linkCopied')?t('linkCopiedFor',{x:nm}):m),()=>{tx.value=url;$('#io-paste').open=true;tx.focus();tx.select();});
+}
+function showShared(m,err){$('#shared-text').textContent=m;const b=$('#shared-banner');b.classList.toggle('err',!!err);b.hidden=false;}
+$('#shared-close').addEventListener('click',()=>{$('#shared-banner').hidden=true;});
+function readSharedHash(){
+  const h=String(location.hash||'').replace(/^#/,'');
+  if(!/^oc1-/i.test(h))return false;
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  let c=null;
+  try{if(h.length<=20000)c=decodeShort(SC_PREFIX+h.slice(4))[0];}catch(e){c=null;}
+  const lines=c?c.lines.filter(l=>l.length).map(l=>l.map(n=>({midi:n.m,hold:n.h}))):[];
+  if(!lines.length){showShared(t('linkBad'),true);showResult();return true;}
+  const name=cleanName(c.name);
+  stopPlay();if(game.open)closeGame();
+  $('#keep-same').checked=!!c.keep;$('#keep-auto').checked=!c.keep;
+  ta.value=serializeLines(lines,LANG);storeSet('ocarina-notes',ta.value);st.undo.notes=[];
+  st.openId=null;st.catId=null;st.sel=null;st.shared={text:ta.value,name};
+  $('#compo-name').value=name;$('#save-status').textContent='';
+  syncFromText();st.tab='notes';setPanel('notes');render(true);syncSaveRow();renderCompos();
+  showShared(t('linkOpened',{x:name||t('untitled')}));showResult();
+  return true;
+}
+window.addEventListener('hashchange',()=>{readSharedHash();});
 
 /* ---------- export / import ----------
    A JSON file (or the same text, copied) that any copy of the page can import. Inside Claude the file goes
@@ -2253,17 +2602,26 @@ async function exportCompos(list){
   if(!list.length){compoStatus(t('nothingToExport'),true);return;}
   const text=exportPayload(list);
   const fname=list.length===1?'ocarina-'+slug(list[0].name)+'.json':(LANG==='en'?'my-ocarina-songs.json':'mes-compositions-ocarina.json');
-  $('#io-text').value=text;
+  $('#io-text').value=shortCode(list);
   const r=await offerFile(fname,text);
   if(r==='saved')compoStatus(t('exported',{x:fname}));
   else if(r==='declined')compoStatus(t('exportCancelled'));
   else{const d=$('#io-paste');d.open=true;const tx=$('#io-text');tx.focus();tx.select();compoStatus(t('codeShown'));}
 }
+/* Imported data is only ever read as numbers (notes) and plain text (names, shown with textContent),
+   so nothing in a file or code can run in the page. Size and count limits keep a huge file from freezing it. */
 function parseImport(text){
-  let o;try{o=JSON.parse(String(text).trim());}catch(e){throw new Error(t('badImport'));}
-  const arr=Array.isArray(o)?o:(o&&Array.isArray(o.compositions)?o.compositions:(o&&Array.isArray(o.lines)?[o]:null));
+  const raw=String(text).trim();
+  if(raw.length>2000000)throw new Error(t('tooBig'));
+  let arr;
+  let code=null;
+  if(/^oc1-/i.test(raw))code=raw;
+  else if(!/^[\[{]/.test(raw)){const mm=raw.match(/oc1-[A-Za-z0-9_.-]+/i);if(mm)code=mm[0];}
+  if(code){try{arr=decodeShort(SC_PREFIX+code.slice(4));}catch(e){throw new Error(t('badCode'));}}
+  else{let o;try{o=JSON.parse(raw);}catch(e){throw new Error(t('badImport'));}
+    arr=Array.isArray(o)?o:(o&&Array.isArray(o.compositions)?o.compositions:(o&&Array.isArray(o.lines)?[o]:null));}
   if(!arr)throw new Error(t('badImport'));
-  const out=[];
+  const out=[];let total=0;
   for(const c of arr.slice(0,200)){
     if(!c||!Array.isArray(c.lines))continue;
     const lines=c.lines.slice(0,300).map(l=>Array.isArray(l)?l.slice(0,500)
@@ -2271,7 +2629,8 @@ function parseImport(text){
       .map(n=>{const x={m:Math.round(n.m),h:Math.max(0,Math.min(3,Math.round(+n.h||0)))};if(typeof n.d==='number'&&isFinite(n.d)&&n.d>0&&n.d<30)x.d=Math.round(n.d*1000)/1000;return x;}):[])
       .filter(l=>l.length);
     if(!lines.length)continue;
-    out.push({kind:'compo',name:String(c.name||'').replace(/\s+/g,' ').trim().slice(0,60)||t('untitled'),keep:!!c.keep,updatedAt:Date.now(),count:lines.reduce((s,l)=>s+l.length,0),lines});
+    total+=lines.reduce((s,l)=>s+l.length,0);if(total>50000)break;
+    out.push({kind:'compo',name:String(c.name||'').replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/g,'').replace(/\s+/g,' ').trim().slice(0,60)||t('untitled'),keep:!!c.keep,updatedAt:Date.now(),count:lines.reduce((s,l)=>s+l.length,0),lines});
   }
   if(!out.length)throw new Error(t('noneInImport'));
   return out;
@@ -2285,9 +2644,15 @@ async function importCompos(list){
   }else{compos.items=list.map(d=>Object.assign({id:newId()},d)).reverse().concat(compos.items);compoLocalWrite(compos.items);renderCompos();}
   compoStatus(t('imported')(list.length));
 }
+function copyCompoCode(c){
+  const code=shortCode([c]),tx=$('#io-text');tx.value=code;$('#io-paste').open=true;
+  const sel=()=>{tx.focus();tx.select();compoStatus(t('copySelected'));};
+  try{navigator.clipboard.writeText(code).then(()=>compoStatus(t('codeCopiedFor',{x:c.name||t('untitled')})),sel);}catch(e){sel();}
+}
 $('#io-export-all').addEventListener('click',()=>exportCompos(compos.items));
 $('#io-file').addEventListener('change',async e=>{
   const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
+  if(f.size>2000000){compoStatus(t('tooBig'),true);return;}
   try{await importCompos(parseImport(await f.text()));}catch(err){compoStatus(err.message||t('badImport'),true);}
 });
 $('#io-import-text').addEventListener('click',async()=>{
@@ -2295,7 +2660,7 @@ $('#io-import-text').addEventListener('click',async()=>{
   try{await importCompos(parseImport(v));$('#io-text').value='';}catch(err){compoStatus(err.message||t('badImport'),true);}
 });
 $('#io-copy').addEventListener('click',()=>{
-  const tx=$('#io-text');if(!tx.value)tx.value=exportPayload(compos.items);
+  const tx=$('#io-text');if(!tx.value){if(!compos.items.length){compoStatus(t('nothingToExport'),true);return;}tx.value=shortCode(compos.items);}
   const sel=()=>{tx.focus();tx.select();compoStatus(t('copySelected'));};
   try{navigator.clipboard.writeText(tx.value).then(()=>compoStatus(t('codeCopied')),sel);}catch(e){sel();}
 });
@@ -2318,6 +2683,10 @@ setStatus(t('chooseFile'));$('#analyze').textContent=t('analyze');
 
 {const v=storeGet('ocarina-view');if(v==='staff'||v==='big'){st.view=v;$('#view-big').setAttribute('aria-pressed',v==='big');$('#view-staff').setAttribute('aria-pressed',v==='staff');}}
 applyStatic();syncSource();syncFromText();render(true);renderCompos();syncSaveRow();
+{const p=storeGet('ocarina-panel');setPanel(p==='video'?'catalog':(p||'catalog'));}
+{const cat=curCatId();if(cat&&!$('#compo-name').value){const c=CATALOG.find(c=>c.id===cat);$('#compo-name').value=c[LANG]||c.fr;}}
+{const h=$('#howto'),v=storeGet('ocarina-howto');h.open=v==null?true:v==='1';h.addEventListener('toggle',()=>storeSet('ocarina-howto',h.open?'1':'0'));}
+readSharedHash();
 
 </script>
 
