@@ -2640,7 +2640,7 @@ function shareName(){
 function footStatus(m,err){const s=$('#copy-status');s.textContent=m;s.classList.toggle('err',!!err);clearTimeout(footStatus.tm);footStatus.tm=setTimeout(()=>{s.textContent='';s.classList.remove('err');},5000);}
 async function sendLink(url,title,say,fallback){
   if(navigator.share&&matchMedia('(pointer: coarse)').matches){
-    try{await navigator.share({title,text:t('shareText',{x:title}),url});say(t('shared'));return;}
+    try{await navigator.share({title,url});say(t('shared'));return;}
     catch(e){if(e&&e.name==='AbortError')return;}
   }
   try{await navigator.clipboard.writeText(url);say(t('linkCopied'));}
